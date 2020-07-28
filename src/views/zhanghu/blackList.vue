@@ -1,6 +1,6 @@
 <template>
 	<div class="main-box">
-		<div class="zh-head">黑名单列表 </div>
+		<div class="zh-head">黑名单列表</div>
 		<div class="zh-info-box">
 			<div class="seach-box">
 				<div class="seach-item">手机号 <div class="search-input">  
