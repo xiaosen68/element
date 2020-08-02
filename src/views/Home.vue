@@ -11,7 +11,7 @@
 		<div class="user-info-box">
 			欢迎管理员登录 131238213123
 		</div>
-		<div class="out-btn">退出</div>
+		<div class="out-btn" @click="outlogin">退出</div>
 	 </el-header>
      <el-container>
        <el-aside width="auto" :style="{height:asidHeight}">
@@ -249,7 +249,7 @@ export default {
 		],//标签栏内容
 		breadcrumb:[],//面包屑数组
 		select:{},//储存打开的导航栏内容
-		defActive:'2-6',//默认打开导航栏
+		defActive:'1-1',//默认打开导航栏
 	}
   },
 	  beforeMount:function(){
@@ -266,6 +266,11 @@ export default {
 		 
 	  },
 	methods: {
+		// 退出登录
+		outlogin(){
+			sessionStorage.removeItem('token');
+			this.$router.push({name:'Login'})
+		},
 		// 是否收起导航栏
 		isCollapseFn(){	
 			if(this.isCollapse){

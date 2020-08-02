@@ -1,9 +1,10 @@
 <template>
   <div class="login-box">
 	<div class="login-input-box">
-		<el-input placeholder="请输入账号" class="login-input" prefix-icon="el-icon-user" v-model="number">
+		<el-input placeholder="请输入账号" class="login-input" prefix-icon="el-icon-user" v-model="phone">
 		</el-input>
-		<el-input placeholder="请输入密码" class="login-input"  type="password" prefix-icon="el-icon-lock" show-password v-model="pws">
+		<el-input placeholder="请输入密码" class="login-input"  type="password" 
+		prefix-icon="el-icon-lock" show-password v-model="password">
 		</el-input>
 		<el-checkbox v-model="checked" class="login-remer">记住密码</el-checkbox>
 		<el-button type="primary" class="login-btn" @click="loginFn">登录</el-button>
@@ -17,14 +18,24 @@ export default {
   },
   data (){
 	return {
-		number:'',
-		pws:'',
+		phone:'13071035369',
+		password:'111',
 		checked:true
 	}  
   },
   methods:{
-	loginFn:function(){
-		this.$router.push({name:'Home'})
+	loginFn:function(){	
+		this.http.post(this.api.login,
+		{
+			phone:this.phone,
+		password:this.password,
+		}).then(res => {
+		          if(res.code == 0){
+					  sessionStorage.setItem('token',res.data);
+					 // this.$store.commit("setToken",res.data);
+					 this.$router.push({name:'Home'})
+		          }
+		       });
 	}  
   },
   created(){

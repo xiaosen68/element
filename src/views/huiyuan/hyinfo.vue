@@ -36,9 +36,9 @@
 				<div class="sign-waring"> 平台注册人数: <b class="font-fei">123123</b>,平台实名人数:<b class="font-fei">123123</b></div>
 				  <el-table :data="tableData" stripe style="width: 100%" :highlight-current-row="true">
 					<el-table-column type="index"width="40"></el-table-column>
-				    <el-table-column prop="date" label="注册日期" > </el-table-column>
-				    <el-table-column prop="name" label="姓名"></el-table-column>
-				    <el-table-column prop="tel" label="手机号"> </el-table-column>
+				    <el-table-column prop="createTime" label="注册日期" > </el-table-column>
+				    <el-table-column prop="userName" label="姓名"></el-table-column>
+				    <el-table-column prop="phone" label="手机号"> </el-table-column>
 					<el-table-column prop="houtaiNum" label="后台登录账号"> </el-table-column>
 					<el-table-column prop="shiming" label="实名状态"> 
 						<template slot-scope="scope">
@@ -46,7 +46,7 @@
 							<div class="shiming-status2" v-else>未提交</div>
 						</template>
 					</el-table-column>
-					<el-table-column prop="dengji" label="代理等级"> </el-table-column>
+					<el-table-column prop="userLevelName" label="代理等级"> </el-table-column>
 					<el-table-column prop="dengji" label="查看上级">
 						<template slot-scope="scope">
 						        <el-popover trigger="hover" placement="top">
@@ -67,8 +67,8 @@
 							<el-button size="small" @click="lowerFn(scope.row.tel)">下级</el-button>
 						</template>
 					</el-table-column>
-					<el-table-column prop="dengji" label="收益"> </el-table-column>
-						<el-table-column prop="dengji" label="积分"> </el-table-column>
+					<el-table-column prop="totalRevenue" label="收益"> </el-table-column>
+						<el-table-column prop="score" label="积分"> </el-table-column>
 					<el-table-column prop="dengji" label="操作">
 						<template slot-scope="scope">
 							<el-button size="small" @click="dialogFn(scope.row)">详情</el-button>
@@ -93,7 +93,7 @@
 			   :before-close="handleClose">
 				<div class="dialog-box-item"> 
 					<span class="dialog-box-title">注册时间：</span> 
-					<span class="dialog-box-value">{{dialogValue.date}}</span>
+					<span class="dialog-box-value">{{dialogValue.createTime}}</span>
 				</div>
 				<div class="dialog-box-item">
 					<span class="dialog-box-title">注册品牌：</span> 
@@ -101,11 +101,11 @@
 				</div>
 				<div class="dialog-box-item">
 					<span class="dialog-box-title">手机号：</span> 
-					<span class="dialog-box-value">{{dialogValue.date}}</span>
+					<span class="dialog-box-value">{{dialogValue.phone}}</span>
 				</div>
 				<div class="dialog-box-item">
 					<span class="dialog-box-title">实名状态：</span> 
-					<span class="dialog-box-value">{{dialogValue.date}}</span>
+					<span class="dialog-box-value">{{dialogValue.realNameState}}</span>
 				</div>
 				<div class="dialog-box-item">
 					<span class="dialog-box-title">实名审核：</span> 
@@ -117,19 +117,19 @@
 				</div>
 				<div class="dialog-box-item">
 					<span class="dialog-box-title">账户积分：</span> 
-					<span class="dialog-box-value">{{dialogValue.date}}</span>
+					<span class="dialog-box-value">{{dialogValue.score}}</span>
 				</div>
 				<div class="dialog-box-item">
 					<span class="dialog-box-title">总收益：</span> 
-					<span class="dialog-box-value">{{dialogValue.date}}</span>
+					<span class="dialog-box-value">{{dialogValue.totalRevenue}}</span>
 				</div>
 				<div class="dialog-box-item">
 					<span class="dialog-box-title">收益余额：</span> 
-					<span class="dialog-box-value">{{dialogValue.date}}</span>
+					<span class="dialog-box-value">{{dialogValue.withdrawableAmount}}</span>
 				</div>
 				<div class="dialog-box-item">
 					<span class="dialog-box-title">账户提现：</span> 
-					<span class="dialog-box-value">{{dialogValue.date}}</span>
+					<span class="dialog-box-value">{{dialogValue.withdrawnAmount}}</span>
 				</div>
 				<div class="dialog-box-item">
 					<span class="dialog-box-title">额外手续费：</span> 
@@ -293,6 +293,17 @@ export default {
 				],
 		}
 	},
+	created(){
+			this.http.post(this.api.pageAccountList,
+			{
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(sessionStorage.getItem('token'))
+				console.log(res)
+			          if(res.code == 0){
+						 this.tableData=res.data.list; 
+			          }
+			       });
+	},
 	methods:{
 		beizhuFn:function(item){
 			console.log(item)
@@ -313,6 +324,9 @@ export default {
 			  console.log(item);
 			  this.dialogVisible=true;
 			  this.dialogValue=item;
+		  },
+		  handleClose:function(){
+			  
 		  },
 		  lowerFn:function(tel){
 			  console.log(tel);
