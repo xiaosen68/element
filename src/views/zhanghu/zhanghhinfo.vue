@@ -9,34 +9,37 @@
 		<div class="zh-info-box">
 			<div>
 				<div class="zh-info-item">
-					<b class="zh-info-title">注册时间：</b> <span>201010102103</span>
+					<b class="zh-info-title">注册时间：</b> <span>{{userInfo.createTime}}</span>
 				</div>
 				<div class="zh-info-item">
-					<b class="zh-info-title">手机号码：</b><span>201010102103</span>
+					<b class="zh-info-title">手机号码：</b><span>{{userInfo.phone}}</span>
 				</div>
 				<div class="zh-info-item">
-					<b class="zh-info-title">账户姓名：</b><span>二哈</span>
+					<b class="zh-info-title">账户姓名：</b><span>{{userInfo.userName}}</span>
 				</div>
 				<div class="zh-info-item">
-					<b class="zh-info-title">实名状态：</b> <span>已实名</span>
+					<b class="zh-info-title">实名状态：</b> <span>{{userInfo.realNameState|realName}}</span>
 				</div>
 				<div class="zh-info-item">
-					<b class="zh-info-title">收益余额：</b><span>2329元</span>
+					<b class="zh-info-title">收益余额：</b><span>{{userInfo.revenue}}元</span>
 				</div>
 				<div class="zh-info-item">
-					<b class="zh-info-title">冻结金额：</b><span>0元</span>
+					<b class="zh-info-title">冻结金额：</b><span>{{userInfo.frozenAmount}}元</span>
 				</div>
 				<div class="zh-info-item">
-					<b class="zh-info-title">账户积分：</b><span>22222分</span>
+					<b class="zh-info-title">账户积分：</b><span>{{userInfo.score}}分</span>
 				</div>
 				<div class="zh-info-item">
-					<b class="zh-info-title">账户余额：</b><span>2888元</span>
+					<b class="zh-info-title">账户余额：</b><span>{{userInfo.balance}}元</span>
 				</div>
 				<div class="zh-info-item">
-					<b class="zh-info-title">账户提现：</b><span>2999元</span>
+					<b class="zh-info-title">账户可提现：</b><span>{{userInfo.withdrawableAmount}}元</span>
 				</div>
 				<div class="zh-info-item">
-					<b class="zh-info-title">额外手续费：</b><span>3元</span>
+					<b class="zh-info-title">账户已提现：</b><span>{{userInfo.withdrawnAmount}}元</span>
+				</div>
+				<div class="zh-info-item">
+					<b class="zh-info-title">额外手续费：</b><span>{{userInfo.AdditionaMoney}}元</span>
 				</div>
 			</div>
 		</div>
@@ -50,13 +53,41 @@ export default {
 			info:{
 				
 			},
-			buttonType:['success','info','warning','danger','primary']
+			buttonType:['success','info','warning','danger','primary'],
+			userInfo:{}
 		}
+	},
+	created() {
+		this.http.post(this.api.backgroundQueryUser,
+		{
+			phone:this.phone,
+			blackType:this.blackType,
+			blackoutReason:this.phone,
+		
+		},sessionStorage.getItem('token')).then(res => {
+			console.log(res)
+		          if(res.code == 0){
+					  this.userInfo= res.data;
+		          }
+		       });
 	},
 	methods:{
 		buttonTypeFn:function(){
 			let index=Math.floor(Math.random()*5);
 			return this.buttonType[index]
+		}
+	},
+	filters:{
+		realName(val){
+			if(val=='NOT_COMMITTED'){
+				return '未实名'
+			}else if(val=='FAIL'){
+				return '实名失败'
+			}else if(val=='TO_BE_REVIEWED'){
+				return '实名审核中'
+			}else if(val=='PASS'){
+				return '已实名'
+			}	
 		}
 	}
 }

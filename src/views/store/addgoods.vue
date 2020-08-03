@@ -11,70 +11,75 @@
 		<!-- 消费 -->
 		<div class="zh-info-box" v-if="goodsClass">
 			<div> <div class="input-title">商品名称</div> <div class="sign-input">
-			<el-input maxlength="11"  clearable type="text"  v-model="xfGoods.goodsName" placeholder=""></el-input></div></div>
+			<el-input maxlength="11"  clearable type="text"  v-model="xfGoods.productName" placeholder=""></el-input></div></div>
 			<div><div class="input-title">成交价</div> <div class="sign-input">
-			<el-input   clearable type="text"  v-model="xfGoods.goodsJg" placeholder=""></el-input></div></div>
+			<el-input   clearable type="text"  v-model="xfGoods.transactionPrice" placeholder=""></el-input></div></div>
 			<div><div class="input-title">产品折扣</div> <div class="sign-input">
-			<el-input   clearable type="text"  v-model="xfGoods.goodsZk" placeholder=""></el-input></div></div>
+			<el-input   clearable type="text"  v-model="xfGoods.discount" placeholder=""></el-input></div></div>
 			<div><div class="input-title">产品数量</div> <div class="sign-input">
-			<el-input   clearable type="text"  v-model="xfGoods.goodsZk" placeholder=""></el-input></div></div>
+			<el-input   clearable type="text"  v-model="xfGoods.amount" placeholder=""></el-input></div></div>
 			<div><div class="input-title">产品说明</div> <div class="sign-input">
-			<el-input   clearable type="text"  v-model="xfGoods.goodsStatus" placeholder=""></el-input></div></div>
+			<el-input   clearable type="text"  v-model="xfGoods.reason" placeholder=""></el-input></div></div>
 			<div><div class="input-title">上传主图照片</div>
-				<div class="sign-input photo-wrap">
-					<img class="photo-item" :src="xfGoods.mainList[0]" v-if="xfGoods.mainList[0]!==''" @click="delMainPho(0)">
-					<img class="photo-item" :src="xfGoods.mainList[1]" v-if="xfGoods.mainList[1]!==''" @click="delMainPho(1)">
-					<img class="photo-item" :src="xfGoods.mainList[2]" v-if="xfGoods.mainList[2]!==''" @click="delMainPho(2)">
-					<div class="photo-upload" v-if="xfGoods.mainList[2]==''">
+				<div class="sign-input">
+					<img class="photo-item" :src="xfGoods.productUrl" v-if="xfGoods.productUrl" @click="delPho">
+					<div class="photo-upload" v-if="xfGoods.productUrl==''">
 						<input type="file" class="file-input" name="avatar" accept="image/gif,image/jpeg,image/jpg"
 						 @change="changemainImg($event)"> 
 						<i class="el-icon-plus"></i>
 					</div>
 				</div></div>
 				<div><div class="input-title">上传详情照片</div>
-					<div class="sign-input photo-wrap">
-						<img class="photo-item" :src="xfGoods.phoList[0]" v-if="xfGoods.phoList[0]!==''" @click="delMainPho1(0)">
-						<img class="photo-item" :src="xfGoods.phoList[1]" v-if="xfGoods.phoList[1]!==''" @click="delMainPho1(1)">
-						<img class="photo-item" :src="xfGoods.phoList[2]" v-if="xfGoods.phoList[2]!==''" @click="delMainPho1(2)">
-						<div class="photo-upload" v-if="xfGoods.phoList[2]==''">
+					<div class="sign-input">
+						<img class="photo-item" :src="xfGoods.productDetailsUrl" v-if="xfGoods.productDetailsUrl" @click="delPho">
+						<div class="photo-upload" v-if="xfGoods.productDetailsUrl==''">
 							<input type="file" class="file-input" name="avatar" accept="image/gif,image/jpeg,image/jpg"
-							 @change="changemainPho($event)"> 
+							 @change="changedetailImg($event)"> 
 							<i class="el-icon-plus"></i>
 						</div>
 					</div></div>
 			<div><div class="input-title">类别标签</div> <div class="sign-input">
-				  <el-checkbox v-model="checked1" label="备选项1" border></el-checkbox>
-				  <el-checkbox v-model="checked1" label="备选项1" border></el-checkbox>
+				  <el-checkbox v-model="item.select" :label="item.name" border v-for="item in xfGoods.goodsClassify"></el-checkbox>
 				
 			</div></div>
 			<div><div class="input-title">产品所属</div> <div class="sign-input">
-			<el-input   clearable type="text"  v-model="xfGoods.goodsStatus" placeholder="商家手机号"></el-input></div></div>
+			<el-input   clearable type="text"  v-model="xfGoods.store" placeholder="商家手机号"></el-input></div></div>
 			
 			<div><div class="input-title">是否上架</div>
 				<div class="switch-item">
 					<el-switch
 					  style="display: inline-block"
-					  v-model="xfGoods.ifup"
+					  v-model="xfGoods.state"
 					  active-color="#13ce66"
 					  inactive-color="#ff4949"
 					  active-text="上架"
-					  inactive-text="下架">
+					  inactive-text="下架"
+					   active-value="ON_THE_SHELF"
+					   inactive-value="OFF_THE_SHELF"
+					  >
 					</el-switch>
 				</div>
 			</div>
 			
-		<div class="sign-btn addgoods" ><el-button type="primary">立即添加</el-button></div>
+		<div class="sign-btn addgoods" ><el-button type="primary" @click="addXfFn">立即添加</el-button></div>
 		</div>
 		<!-- 寄售 -->
 		<div class="zh-info-box" v-else>
-			<div> <div class="input-title">商品名称</div> <div class="sign-input"><el-input maxlength="11"  clearable type="text"  v-model="jsGoods.goodsName" placeholder=""></el-input></div></div>
-			<div><div class="input-title">商品说明</div> <div class="sign-input"><el-input   clearable type="text"  v-model="jsGoods.goodsStatus" placeholder=""></el-input></div></div>
-			<div><div class="input-title">成交价</div> <div class="sign-input"><el-input   clearable type="text"  v-model="jsGoods.goodsCj" placeholder=""></el-input></div></div>
-			<div><div class="input-title">挂牌价</div> <div class="sign-input"><el-input   clearable type="text"  v-model="jsGoods.goodsGp" placeholder=""></el-input></div></div>
+			<div> <div class="input-title">商品名称</div> 
+			<div class="sign-input"><el-input maxlength="11"  clearable type="text"  v-model="jsGoods.productName" placeholder=""></el-input></div></div>
+			<div><div class="input-title">商品说明</div>
+			<div class="sign-input"><el-input   clearable type="text"  v-model="jsGoods.reason" placeholder=""></el-input></div></div>
+			<div><div class="input-title">数量</div>
+			<div class="sign-input"><el-input   clearable type="text"  v-model="jsGoods.amount" placeholder=""></el-input></div></div>
+			
+			<div><div class="input-title">成交价</div> 
+			<div class="sign-input"><el-input   clearable type="text"  v-model="jsGoods.transactionPrice" placeholder=""></el-input></div></div>
+			<div><div class="input-title">挂牌价</div> 
+			<div class="sign-input"><el-input   clearable type="text"  v-model="jsGoods.mailingPrice" placeholder=""></el-input></div></div>
 			<div><div class="input-title">上传照片</div> 
 				<div class="sign-input">
-					<img class="photo-item" :src="jsGoods.pho1" v-if="jsGoods.pho1" @click="delPho">
-					<div class="photo-upload" v-if="jsGoods.pho1==''">
+					<img class="photo-item" :src="jsGoods.productUrl" v-if="jsGoods.productUrl" @click="delPho">
+					<div class="photo-upload" v-if="jsGoods.productUrl==''">
 						<input type="file" class="file-input" name="avatar" accept="image/gif,image/jpeg,image/jpg"
 						 @change="changeCoverImg($event)"> 
 						<i class="el-icon-plus"></i>
@@ -84,15 +89,18 @@
 				<div class="switch-item">
 					<el-switch
 					  style="display: inline-block"
-					  v-model="jsGoods.ifup"
+					  v-model="jsGoods.state"
 					  active-color="#13ce66"
 					  inactive-color="#ff4949"
 					  active-text="上架"
-					  inactive-text="下架">
+					  inactive-text="下架"
+					  inactive-value="OFF_THE_SHELF"
+					  active-value="ON_THE_SHELF"
+					  />
 					</el-switch>
 				</div>
 			</div>
-			<div class="sign-btn addgoods" ><el-button type="primary">立即添加</el-button></div>
+			<div class="sign-btn addgoods" ><el-button type="primary" @click="addJsFN">立即添加</el-button></div>
 		</div>
 		
 	</div>
@@ -104,55 +112,114 @@ export default {
 		return {
 			goodsClass:true,
 			jsGoods:{
-				goodsGp:'',
-				goodsCj:'',
-				goodsName:'',
-				goodsStatus:'',
-				pho1:'',
-				ifup:true,
+				productName:'',
+				productType:'MAILING',//类型‘GENERAL’消费，‘MAILING’寄售
+				productUrl:'',//图片
+				transactionPrice:'',//成交价
+				mailingPrice:'',//寄售价
+				amount:'',//数量
+				state:'ON_THE_SHELF',//上架‘ON_THE_SHELF’上架，‘OFF_THE_SHELF’下架
+				reason:'',//说明
 			},
 			xfGoods:{
-				goodsName:'',
-				goodsJg:'',
-				goodsZk:'',
+				productName:'',
+				productType:'GENERAL',//类型‘GENERAL’消费，‘MAILING’寄售
+				productUrl:'',//图片
+				productDetailsUrl:'',//详情图
+				transactionPrice:'',//成交价
+				store:'',//商家
+				amount:'',//数量
+				discount:'',//折扣
+				lable:'',//标签
+				state:'ON_THE_SHELF',//上架‘ON_THE_SHELF’上架，‘OFF_THE_SHELF’下架
+				reason:'',//说明
 				goodsClassify:[{
 					value:'classify1',
-					name: '日常百货'
+					name: '日常百货',
+					select:false,
 				},{
 					value:'classify2',
-					name: '养生保健'
+					name: '养生保健',
+					select:false,
 				},{
 					value:'classify3',
-					name: '精品服饰'
+					name: '精品服饰',
+					select:false,
 				},{
 					value:'classify3',
-					name: '可爱美妆'
+					name: '可爱美妆',
+					select:false,
 				},{
 					value:'classify3',
-					name: '可爱美妆'
+					name: '可爱美妆',
+					select:false,
 				}],
-				goodsNum:'',
-				goodsStatus:'',
-				mainList:['','',''],
-				phoList:['','',''],
-				ifUp:true,
 			}
 			
 		}
 	},
 	methods:{
+		// 添加寄售商品
+		addJsFN(){
+			console.log(this.jsGoods.productUrl)
+			this.http.post(this.api.addMailingProduct,
+			{
+				 "productName":this.jsGoods.productName,
+				"productType":this.jsGoods.productType,
+				"productUrl":this.jsGoods.productUrl,
+				"transactionPrice":this.jsGoods.transactionPrice,
+				"mailingPrice":this.jsGoods.mailingPrice,
+				"amount":this.jsGoods.amount,
+				"state":this.jsGoods.state,
+				"reason":this.jsGoods.reason,
+			
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+			          }
+			       });
+		},
+		// 添加消费商品
+		addXfFn(){
+			this.xfGoods.lable=this.xfGoods.goodsClassify.every((item)=>{
+				if(item.select){
+					return item.name
+				}
+			})
+			console.log(this.xfGoods)
+			this.http.post(this.api.addGeneralProduct,
+			{
+				 "productName":this.xfGoods.productName,
+				"productType":this.xfGoods.productType,
+				"productUrl":this.xfGoods.productUrl,
+				"productDetailsUrl":this.xfGoods.productDetailsUrl,
+				"transactionPrice":this.xfGoods.transactionPrice,
+				"store":this.xfGoods.store,
+				"amount":this.xfGoods.amount,
+				"state":this.xfGoods.state,
+				"reason":this.xfGoods.reason,
+				"discount":this.xfGoods.discount,
+				"lable":this.xfGoods.lable,
+			
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+			          }
+			       });
+			
+		},
 		// 删除寄售商品图
 		delPho:function(){
-				this.$set(this.jsGoods,'pho1','')
+				this.$set(this.jsGoods,'productUrl','')
 			// this.pho1=''
 		},
 		// 删除消费商品主图
 		delMainPho:function(n){
-				this.$set(this.xfGoods.mainList,n,'')
+				this.$set(this.xfGoods,'productUrl','')
 			// this.pho1=''
 		},// 删除消费商品详情
 		delMainPho1:function(n){
-				this.$set(this.xfGoods.phoList,n,'')
+				this.$set(this.xfGoods,'productDetailsUrl','')
 			// this.pho1=''
 		},
 		// 上传寄售商品图
@@ -162,7 +229,7 @@ export default {
 				var that = this
 				reader.readAsDataURL(file)
 				reader.onload = function(e) {
-					that.$set(that.jsGoods,'pho1',this.result)		
+					that.$set(that.jsGoods,'productUrl',this.result)		
 				}
 		},
 		// 上消费商品主图
@@ -170,43 +237,21 @@ export default {
 			var file = e.target.files[0]
 			var reader = new FileReader()
 			var that = this
-			// var pho=[];
 			reader.readAsDataURL(file)
 			reader.onload = function(e) {
-				if(that.xfGoods.mainList[0]==''){
-					// pho[0]=
-					console.log(that.xfGoods.mainList)
-					that.$set(that.xfGoods.mainList,0,this.result);
-				}else if(that.xfGoods.mainList[1]==''){
-					console.log(that.xfGoods.mainList)
-						that.$set(that.xfGoods.mainList,1,this.result);
-				}else{
-					console.log(that.xfGoods.mainList)
-					that.$set(that.xfGoods.mainList,2,this.result);
-				}
-						
+				that.$set(that.xfGoods,'productUrl',this.result)		
 			}
 		},
-		changemainPho:function(e){
+		// 上消费商品详情图
+		changedetailImg:function(e){
 			var file = e.target.files[0]
 			var reader = new FileReader()
 			var that = this
 			reader.readAsDataURL(file)
 			reader.onload = function(e) {
-				if(that.xfGoods.phoList[0]==''){
-					// pho[0]=
-					console.log(that.xfGoods.phoList)
-					that.$set(that.xfGoods.phoList,0,this.result);
-				}else if(that.xfGoods.phoList[1]==''){
-					console.log(that.xfGoods.phoList)
-						that.$set(that.xfGoods.phoList,1,this.result);
-				}else{
-					console.log(that.xfGoods.phoList)
-					that.$set(that.xfGoods.phoList,2,this.result);
-				}
-						
+				that.$set(that.xfGoods,'productDetailsUrl',this.result)		
 			}
-		}
+		},
 	}
 }
 </script>

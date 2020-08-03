@@ -249,7 +249,7 @@ export default {
 		],//标签栏内容
 		breadcrumb:[],//面包屑数组
 		select:{},//储存打开的导航栏内容
-		defActive:'1-1',//默认打开导航栏
+		defActive:'2-7',//默认打开导航栏
 	}
   },
 	  beforeMount:function(){
@@ -318,7 +318,7 @@ export default {
 				}
 			})
 			this.defActive=this.select.index;
-			console.log(this.select.path)
+			// console.log(this.select.path)
 			this.menuList1.forEach((item)=>{
 				if(item.index===this.select.index[0]){
 					this.breadcrumb[0]=item.lable;
@@ -360,7 +360,7 @@ export default {
 					if(item.index===tag.index){
 						// 判断重复点击不跳转，不重复跳转
 						if(item.select===false){
-							console.log(tag)
+							// console.log(tag)
 							 this.sameSelect(tag);
 							
 						}
@@ -382,6 +382,7 @@ export default {
 		
 	},
 	mounted(){
+		console.log(sessionStorage.getItem('token'))
 		window.onresize = () =>{
 			return (()=>{
 				this.asidHeight = document.documentElement.clientHeight-60+'px'

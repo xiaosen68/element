@@ -4,9 +4,10 @@
 		<div class="zh-info-box">
 			<div class="seach-box">
 				<div class="seach-item">手机号 <div class="search-input">  
-				<el-input placeholder="请输入内容" type="tel" maxlength="11" prefix-icon="el-icon-search" v-model="tel"></el-input></div> </div>
+				<el-input placeholder="请输入内容" type="tel" maxlength="11" prefix-icon="el-icon-search" v-model="phone"></el-input></div> </div>
 				<div class="seach-item">姓名 <div class="search-input">  
-				<el-input placeholder="请输入内容" type="text" maxlength="5" prefix-icon="el-icon-search" v-model="name"></el-input></div> </div>
+				<el-input placeholder="请输入内容" type="text" maxlength="5"
+				 prefix-icon="el-icon-search" v-model="userName"></el-input></div> </div>
 				<div class="seach-item">实名状态 <div class="search-input">  
 					<el-select v-model="shiming" placeholder="请选择" :popper-append-to-body="false">
 						<el-option
@@ -29,11 +30,11 @@
 						  </el-select>
 					</div> 
 				</div>
-				<div class="seach-item"><el-button type="primary"  size="small ">查询</el-button></div>
+				<div class="seach-item"><el-button type="primary"  size="small " @click="searchHyFn">查询</el-button></div>
 				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
 			</div>
 			<div class="hyinfo-box">
-				<div class="sign-waring"> 平台注册人数: <b class="font-fei">123123</b>,平台实名人数:<b class="font-fei">123123</b></div>
+				<div class="sign-waring"> 平台注册人数: <b class="font-fei">{{registNum}}</b>,平台实名人数:<b class="font-fei">{{realNameNum}}</b></div>
 				  <el-table :data="tableData" stripe style="width: 100%" :highlight-current-row="true">
 					<el-table-column type="index"width="40"></el-table-column>
 				    <el-table-column prop="createTime" label="注册日期" > </el-table-column>
@@ -47,27 +48,27 @@
 						</template>
 					</el-table-column>
 					<el-table-column prop="userLevelName" label="代理等级"> </el-table-column>
-					<el-table-column prop="dengji" label="查看上级">
+					<el-table-column prop="revenue" label="查看上级">
 						<template slot-scope="scope">
 						        <el-popover trigger="hover" placement="top">
-						        <el-table :data="scope.row.shangji">
+						        <el-table :data="scope.row.revenue">
 									 <el-table-column prop="guanxi" label="关系" width="80"></el-table-column>
 									 <el-table-column prop="name" label="姓名" width="80"></el-table-column>
 									 <el-table-column prop="dengji" label="等级" width="60"> </el-table-column>
-									 <el-table-column prop="tel" label="手机号" width="120"> </el-table-column>
+									 <el-table-column prop="phone" label="手机号" width="120"> </el-table-column>
 								</el-table>
 						          <div slot="reference" class="name-wrapper">
-						            <el-tag size="medium">{{ scope.row.name }}</el-tag>
+						            <el-tag size="medium">查看</el-tag>
 						          </div>
 						        </el-popover>
 						      </template>
 					</el-table-column>
 					<el-table-column prop="dengji" label="查看下级">
 						<template slot-scope="scope">
-							<el-button size="small" @click="lowerFn(scope.row.tel)">下级</el-button>
+							<el-button size="small" @click="lowerFn(scope.row.uId)">下级</el-button>
 						</template>
 					</el-table-column>
-					<el-table-column prop="totalRevenue" label="收益"> </el-table-column>
+					<el-table-column prop="revenue" label="收益"> </el-table-column>
 						<el-table-column prop="score" label="积分"> </el-table-column>
 					<el-table-column prop="dengji" label="操作">
 						<template slot-scope="scope">
@@ -90,7 +91,7 @@
 			   title="详情信息"
 			   :visible.sync="dialogVisible"
 			   width="30%"
-			   :before-close="handleClose">
+			   >
 				<div class="dialog-box-item"> 
 					<span class="dialog-box-title">注册时间：</span> 
 					<span class="dialog-box-value">{{dialogValue.createTime}}</span>
@@ -113,22 +114,22 @@
 				</div>
 				<div class="dialog-box-item">
 					<span class="dialog-box-title">账户余额：</span> 
-					<span class="dialog-box-value">{{dialogValue.date}}</span>
+					<span class="dialog-box-value">{{dialogValue.balance}}</span>
 				</div>
 				<div class="dialog-box-item">
 					<span class="dialog-box-title">账户积分：</span> 
 					<span class="dialog-box-value">{{dialogValue.score}}</span>
 				</div>
 				<div class="dialog-box-item">
-					<span class="dialog-box-title">总收益：</span> 
+					<span class="dialog-box-title">全部收益：</span> 
 					<span class="dialog-box-value">{{dialogValue.totalRevenue}}</span>
 				</div>
 				<div class="dialog-box-item">
-					<span class="dialog-box-title">收益余额：</span> 
-					<span class="dialog-box-value">{{dialogValue.withdrawableAmount}}</span>
+					<span class="dialog-box-title">账户收益：</span> 
+					<span class="dialog-box-value">{{dialogValue.revenue}}</span>
 				</div>
 				<div class="dialog-box-item">
-					<span class="dialog-box-title">账户提现：</span> 
+					<span class="dialog-box-title">账户已提现：</span> 
 					<span class="dialog-box-value">{{dialogValue.withdrawnAmount}}</span>
 				</div>
 				<div class="dialog-box-item">
@@ -139,20 +140,20 @@
 			 <!-- 下级弹框 -->
 			 <el-dialog :title="lowerDialogtitle" :visible.sync="lowerDialogTableVisible" width="80%">
 			   <el-table :data="lowerDate">
-			     <el-table-column property="date" label="日期" width="100"></el-table-column>
+			     <el-table-column property="createTime" label="日期" width="100"></el-table-column>
 				 <el-table-column property="pinpai" label="品牌" width="100"></el-table-column>
-			     <el-table-column property="name" label="姓名" width="80"></el-table-column>
-			     <el-table-column property="tel" label="手机号"></el-table-column>
+			     <el-table-column property="userName" label="姓名" width="80"></el-table-column>
+			     <el-table-column property="phone" label="手机号"></el-table-column>
 				 <el-table-column property="dengji" label="等级"></el-table-column>
 				 <el-table-column property="dengji" label="查看下级">
 					 <template slot-scope="scope">
-					 	<el-button size="small" @click="lowerFn(scope.row.tel)">下级</el-button>
+					 	<el-button size="small" @click="lowerFn(scope.row.uId,scope.row.phone)">下级</el-button>
 					 </template>
 				 </el-table-column>
-				 <el-table-column property="yue" label="余额"></el-table-column>
-				 <el-table-column property="tel" label="冻结余额"></el-table-column>
-				 <el-table-column property="tel" label="账户积分"></el-table-column>
-				 <el-table-column property="tel" label="收益余额"></el-table-column>
+				 <el-table-column property="balance" label="余额"></el-table-column>
+				 <el-table-column property="frozenAmount" label="冻结余额"></el-table-column>
+				 <el-table-column property="score" label="账户积分"></el-table-column>
+				 <el-table-column property="phone" label="收益余额"></el-table-column>
 			   </el-table>
 			   <el-pagination
 			      layout="prev, pager, next"
@@ -168,10 +169,12 @@
 export default {
 	data (){
 		return {
-			tel:'',
-			name:'',
+			phone:'',
+			userName:'',
 			shiming:'',
 			dengji:'',
+			realNameNum:'',
+			registNum:'',
 			dialogVisible:false,//详情信息弹框
 			dialogValue:{},
 			lowerDialogTableVisible:false,
@@ -225,88 +228,45 @@ export default {
 				label:'普通会员'
 				},
 			],
-		 tableData: [{
-		          date: '2016-05-02',
-		          name: '王小虎',
-				  tel:'13012131',
-				  houtaiNum:'12312312',
-				  shiming:1,
-				  shangpu:2,
-				  dengji:0,
-				  xinyongka:[
-					  {
-						  cardName:'中国银行',
-						  cardNum:'23123123123123'
-					  }
-				  ],
-				  chuxvka:[
-					  {
-						  cardName:'中国银行',
-						  cardNum:'213123123123'
-					  }
-				  ],
-				  beizhu:'qwe',
-				  shangji:[
-					  {
-						  guanxi:'上级',
-						  name:'哈哈',
-						  dengji:'1',
-						  tel:'1213213123'
-					  }
-				  ],
-		          address: '上海市普陀区金沙江路 1518 弄'
-		        },
-				{
-				  date: '2016-05-02',
-				  name: '王小虎',
-				  tel:'13012131',
-				  shiming:1,
-				  shangpu:1,
-				  dengji:0,
-				  shangji:[
-					  {
-						  guanxi:'上级',
-						  name:'哈哈',
-						  dengji:'1',
-						  tel:'1213213123'
-					  }
-				  ],
-				  address: '上海市普陀区金沙江路 1518 弄'
-				}, 
-				{
-				  date: '2016-05-02',
-				  name: '王小虎',
-				  tel:'13012131',
-				  shiming:1,
-				  shangpu:1,
-				  dengji:0,
-				  shangji:[
-					  {
-						  guanxi:'上级',
-						  name:'哈哈',
-						  dengji:'1',
-						  tel:'1213213123'
-					  }
-				  ],
-				  address: '上海市普陀区金沙江路 1518 弄'
-				}, 
-				],
+		 tableData: [],
 		}
 	},
 	created(){
+		// 获取会员列表
 			this.http.post(this.api.pageAccountList,
 			{
+				 "page":1,
+				"size":10
+
 			},sessionStorage.getItem('token')).then(res => {
-				console.log(sessionStorage.getItem('token'))
 				console.log(res)
 			          if(res.code == 0){
 						 this.tableData=res.data.list; 
+						 this.registNum=res.data.registNum;
+						 this.realNameNum=res.data.realNameNum;
 			          }
 			       });
 	},
 	methods:{
 		beizhuFn:function(item){
-			console.log(item)
+		},
+		// 查询会员
+		searchHyFn(){
+			this.http.post(this.api.pageAccountList,
+			{
+				 "page":1,
+				"size":10,
+				"phone":'',
+				"userName":'',
+			
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						 this.tableData=res.data.list; 
+						 this.registNum=res.data.registNum;
+						 this.realNameNum=res.data.realNameNum;
+			          }
+			       });
 		},
 		// 添加备注，发送信息
 		  beizhuFn() {
@@ -328,19 +288,19 @@ export default {
 		  handleClose:function(){
 			  
 		  },
-		  lowerFn:function(tel){
-			  console.log(tel);
-			  this.lowerDate=[{
-				  date:'2020-20-20',
-				  name:'hahah',
-				  tel:'1231231231',
-				  dengji:'12',
-				  pinpai:'牛贝',
-				  yue:'0.00',
-				  dongjie:'0.00',
-				  jifen:'1231231'
-			  }];
-			  this.lowerDialogtitle=tel+'的下级会员共有：'+this.lowerDate.length+'名';
+		  // 获取下级会员列表
+		  lowerFn:function(id,userPhone){
+			  this.http.post(this.api.pageAccountList,
+			  {
+				  superiorUserId:id
+			  },sessionStorage.getItem('token')).then(res => {
+			  	// console.log(sessionStorage.getItem('token'))
+			  	console.log(res)
+			            if(res.code == 0){
+			  			 this.lowerDate=res.data.list; 
+						 this.lowerDialogtitle='下级会员共有：'+this.lowerDate.length+'名';
+			            }
+			         });
 			  this.lowerDialogTableVisible=true;
 		  }
 	}

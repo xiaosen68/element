@@ -3,6 +3,7 @@
 		<div class="zh-head">商品列表  <el-switch
 		  style="display: inline-block;margin-left: 20px;"
 		  v-model="goodsClass"
+		  @change="getGoodsList"
 		  active-color="#13ce66"
 		  inactive-color="#ff4949"
 		  active-text="寄售"
@@ -15,12 +16,12 @@
 			    stripe
 			    style="width: 100%">
 			    <el-table-column
-			      prop="goodsId"
+			      prop="id"
 			      label="商品ID"
 			      width="180">
 			    </el-table-column>
 			    <el-table-column
-			      prop="goodsName"
+			      prop="productName"
 			      label="商品名称"
 			      width="180">
 				  <template slot-scope="scope">
@@ -28,36 +29,36 @@
 				  </template>
 			    </el-table-column>
 			    <el-table-column
-			      prop="goodsCj"
+			      prop="transactionPrice"
 			      label="成交价">
 				  <template slot-scope="scope">
 				  		<el-input v-model="scope.row.goodsCj"></el-input>
 				  </template>
 			    </el-table-column>
 				<el-table-column
-				  prop="goodsGp"
+				  prop="mailingPrice"
 				  label="挂牌价">
 				  <template slot-scope="scope">
 						<el-input v-model="scope.row.goodsGp"></el-input>
 				  </template>
 				</el-table-column>
 				<el-table-column
-				  prop="goodsPic"
+				  prop="productUrl"
 				  label="图片">
 				</el-table-column>
 				<el-table-column
-				  prop="goodsIfup"
+				  prop="state"
 				  label="上下架">
 				  <template slot-scope="scope">
 					  <el-switch
-					    v-model="scope.row.goodsIfup"
+					    v-model="scope.row.state"
 					    active-color="#13ce66"
 					    inactive-color="#ff4949">
 					  </el-switch>
 				  </template>
 				</el-table-column>
 				<el-table-column
-				prop="goodsIfup"
+				prop="id"
 				  label="操作">
 				  <template slot-scope="scope">
 					  <el-button type="success" size="mini" round>修改</el-button>
@@ -72,12 +73,12 @@
 			    stripe
 			    style="width: 100%">
 			    <el-table-column
-			      prop="goodsId"
+			      prop="id"
 			      label="商品ID"
 			      width="120">
 			    </el-table-column>
 			    <el-table-column
-			      prop="goodsName"
+			      prop="productName"
 			      label="商品名称"
 			      width="120">
 				  <template slot-scope="scope">
@@ -85,46 +86,53 @@
 				  </template>
 			    </el-table-column>
 			    <el-table-column
-			      prop="goodsJg"
+			      prop="transactionPrice"
 			      label="成交价"  width="90">
 				  <template slot-scope="scope">
-				  		<el-input v-model="scope.row.goodsCj"></el-input>
+				  		<el-input v-model="scope.row.transactionPrice"></el-input>
 				  </template>
 			    </el-table-column>
 				<el-table-column
-				  prop="goodsZk"
+				  prop="store"
+				  label="商户"  width="90">
+				  <template slot-scope="scope">
+				  		<el-input v-model="scope.row.store"></el-input>
+				  </template>
+				</el-table-column>
+				<el-table-column
+				  prop="discount"
 				  label="折扣" width="80">
 				  <template slot-scope="scope">
-						<el-input v-model="scope.row.goodsGp"></el-input>
+						<el-input v-model="scope.row.discount"></el-input>
 				  </template>
 				</el-table-column>
 				<el-table-column
-				  prop="goodsNum"
+				  prop="amount"
 				  label="数量" width="80">
 				  <template slot-scope="scope">
-						<el-input v-model="scope.row.goodsNum"></el-input>
+						<el-input v-model="scope.row.amount"></el-input>
 				  </template>
 				</el-table-column>
 				<el-table-column
-				  prop="goodsClassify"
+				  prop="lable"
 				  label="标签" width="80">
 					<template slot-scope="scope">
 						<el-button type="text">查看</el-button>
 					</template>
 				</el-table-column>
 				<el-table-column
-				  prop="goodsStatus"
+				  prop="reason"
 				  label="说明" width="200">
 				    <template slot-scope="scope">
-						<el-input v-model="scope.row.goodsStatus"></el-input>
+						<el-input v-model="scope.row.reason"></el-input>
 				  	</template>
 				</el-table-column>
 				<el-table-column
-				  prop="ifUp"
+				  prop="state"
 				  label="上下架" width="80">
 				  <template slot-scope="scope">
 					  <el-switch
-					    v-model="scope.row.goodsIfup"
+					    v-model="scope.row.state"
 					    active-color="#13ce66"
 					    inactive-color="#ff4949">
 					  </el-switch>
@@ -149,62 +157,81 @@ export default {
 			goodsClass:true,
 			jsTableData:[
 				{
-					goodsId:'123123213',
-					goodsName:'哈哈哈',
-					goodsCj:'123.00',
-					goodsGp:'2131.00',
-					goodsPic:'',
-					goodsIfup:false,
+					  "reason": "哈哈哈试试",
+					"amount": 100,
+					"createTime": "2020-07-27 03:39:23",
+					"transactionPrice": 80,
+					"id": 4,
+					"state": "ON_THE_SHELF",
+					"productUrl": "httppldlkjfldkjfdfdf",
+					"mailingPrice": 100,
+					"productName": "网易一卡通23",
+					"productType": "MAILING"
+
 				}
 			],
 			xsTableDate:[
 				{
-					goodsId:'123123213',
-					goodsName:'哈哈哈',
-					goodsJg:'123.00',
-					goodsZk:'0.9',
-					goodsClassify:[],
-					goodsNum:'12',
-					goodsStatus:'',
-					mainList:['','',''],
-					phoList:['','',''],
-					ifUp:true,
+					 "productDetailsUrl": "httppdkfdkf",
+					"reason": "哈哈哈试试",
+					"amount": 100,
+					"transactionPrice": 80,
+					"discount": 1,
+					"store": "eeedc",
+					"productName": "网易一卡通1",
+					"createTime": "2020-07-27 03:29:53",
+					"lable": "数码",
+					"id": 1,
+					"state": "ON_THE_SHELF",
+					"productUrl": "httppldlkjfldkjfdfdf",
+					"productType": "GENERAL"
+
 				}
 			]
 		}
 	},
+	created() {
+		this.http.post(this.api.getMailingProductAll,
+		{
+		"page":1,
+		"size":10
+		},sessionStorage.getItem('token')).then(res => {
+			console.log(res)
+		          if(res.code == 0){
+					  this.jsTableData=res.data.list
+		          }
+		       });
+	},
 	methods:{
-		
+		getGoodsList(){
+			if(this.goodsClass){
+				this.http.post(this.api.getMailingProductAll,
+				{
+				"page":1,
+				"size":10
+				},sessionStorage.getItem('token')).then(res => {
+					console.log(res)
+				          if(res.code == 0){
+							  this.xsTableDate=res.data.list
+				          }
+				       });
+			}else{
+				this.http.post(this.api.getGeneralProductAll,
+				{
+				"page":1,
+				"size":10
+				},sessionStorage.getItem('token')).then(res => {
+					console.log(res)
+				          if(res.code == 0){
+				          }
+				       });
+			}
+			
+		}
 	}
 }
 </script>
 
 <style>
-	/* .main-box{
-		width: 98%;
-		margin: 0 auto;
-		margin-top: 4px;
-		min-height: 200px;
-		border-top: #e7eaec 4px solid;
-		background-color: #ffffff;
-		text-align: left;
-	}
-	.zh-head{
-		line-height: 3em;
-		font-size: 14px;
-		font-weight: 600;
-		padding: 0 16px;
-		border-bottom: 1px solid #e7eeec;
-	}
-	.zh-info-box{
-		padding: 0 16px;
-		line-height: 3em;
-	}
-	.sign-waring{
-		background-color: #eeeeee;
-		border-left:4px solid #00aaff;
-		padding-left: 10px;
-		margin-bottom: 20px;
-	} */
 	
 </style>

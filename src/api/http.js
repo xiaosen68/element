@@ -48,10 +48,14 @@ export default{
             return errorfun(err);
         })
     },
-    get(url,params){//get请求
+    get(url,params,token){//get请求
         return axios({
             method:'get',
             baseURL:localhosts,
+			headers:{
+				'Content-Type':'application/json',
+				'token':token,
+			},
             url,
             params,
             withCredentials: true,

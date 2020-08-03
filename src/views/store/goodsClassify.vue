@@ -12,7 +12,7 @@
 				 :closable="ifClosabled"
 				 @close="handleClose(tag)"
 				 class="classify-tab">
-			    {{ item.name }}
+			    {{ item.lable }}
 			  </el-tag>
 			<el-input
 			  class="input-new-tag"
@@ -36,32 +36,26 @@ export default {
 			    inputVisible: false,
 			        inputValue: '',
 			classify:[
-				{
-					id:'1',
-					name:'玩转数码'
-				},{
-					id:'2',
-					name:'品质家居'
-				},{
-					id:'3',
-					name:'时尚美妆'
-				},{
-					id:'4',
-					name:'日常百货'
-				},{
-					id:'5',
-					name:'精品服饰'
-				},{
-					id:'6',
-					name:'养生保健'
-				}
 			],
 			classifyType:['success','info','danger','warning','']
 		}
 	},
+	created() {
+		this.refreshLable();
+	},
 	methods:{
 		roundTypeFn:function(){
 			return this.classifyType[Math.floor(Math.random()*this.classifyType.length)]
+		},
+		refreshLable(){
+			this.http.get(this.api.generalLableAll,
+			{
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						  this.classify=res.data
+			          }
+			       });
 		},
 		 handleClose(tag) {
 			 
@@ -74,7 +68,22 @@ export default {
 		          this.$refs.saveTagInput.$refs.input.focus();
 		        });
 		      },
+			  // 添加标签
 			  handleInputConfirm() {
+				  this.http.post(this.api.addGeneralLable,
+				  {
+					  "lable":this.inputValue,
+					  "reason":"0"
+
+				  },sessionStorage.getItem('token')).then(res => {
+				  	console.log(res)
+				            if(res.code == 0){
+				  			  this.refreshLable();
+				            }
+				         });
+				  
+				  
+				  
 			   this.inputVisible=false;
 			      },
 			showClose:function(){
