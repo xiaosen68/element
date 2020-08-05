@@ -7,20 +7,50 @@
 			    stripe
 			    style="width: 100%">
 			    <el-table-column
-			      prop="tdName"
+			      prop="passageWayName"
 			      label="通道名称"
 			     >
 			    </el-table-column>
-			    <el-table-column
-				v-for="(item, index) in tableData[0].tdFeilv"
-			      prop="tdFeilv"
-			      :label="item.name"
-			     >
-				<template slot-scope="scope">
-					{{scope.row.tdFeilv[index].feilv}}
-				 </template>
-			    </el-table-column>
-			   
+				<el-table-column
+				  prop="baseRate"
+				  label="基础费率"
+				 >
+				</el-table-column>
+				<el-table-column
+				  prop="foundingPartner"
+				  label="创始合伙人"
+				 >
+				</el-table-column>
+				<el-table-column
+				  prop="coFounder"
+				  label="联合创始人"
+				 >
+				</el-table-column>
+				<el-table-column
+				  prop="seniorPartner"
+				  label="高级合伙人"
+				 >
+				</el-table-column>
+				<el-table-column
+				  prop="businessParter"
+				  label="业务合伙人"
+				 >
+				</el-table-column>
+				<el-table-column
+				  prop="vipMembers"
+				  label="VIP用户"
+				 >
+				</el-table-column>
+				<el-table-column
+				  prop="ordinaryUsers"
+				  label="普通用户"
+				 >
+				</el-table-column>
+				<el-table-column
+				  prop="ordinaryUsers"
+				  label="消费费率"
+				 >
+				</el-table-column>
 			  </el-table>
 		</div>
 	</div>
@@ -30,52 +60,25 @@
 	 export default{
 		 data (){
 			 return {
-				 tableData:[
-					 {
-						 tdName:'NP消费',
-						 tdId:'',
-						 tdFeilv:[
-							 {
-								 name:'基础费率',
-								 feilv:'1.2%',
-							 }, {
-								 name:'础费率',
-								 feilv:'1.2%',
-							 }, {
-								 name:'1础费率',
-								 feilv:'1.4%',
-							 }, {
-								 name:'基2础费率',
-								 feilv:'1.3%',
-							 }, {
-								 name:'基础3费率',
-								 feilv:'1.2%',
-							 }
-						 ]
-					 }, {
-						 tdName:'NP费',
-						 tdId:'',
-						 tdFeilv:[
-							 {
-								 name:'基础费率',
-								 feilv:'1.33%',
-							 }, {
-								 name:'础费率',
-								 feilv:'1.2%',
-							 }, {
-								 name:'1础费率',
-								 feilv:'1.4%',
-							 }, {
-								 name:'基2础费率',
-								 feilv:'1.3%',
-							 }, {
-								 name:'基础3费率',
-								 feilv:'1.2%',
-							 }
-						 ]
-					 }
-				 ]
+				 tableData:[]
 			 }
+		 },
+		 created(){
+			 this.http.post(this.api.getPassageWay,
+			 {
+			 	page:1,
+			 	size:30
+			 
+			 },sessionStorage.getItem('token')).then(res => {
+			 	console.log(res)
+			           if(res.code == 0){
+			 			  this.tableData=res.data.list;
+			 			  // this.refreshLable();
+			           }
+			        });
+		 },
+		 methods:{
+			 
 		 }
 	 }
 </script>

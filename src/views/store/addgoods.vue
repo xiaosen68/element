@@ -22,28 +22,44 @@
 			<el-input   clearable type="text"  v-model="xfGoods.reason" placeholder=""></el-input></div></div>
 			<div><div class="input-title">上传主图照片</div>
 				<div class="sign-input">
-					<img class="photo-item" :src="xfGoods.productUrl" v-if="xfGoods.productUrl" @click="delPho">
+					<!-- <img class="photo-item" :src="xfGoods.productUrl" v-if="xfGoods.productUrl" @click="delPho">
 					<div class="photo-upload" v-if="xfGoods.productUrl==''">
 						<input type="file" class="file-input" name="avatar" accept="image/gif,image/jpeg,image/jpg"
 						 @change="changemainImg($event)"> 
 						<i class="el-icon-plus"></i>
-					</div>
+					</div> -->
+					
+					<el-upload
+					  action="/dev/api/v1/admin/upload/image"
+					  :headers="{'Content-Type':'application/json',
+					'token':token}"
+					list-type="picture-card"
+						:auto-upload="false"
+					  :on-change="uploadXfMainBefore"
+					  >
+					  <i class="el-icon-plus"></i>
+					</el-upload>
 				</div></div>
 				<div><div class="input-title">上传详情照片</div>
 					<div class="sign-input">
-						<img class="photo-item" :src="xfGoods.productDetailsUrl" v-if="xfGoods.productDetailsUrl" @click="delPho">
-						<div class="photo-upload" v-if="xfGoods.productDetailsUrl==''">
-							<input type="file" class="file-input" name="avatar" accept="image/gif,image/jpeg,image/jpg"
-							 @change="changedetailImg($event)"> 
-							<i class="el-icon-plus"></i>
-						</div>
+					<el-upload
+					  action="/dev/api/v1/admin/upload/image"
+					  :headers="{'Content-Type':'application/json',
+					'token':token}"
+					list-type="picture-card"
+						:auto-upload="false"
+					  :on-change="uploadXfStatusBefore"
+					  >
+					  <i class="el-icon-plus"></i>
+					</el-upload>
 					</div></div>
 			<div><div class="input-title">类别标签</div> <div class="sign-input">
-				  <el-checkbox v-model="item.select" :label="item.name" border v-for="item in xfGoods.goodsClassify"></el-checkbox>
-				
+				<el-checkbox-group v-model="selectClassify" >
+				  <el-checkbox :label="item.lable" border v-for="item in goodsClassify"></el-checkbox>
+				</el-checkbox-group>	
 			</div></div>
 			<div><div class="input-title">产品所属</div> <div class="sign-input">
-			<el-input   clearable type="text"  v-model="xfGoods.store" placeholder="商家手机号"></el-input></div></div>
+			<el-input   clearable type="tel" maxlength="11"  v-model="xfGoods.store" placeholder="商家手机号" ></el-input></div></div>
 			
 			<div><div class="input-title">是否上架</div>
 				<div class="switch-item">
@@ -78,12 +94,16 @@
 			<div class="sign-input"><el-input   clearable type="text"  v-model="jsGoods.mailingPrice" placeholder=""></el-input></div></div>
 			<div><div class="input-title">上传照片</div> 
 				<div class="sign-input">
-					<img class="photo-item" :src="jsGoods.productUrl" v-if="jsGoods.productUrl" @click="delPho">
-					<div class="photo-upload" v-if="jsGoods.productUrl==''">
-						<input type="file" class="file-input" name="avatar" accept="image/gif,image/jpeg,image/jpg"
-						 @change="changeCoverImg($event)"> 
-						<i class="el-icon-plus"></i>
-					</div>
+				<el-upload
+				  action="/dev/api/v1/admin/upload/image"
+				  :headers="{'Content-Type':'application/json',
+				'token':token}"
+				list-type="picture-card"
+					:auto-upload="false"
+				  :on-change="uploadJsMainBefore"
+				  >
+				  <i class="el-icon-plus"></i>
+				</el-upload>
 				</div></div>
 			<div><div class="input-title">是否上架</div>
 				<div class="switch-item">
@@ -111,6 +131,8 @@ export default {
 	data (){
 		return {
 			goodsClass:true,
+			imageData:{uploadType:'GENERAL_PRODUCT_URL'},
+			token:'',
 			jsGoods:{
 				productName:'',
 				productType:'MAILING',//类型‘GENERAL’消费，‘MAILING’寄售
@@ -133,32 +155,59 @@ export default {
 				lable:'',//标签
 				state:'ON_THE_SHELF',//上架‘ON_THE_SHELF’上架，‘OFF_THE_SHELF’下架
 				reason:'',//说明
-				goodsClassify:[{
-					value:'classify1',
-					name: '日常百货',
-					select:false,
-				},{
-					value:'classify2',
-					name: '养生保健',
-					select:false,
-				},{
-					value:'classify3',
-					name: '精品服饰',
-					select:false,
-				},{
-					value:'classify3',
-					name: '可爱美妆',
-					select:false,
-				},{
-					value:'classify3',
-					name: '可爱美妆',
-					select:false,
-				}],
-			}
+			},goodsClassify:[],
+			selectClassify:[],
 			
 		}
 	},
+	created() {
+		this.token=sessionStorage.getItem('token')
+		this.http.get(this.api.generalLableAll,
+		{	
+		},sessionStorage.getItem('token')).then(res => {
+			console.log(res)
+		          if(res.code == 0){
+					  this.goodsClassify=res.data
+		          }
+		       });
+	},
 	methods:{
+		// 上传寄售主图
+		uploadJsMainBefore(file){
+			let formData = new FormData();
+			formData.append('uploadType','GENERAL_PRODUCT_URL');
+			formData.append('file',file.raw)
+			this.http.post(this.api.uploadImage,
+			formData,sessionStorage.getItem('token')).then(res => {
+			          if(res.code == 0){
+						  this.jsGoods.productUrl=res.data
+			          }
+			       });
+		},
+		// 上传消费主图
+		uploadXfMainBefore(file){
+			let formData = new FormData();
+			formData.append('uploadType','MAILING_PRODUCT_URL');
+			formData.append('file',file.raw)
+			this.http.post(this.api.uploadImage,
+			formData,sessionStorage.getItem('token')).then(res => {
+			          if(res.code == 0){
+						  this.xfGoods.productUrl=res.data
+			          }
+			       });
+		},
+		// 上传消费详情图
+		uploadXfStatusBefore(file){
+			let formData = new FormData();
+			formData.append('uploadType','MAILING_PRODUCT_URL');
+			formData.append('file',file.raw)
+			this.http.post(this.api.uploadImage,
+			formData,sessionStorage.getItem('token')).then(res => {
+			          if(res.code == 0){
+						  this.xfGoods.productDetailsUrl=res.data
+			          }
+			       });
+		},
 		// 添加寄售商品
 		addJsFN(){
 			console.log(this.jsGoods.productUrl)
@@ -181,12 +230,11 @@ export default {
 		},
 		// 添加消费商品
 		addXfFn(){
-			this.xfGoods.lable=this.xfGoods.goodsClassify.every((item)=>{
-				if(item.select){
-					return item.name
-				}
-			})
-			console.log(this.xfGoods)
+			if(this.xfGoods.discount>1||this.xfGoods.discount<=0){
+				this.$message.error('折扣数额不能大于1，小于0');
+				return false
+			}
+			
 			this.http.post(this.api.addGeneralProduct,
 			{
 				 "productName":this.xfGoods.productName,
@@ -199,7 +247,7 @@ export default {
 				"state":this.xfGoods.state,
 				"reason":this.xfGoods.reason,
 				"discount":this.xfGoods.discount,
-				"lable":this.xfGoods.lable,
+				"lable":this.selectClassify.toString(),
 			
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)

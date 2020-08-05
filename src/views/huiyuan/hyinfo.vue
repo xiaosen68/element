@@ -35,7 +35,7 @@
 			</div>
 			<div class="hyinfo-box">
 				<div class="sign-waring"> 平台注册人数: <b class="font-fei">{{registNum}}</b>,平台实名人数:<b class="font-fei">{{realNameNum}}</b></div>
-				  <el-table :data="tableData" stripe style="width: 100%" :highlight-current-row="true">
+				  <el-table :data="hyList" stripe style="width: 100%" :highlight-current-row="true">
 					<el-table-column type="index"width="40"></el-table-column>
 				    <el-table-column prop="createTime" label="注册日期" > </el-table-column>
 				    <el-table-column prop="userName" label="姓名"></el-table-column>
@@ -82,10 +82,7 @@
 					</el-table-column>
 				  </el-table>
 			</div>
-			<el-pagination
-			   layout="prev, pager, next"
-			   :total="tableData.length">
-			 </el-pagination>
+		
 			 <!-- 详情信息 -->
 			 <el-dialog
 			   title="详情信息"
@@ -155,12 +152,29 @@
 				 <el-table-column property="score" label="账户积分"></el-table-column>
 				 <el-table-column property="phone" label="收益余额"></el-table-column>
 			   </el-table>
+			   <!-- 下级分页 -->
 			   <el-pagination
 			      layout="prev, pager, next"
-			      :total="lowerDate.length">
+			   :total="xtotalSize"
+			   :page-size="xsize"
+			    :current-page.sync="xcurrentPage"
+			   @current-change="lowerFn"
+			   @prev-click="xprevFn"
+			   @next-click="xnextFn"
+				  >
 			    </el-pagination>
 			 </el-dialog>
-			
+			 <!-- 主页面分页 -->
+			<el-pagination
+			   layout="prev, pager, next"
+			   :total="totalSize"
+			   :page-size="size"
+			    :current-page.sync="currentPage"
+			   @current-change="searchHyFn"
+			   @prev-click="prevFn"
+			   @next-click="nextFn"
+			   >
+			 </el-pagination>
 		</div>
 	</div>
 </template>
@@ -169,6 +183,14 @@
 export default {
 	data (){
 		return {
+			currentPage:1,
+			size:2,
+			totalPage:'',
+			totalSize:'',
+			xcurrentPage:1,
+			xsize:1,
+			xtotalPage:'',
+			xtotalSize:'',
 			phone:'',
 			userName:'',
 			shiming:'',
@@ -228,43 +250,42 @@ export default {
 				label:'普通会员'
 				},
 			],
-		 tableData: [],
+		 hyList: [],
 		}
 	},
-	created(){
-		// 获取会员列表
-			this.http.post(this.api.pageAccountList,
-			{
-				 "page":1,
-				"size":10
-
-			},sessionStorage.getItem('token')).then(res => {
-				console.log(res)
-			          if(res.code == 0){
-						 this.tableData=res.data.list; 
-						 this.registNum=res.data.registNum;
-						 this.realNameNum=res.data.realNameNum;
-			          }
-			       });
+	beforeMount(){
+		this.searchHyFn();
 	},
 	methods:{
 		beizhuFn:function(item){
+		},
+		prevFn(){
+			if( this.currentPage>0){
+				this.currentPage--;
+			}
+		},
+		nextFn(){
+		if(this.currentPage<this.totalPage){
+			this.currentPage++;
+		}	
 		},
 		// 查询会员
 		searchHyFn(){
 			this.http.post(this.api.pageAccountList,
 			{
-				 "page":1,
-				"size":10,
-				"phone":'',
-				"userName":'',
+				 "page":this.currentPage,
+				"size":this.size,
+				"phone":this.phone,
+				"userName":this.userName,
 			
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)
 			          if(res.code == 0){
-						 this.tableData=res.data.list; 
+						 this.hyList=res.data.list; 
 						 this.registNum=res.data.registNum;
 						 this.realNameNum=res.data.realNameNum;
+						 this.totalSize=res.data.total_size;
+						 this.currentPage=res.data.current_page;
 			          }
 			       });
 		},
@@ -288,17 +309,31 @@ export default {
 		  handleClose:function(){
 			  
 		  },
+		  xprevFn(){
+		  	if( this.xcurrentPage>0){
+		  		this.xcurrentPage--;
+		  	}
+		  },
+		  xnextFn(){
+		  if(this.xcurrentPage<this.xtotalPage){
+		  	this.xcurrentPage++;
+		  }	
+		  },
 		  // 获取下级会员列表
 		  lowerFn:function(id,userPhone){
 			  this.http.post(this.api.pageAccountList,
 			  {
-				  superiorUserId:id
+				  "page":this.xcurrentPage,
+				  "size":this.xsize,
+				  superiorUserId:id,
+				  
 			  },sessionStorage.getItem('token')).then(res => {
-			  	// console.log(sessionStorage.getItem('token'))
 			  	console.log(res)
 			            if(res.code == 0){
 			  			 this.lowerDate=res.data.list; 
-						 this.lowerDialogtitle='下级会员共有：'+this.lowerDate.length+'名';
+						 this.lowerDialogtitle='下级会员共有：'+res.data.total_size+'名';
+						 this.xtotalSize=res.data.total_size;
+						 this.xcurrentPage=res.data.current_page;
 			            }
 			         });
 			  this.lowerDialogTableVisible=true;

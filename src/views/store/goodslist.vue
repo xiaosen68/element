@@ -18,33 +18,48 @@
 			    <el-table-column
 			      prop="id"
 			      label="商品ID"
-			      width="180">
+			      width="70">
 			    </el-table-column>
 			    <el-table-column
 			      prop="productName"
 			      label="商品名称"
 			      width="180">
 				  <template slot-scope="scope">
-				  		<el-input v-model="scope.row.goodsName"></el-input>
+				  		<el-input v-model="scope.row.productName"></el-input>
 				  </template>
 			    </el-table-column>
+				<el-table-column
+				  prop="amount"
+				  label="商品数量"
+				  width="180">
+				  <template slot-scope="scope">
+				  		<el-input v-model="scope.row.amount"></el-input>
+				  </template>
+				</el-table-column>
 			    <el-table-column
 			      prop="transactionPrice"
 			      label="成交价">
 				  <template slot-scope="scope">
-				  		<el-input v-model="scope.row.goodsCj"></el-input>
+				  		<el-input v-model="scope.row.transactionPrice"></el-input>
 				  </template>
 			    </el-table-column>
 				<el-table-column
 				  prop="mailingPrice"
 				  label="挂牌价">
 				  <template slot-scope="scope">
-						<el-input v-model="scope.row.goodsGp"></el-input>
+						<el-input v-model="scope.row.mailingPrice"></el-input>
 				  </template>
 				</el-table-column>
 				<el-table-column
 				  prop="productUrl"
 				  label="图片">
+				  <template slot-scope="scope">
+					  <img :src="scope.row.productUrl|changUrl" />
+					<!--  <el-image
+					       style="width: 100px; height: 100px"
+					       :src="scope.row.productUrl"
+					       fit="contain"></el-image> -->
+				  </template>
 				</el-table-column>
 				<el-table-column
 				  prop="state"
@@ -53,7 +68,10 @@
 					  <el-switch
 					    v-model="scope.row.state"
 					    active-color="#13ce66"
-					    inactive-color="#ff4949">
+					    inactive-color="#ff4949"
+						active-value="ON_THE_SHELF"
+						inactive-value="OFF_THE_SHELF"
+							>
 					  </el-switch>
 				  </template>
 				</el-table-column>
@@ -61,7 +79,7 @@
 				prop="id"
 				  label="操作">
 				  <template slot-scope="scope">
-					  <el-button type="success" size="mini" round>修改</el-button>
+					  <el-button type="success" size="mini" round @click="changeJsGoods(scope.row)">修改</el-button>
 				  </template>
 				</el-table-column>
 			  </el-table>
@@ -75,14 +93,14 @@
 			    <el-table-column
 			      prop="id"
 			      label="商品ID"
-			      width="120">
+			      width="70">
 			    </el-table-column>
 			    <el-table-column
 			      prop="productName"
 			      label="商品名称"
 			      width="120">
 				  <template slot-scope="scope">
-				  		<el-input v-model="scope.row.goodsName"></el-input>
+				  		<el-input v-model="scope.row.productName"></el-input>
 				  </template>
 			    </el-table-column>
 			    <el-table-column
@@ -96,6 +114,7 @@
 				  prop="store"
 				  label="商户"  width="90">
 				  <template slot-scope="scope">
+					  <!-- {{scope.row.store}} -->
 				  		<el-input v-model="scope.row.store"></el-input>
 				  </template>
 				</el-table-column>
@@ -117,7 +136,7 @@
 				  prop="lable"
 				  label="标签" width="80">
 					<template slot-scope="scope">
-						<el-button type="text">查看</el-button>
+						{{scope.row.lable}}
 					</template>
 				</el-table-column>
 				<el-table-column
@@ -134,7 +153,9 @@
 					  <el-switch
 					    v-model="scope.row.state"
 					    active-color="#13ce66"
-					    inactive-color="#ff4949">
+					    inactive-color="#ff4949"
+						active-value="ON_THE_SHELF"
+						inactive-value="OFF_THE_SHELF">
 					  </el-switch>
 				  </template>
 				</el-table-column>
@@ -142,7 +163,7 @@
 				prop="goodsIfup"
 				  label="操作">
 				  <template slot-scope="scope">
-					  <el-button type="success" size="mini" round>修改</el-button>
+					  <el-button type="success" size="mini" round @click="changeXfGoods(scope.row)">修改</el-button>
 				  </template>
 				</el-table-column>
 			  </el-table>
@@ -155,42 +176,17 @@ export default {
 	data (){
 		return {
 			goodsClass:true,
+			
 			jsTableData:[
-				{
-					  "reason": "哈哈哈试试",
-					"amount": 100,
-					"createTime": "2020-07-27 03:39:23",
-					"transactionPrice": 80,
-					"id": 4,
-					"state": "ON_THE_SHELF",
-					"productUrl": "httppldlkjfldkjfdfdf",
-					"mailingPrice": 100,
-					"productName": "网易一卡通23",
-					"productType": "MAILING"
-
-				}
+			
 			],
 			xsTableDate:[
-				{
-					 "productDetailsUrl": "httppdkfdkf",
-					"reason": "哈哈哈试试",
-					"amount": 100,
-					"transactionPrice": 80,
-					"discount": 1,
-					"store": "eeedc",
-					"productName": "网易一卡通1",
-					"createTime": "2020-07-27 03:29:53",
-					"lable": "数码",
-					"id": 1,
-					"state": "ON_THE_SHELF",
-					"productUrl": "httppldlkjfldkjfdfdf",
-					"productType": "GENERAL"
-
-				}
-			]
+			
+			],
 		}
 	},
 	created() {
+		console.log(process.env.VUE_APP_BASE_URL);
 		this.http.post(this.api.getMailingProductAll,
 		{
 		"page":1,
@@ -212,7 +208,7 @@ export default {
 				},sessionStorage.getItem('token')).then(res => {
 					console.log(res)
 				          if(res.code == 0){
-							  this.xsTableDate=res.data.list
+							  this.jsTableData=res.data.list
 				          }
 				       });
 			}else{
@@ -223,10 +219,69 @@ export default {
 				},sessionStorage.getItem('token')).then(res => {
 					console.log(res)
 				          if(res.code == 0){
+							  this.xsTableDate=res.data.list
 				          }
 				       });
 			}
 			
+		},
+		changeJsGoods(item){
+			this.http.post(this.api.updateMailingProduct,
+			{
+				"id":item.id,
+				"productName":item.productName,
+				"productType":"MAILING",
+				"productUrl":item.productUrl,
+				"transactionPrice":item.transactionPrice,
+				"mailingPrice":item.mailingPrice,
+				"amount":item.amount,
+				"state":item.state,
+				"reason":item.reason
+
+			
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						 this.$message({
+						          message: res.data,
+						          type: 'success'
+						        });
+						  // this.userInfo= res.data;
+			          }
+			       });
+		},
+		changeXfGoods(item){
+			this.http.post(this.api.updateGeneralProduct,
+			{
+				"id":item.id,
+				"productName":item.productName,
+				"productType":"MAILING",
+				"productUrl":item.productUrl,
+				"transactionPrice":item.transactionPrice,
+				"amount":item.amount,
+				"state":item.state,
+				"reason":item.reason,
+				"productDetailsUrl":item.productDetailsUrl,
+				"productUrl":item.productUrl,
+				"lable":item.lable.toString(),
+				"store":item.store,
+				"discount":item.discount
+			
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						 this.$message({
+						          message: res.data,
+						          type: 'success'
+						        });
+						  // this.userInfo= res.data;
+			          }
+			       });
+		}
+	},
+	filters:{
+		changUrl(url){
+			return url
 		}
 	}
 }

@@ -249,7 +249,7 @@ export default {
 		],//标签栏内容
 		breadcrumb:[],//面包屑数组
 		select:{},//储存打开的导航栏内容
-		defActive:'2-7',//默认打开导航栏
+		defActive:'3-3',//默认打开导航栏
 	}
   },
 	  beforeMount:function(){

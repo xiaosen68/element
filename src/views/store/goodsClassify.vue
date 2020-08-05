@@ -47,6 +47,7 @@ export default {
 		roundTypeFn:function(){
 			return this.classifyType[Math.floor(Math.random()*this.classifyType.length)]
 		},
+		// 刷新标签列表
 		refreshLable(){
 			this.http.get(this.api.generalLableAll,
 			{
@@ -57,17 +58,19 @@ export default {
 			          }
 			       });
 		},
+		
 		 handleClose(tag) {
 			 
 		        this.classify.splice(this.classify.indexOf(tag), 1);
 		      },
-// 显示添加分类
-		 showInput() {
+			// 显示添加分类
+					 showInput() {
 		        this.inputVisible = true;
 		        this.$nextTick(_ => {
 		          this.$refs.saveTagInput.$refs.input.focus();
 		        });
 		      },
+			  
 			  // 添加标签
 			  handleInputConfirm() {
 				  this.http.post(this.api.addGeneralLable,
@@ -86,6 +89,12 @@ export default {
 				  
 			   this.inputVisible=false;
 			      },
+				  // 删除标签
+			  deleteClassify(){
+				
+				  
+				},
+				  
 			showClose:function(){
 				this.ifClosabled=!this.ifClosabled;
 			}

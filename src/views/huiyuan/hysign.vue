@@ -42,32 +42,7 @@ export default {
 </script>
 
 <style>
-/* 	.main-box{
-		width: 98%;
-		margin: 0 auto;
-		margin-top: 4px;
-		min-height: 200px;
-		border-top: #e7eaec 4px solid;
-		background-color: #ffffff;
-		text-align: left;
-	}
-	.zh-head{
-		line-height: 3em;
-		font-size: 14px;
-		font-weight: 600;
-		padding: 0 16px;
-		border-bottom: 1px solid #e7eeec;
-	}
-	.zh-info-box{
-		padding: 0 16px;
-		line-height: 3em;
-	}
-	.sign-waring{
-		background-color: #eeeeee;
-		border-left:4px solid #00aaff;
-		padding-left: 10px;
-		margin-bottom: 20px;
-	} */
+
 	.sign-input{
 		display: inline-block;
 		width: 400px;

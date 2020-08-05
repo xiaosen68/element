@@ -7,14 +7,17 @@
 			<div> <b class="input-title">身份证号：</b> <div class="input-box"><el-input class="input-item"  placeholder="请输入姓名" v-model="idCard"></el-input> </div> </div>
 			<div>
 				<b class="input-title">上传身份证：</b>
-				<img class="photo-item" :src="pho1" v-if="pho1" @click="delPho(1)">
-				<img class="photo-item" :src="pho2" v-if="pho2"  @click="delPho(2)">
-				<img class="photo-item" :src="pho3" v-if="pho3"  @click="delPho(3)">
-				<div class="photo-upload" v-if="pho1==''||pho2==''||pho3==''"> 				
-					<input type="file" class="file-input" name="avatar" accept="image/gif,image/jpeg,image/jpg"
-					 @change="changeCoverImg($event)"> 
-					<i class="el-icon-plus"></i>
-				</div>
+			<el-upload
+			  action="/dev/api/v1/admin/upload/image"
+			  :headers="{'Content-Type':'application/json',
+			'token':token}"
+			list-type="picture-card"
+				:auto-upload="false"
+			  :on-change="uploadImageFn"
+			  >
+			  <i class="el-icon-plus"></i>
+			</el-upload>
+			
 			</div>
 			<div class="btn-box">
 				<b class="input-title"></b> 
@@ -38,33 +41,18 @@ export default {
 		}
 	},
 	methods:{
-		delPho:function(n){
-			if(n===1){
-				this.pho1=''
-			}else if(n===2){
-				this.pho2=''
-			}else{
-				this.pho3=''
-			}
-		},
-		changeCoverImg:function(e) {
-		    var file = e.target.files[0]
-		    var reader = new FileReader()
-		    var that = this
-		    reader.readAsDataURL(file)
-		    reader.onload = function(e) {
-				if(that.pho1!==''){
-					if(that.pho2!==''){
-						that.pho3 = this.result
-					}else{
-						that.pho2 = this.result
-					}
-				}else {
-					that.pho1 = this.result
-				}
-		        
-		        // console.log(that.coverImg)
-		    }
+		// 上传图
+		uploadImageFn(file){
+			let formData = new FormData();
+			formData.append('uploadType','ID_CARD_URL');
+			formData.append('file',file.raw)
+			this.http.post(this.api.uploadImage,
+			formData,sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						  this.jsGoods.productUrl=res.data
+			          }
+			       });
 		},
 	}
 }

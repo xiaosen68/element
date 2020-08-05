@@ -96,8 +96,8 @@ export default {
 	data (){
 		return {
 			
-				searchPhone:'',
-				searchIdNumber:'',
+			searchPhone:'',
+			searchIdNumber:'',
 			phone:'',
 			blackType:'',
 			blackoutReason:'',
@@ -118,19 +118,24 @@ export default {
 		}
 	},
 	created() {
-		this.http.post(this.api.blackListUser,
-		{
-			"page":1,
-			"size":10
-		
-		},sessionStorage.getItem('token')).then(res => {
-		          if(res.code == 0){
-					  this.tableData=res.data.list
-					  console.log(this.tableData)
-		          }
-		       });
+		this.refreshBlackList()
 	},
 	methods:{
+		refreshBlackList(){
+			this.http.post(this.api.blackListUser,
+			{
+				"page":1,
+				"size":10
+			
+			},sessionStorage.getItem('token')).then(res => {
+			          if(res.code == 0){
+						  this.tableData=res.data.list
+						  if(res.data.list.length==0){
+						  							  this.$message.success('没有查询到黑名单')
+						  }
+			          }
+			       });
+		},
 		// 查找黑名单
 		searchBlack(){
 			this.http.post(this.api.blackListUser,
@@ -144,6 +149,9 @@ export default {
 				console.log(res)
 			          if(res.code == 0){
 						  this.tableData=res.data.list
+						  if(res.data.list.length==0){
+							  this.$message.success('没有查询到黑名单')
+						  }
 			          }
 			       });
 		},
@@ -161,6 +169,8 @@ export default {
 						  this.tableData=res.data.list
 			          }
 			       });
+				   // setTimeout( this.refreshBlackList(),200)
+				   // this.refreshBlackList()
 		},
 		// 移除黑名单
 		removeBlack(uid,blackType){
@@ -179,6 +189,7 @@ export default {
 						          });
 			          }
 			       });
+				   // this.refreshBlackList()
 		}
 	},
 	filters:{

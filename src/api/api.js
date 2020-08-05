@@ -5,6 +5,7 @@ export default {
 	pageAccountList:"/api/v1/admin/account/pageAccountList",//查看会员下级
 	
 	// 商城
+	uploadImage:"/api/v1/admin/upload/image",//上传图片
 	addMailingProduct: "/api/v1/admin/mall/addMailingProduct",//添加寄售商品
 	addGeneralProduct:"/api/v1/admin/mall/addGeneralProduct",//添加消费商品
 	updateMailingProduct:"/api/v1/admin/mall/updateMailingProduct",//修改寄售商品
