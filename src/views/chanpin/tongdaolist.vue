@@ -77,7 +77,7 @@
 						</div>
 						<div class="pop-box-item">
 							<div class="pop-input-title">消费费率</div>
-							<div class="pop-input-box"><el-input v-model="scope.row.baseRate"></el-input></div>
+							<div class="pop-input-box"><el-input v-model="scope.row.consumptionRate"></el-input></div>
 						</div>
 						
 						<div class="pop-btn-box">

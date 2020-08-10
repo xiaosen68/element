@@ -107,10 +107,10 @@ export default {
 					value:'app_no_login'
 				},	{
 					label:'提现',
-					value:'no_withdrawa'
+					value:'no_withdrsssawal'
 				},	{
 					label:'消费',
-					value:'no_credit_car'
+					value:'no_credit_card'
 				}
 			],
 			tableData:[
@@ -131,7 +131,7 @@ export default {
 			          if(res.code == 0){
 						  this.tableData=res.data.list
 						  if(res.data.list.length==0){
-						  							  this.$message.success('没有查询到黑名单')
+						  	this.$message.success('没有查询到黑名单')
 						  }
 			          }
 			       });

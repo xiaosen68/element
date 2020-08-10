@@ -9,7 +9,7 @@
 		  <el-breadcrumb-item  v-for="item in breadcrumb">{{item}}</el-breadcrumb-item>
 		</el-breadcrumb>
 		<div class="user-info-box">
-			欢迎管理员登录 131238213123
+			欢迎管理员登录 {{userPhone}}
 		</div>
 		<div class="out-btn" @click="outlogin">退出</div>
 	 </el-header>
@@ -56,6 +56,7 @@ export default {
   name: 'Home',
   data (){
 	return {
+		userPhone:'',
 		asidHeight:'',
 		isCollapse: false,
 		isCollapseClass:"el-icon-s-fold",//el-icon-s-unfold,el-icon-s-fold，导航伸缩图标样式
@@ -88,11 +89,16 @@ export default {
 						path:'/home/shiming'
 					},{
 						index:'1-5',
+						lable:'提现审核',
+						show:true,
+						path:'/home/tixianlist'
+					},{
+						index:'1-6',
 						lable:'实名审核信息上传',
 						show:true,
 						path:'/home/shimingsc'
 					},{
-						index:'1-6',
+						index:'1-7',
 						lable:'VIP信息变更查询',
 						show:true,
 						path:'/home/vipcx'
@@ -263,6 +269,7 @@ export default {
 				  })
 			  }
 		  })
+		  this.userPhone=sessionStorage.getItem('userPhone')
 		 
 	  },
 	methods: {

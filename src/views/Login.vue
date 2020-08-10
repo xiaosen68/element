@@ -31,6 +31,7 @@ export default {
 		password:this.password,
 		}).then(res => {
 		          if(res.code == 0){
+					  sessionStorage.setItem('userPhone',this.phone)
 					  sessionStorage.setItem('token',res.data);
 					 // this.$store.commit("setToken",res.data);
 					 this.$router.push({name:'Home'})

@@ -1,9 +1,13 @@
 export default {
 	login:"/api/v1/admin/login/login",
+	// 会员管理
 	fastRegistration:"/api/v1/admin/account/fastRegistration",//快速注册
 	pageAccountList:"/api/v1/admin/account/pageAccountList",//会员列表
 	pageAccountList:"/api/v1/admin/account/pageAccountList",//查看会员下级
-	
+	addPersonalMessage:"/api/v1/pri/meassage/addPersonalMessage",//个人信息推送
+	addPlatformMessage:"/api/v1/pri/meassage/addPlatformMessage",//平台推送
+	getWithdrawalAmountAll:"/api/v1/admin/account/getWithdrawalAmountAll",//查询用户提现信息
+	cashWithdrawalByAudit:"/api/v1/admin/account/cashWithdrawalByAudit",//用户提现审核
 	// 商城
 	uploadImage:"/api/v1/admin/upload/image",//上传图片
 	addMailingProduct: "/api/v1/admin/mall/addMailingProduct",//添加寄售商品

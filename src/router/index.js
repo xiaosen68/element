@@ -5,6 +5,7 @@ import Login from '../views/Login.vue'
 import Hysign from '../views/huiyuan/hysign.vue'
 import Hyinfo from '../views/huiyuan/hyinfo.vue'
 import Hycaozuo from '../views/huiyuan/hycaozuo.vue'
+import Tixianlist from '../views/huiyuan/tixianlist.vue'
 import Zhinfo from '../views/zhanghu/zhanghhinfo.vue'
 import Shiming from '../views/huiyuan/shiming.vue'
 import Shimingsc from '../views/huiyuan/shimingsc.vue'
@@ -136,6 +137,10 @@ Vue.use(VueRouter)
 		{
 			path:'businesslist',
 			component:Businesslist
+		},
+		{
+			path:'tixianlist',
+			component:Tixianlist
 		}
 		
 		
