@@ -123,15 +123,17 @@ export default {
 						path:'/home/goodslist'
 					},{
 						index:'2-3',
-						lable:'购买订单查询',
-						show:true,
-						path:'/home/searchorder'
-					},{
-						index:'2-4',
 						lable:'寄售订单查询',
 						show:true,
-						path:'/home/searchorderjs'
-					},{
+						path:'/home/searchorder'
+					}
+					// ,{
+					// 	index:'2-4',
+					// 	lable:'寄售订单查询',
+					// 	show:true,
+					// 	path:'/home/searchorderjs'
+					// }
+					,{
 						index:'2-5',
 						lable:'消费订单查询',
 						show:true,

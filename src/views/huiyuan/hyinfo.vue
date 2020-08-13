@@ -35,20 +35,22 @@
 			</div>
 			<div class="hyinfo-box">
 				<div class="sign-waring"> 平台注册人数: <b class="font-fei">{{registNum}}</b>,平台实名人数:<b class="font-fei">{{realNameNum}}</b></div>
-				  <el-table :data="hyList" stripe style="width: 100%" :highlight-current-row="true">
+				  <el-table :data="tableData" stripe style="width: 100%" :highlight-current-row="true">
 					<el-table-column type="index"width="40"></el-table-column>
 				    <el-table-column prop="createTime" label="注册日期" > </el-table-column>
-				    <el-table-column prop="userName" label="姓名"></el-table-column>
-				    <el-table-column prop="phone" label="手机号"> </el-table-column>
+				    <el-table-column prop="userName" label="姓名" ></el-table-column>
+				    <el-table-column prop="phone" label="手机号" width="120"> </el-table-column>
 					<el-table-column prop="houtaiNum" label="后台登录账号"> </el-table-column>
-					<el-table-column prop="shiming" label="实名状态"> 
+					<el-table-column prop="realNameState" label="实名状态"> 
 						<template slot-scope="scope">
-							<div class="shiming-status1" v-if="scope.row.shiming===1">已实名</div>
-							<div class="shiming-status2" v-else>未提交</div>
+							<div class="shiming-status1" v-if="scope.row.realNameState==='PASS'">已实名</div>
+							<div class="shiming-status1" v-if="scope.row.realNameState==='TO_BE_REVIEWED'">审核中</div>
+							<div class="shiming-status1" v-if="scope.row.realNameState==='PAIL'">未通过</div>
+							<div class="shiming-status2" v-if="scope.row.realNameState==='NOT_COMMITTED'">未提交</div>
 						</template>
 					</el-table-column>
 					<el-table-column prop="userLevelName" label="代理等级"> </el-table-column>
-					<el-table-column prop="revenue" label="查看上级">
+					<el-table-column prop="revenue" label="查看上级" width="80">
 						<template slot-scope="scope">
 						        <el-popover trigger="hover" placement="top">
 						        <el-table :data="scope.row.revenue">
@@ -68,18 +70,18 @@
 							<el-button size="small" @click="lowerFn(scope.row.uId)">下级</el-button>
 						</template>
 					</el-table-column>
-					<el-table-column prop="revenue" label="收益"> </el-table-column>
-						<el-table-column prop="score" label="积分"> </el-table-column>
+					<el-table-column prop="revenue" label="收益" width="80"> </el-table-column>
+						<el-table-column prop="score" label="积分" width="80"> </el-table-column>
 					<el-table-column prop="dengji" label="操作">
 						<template slot-scope="scope">
 							<el-button size="small" @click="dialogFn(scope.row)">详情</el-button>
 						</template>
 					</el-table-column>
-					<el-table-column prop="beizhu" label="信息推送" > 
+					<!-- <el-table-column prop="beizhu" label="信息推送" > 
 						<template slot-scope="scope">
 							<el-button size="small" @click="beizhuFn(scope.row)">信息</el-button>
 						</template>
-					</el-table-column>
+					</el-table-column> -->
 				  </el-table>
 			</div>
 		
@@ -103,11 +105,11 @@
 				</div>
 				<div class="dialog-box-item">
 					<span class="dialog-box-title">实名状态：</span> 
-					<span class="dialog-box-value">{{dialogValue.realNameState}}</span>
+					<span class="dialog-box-value">{{dialogValue.userName}}</span>
 				</div>
 				<div class="dialog-box-item">
 					<span class="dialog-box-title">实名审核：</span> 
-					<span class="dialog-box-value">{{dialogValue.date}}</span>
+					<span class="dialog-box-value">{{ dialogValue.realNameState|realNameFilter}}</span>
 				</div>
 				<div class="dialog-box-item">
 					<span class="dialog-box-title">账户余额：</span> 
@@ -185,12 +187,12 @@ export default {
 		return {
 			currentPage:1,
 			size:2,
-			totalPage:'',
-			totalSize:'',
+			totalPage:0,
+			totalSize:0,
 			xcurrentPage:1,
 			xsize:1,
-			xtotalPage:'',
-			xtotalSize:'',
+			xtotalPage:0,
+			xtotalSize:0,
 			phone:'',
 			userName:'',
 			shiming:'',
@@ -250,15 +252,14 @@ export default {
 				label:'普通会员'
 				},
 			],
-		 hyList: [],
+		 tableData: [],
 		}
 	},
 	beforeMount(){
 		this.searchHyFn();
 	},
 	methods:{
-		beizhuFn:function(item){
-		},
+		
 		prevFn(){
 			if( this.currentPage>0){
 				this.currentPage--;
@@ -273,15 +274,15 @@ export default {
 		searchHyFn(){
 			this.http.post(this.api.pageAccountList,
 			{
-				 "page":this.currentPage,
-				"size":this.size,
-				"phone":this.phone,
-				"userName":this.userName,
+				 page:this.currentPage,
+				size:this.size,
+				phone:this.phone,
+				userName:this.userName,
 			
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)
 			          if(res.code == 0){
-						 this.hyList=res.data.list; 
+						 this.tableData=res.data.list; 
 						 this.registNum=res.data.registNum;
 						 this.realNameNum=res.data.realNameNum;
 						 this.totalSize=res.data.total_size;
@@ -337,7 +338,21 @@ export default {
 			            }
 			         });
 			  this.lowerDialogTableVisible=true;
-		  }
+		  },
+		
+	},
+	filters:{
+		realNameFilter(val){
+			if(val==='PASS'){
+				return '已实名'
+			}else if(val==='TO_BE_REVIEWED'){
+				return '审核中'
+			}else if(val==='PAIL'){
+				return '未通过'
+			}else if(val==='NOT_COMMITTED'){
+				return '未提交'
+			}
+		}
 	}
 }
 </script>

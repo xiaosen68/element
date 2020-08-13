@@ -18,7 +18,7 @@
 			      <el-input v-model="form.title" autocomplete="off"></el-input>
 			    </el-form-item>
 				<el-form-item label="推送人员等级" :label-width="formLabelWidth">
-				  <el-select v-model="form.people" placeholder="请选择">
+				  <el-select v-model="form.sort" placeholder="请选择">
 				      <el-option
 				        v-for="item in options"
 				        :key="item.value"
@@ -32,7 +32,7 @@
 				</el-form-item>
 			  </el-form>
 			  <div slot="footer" style="text-align: center;">
-			    <el-button type="primary" @click="dialogFormVisible = false">推送信息</el-button>
+			    <el-button type="primary" @click="subMessageFn">推送信息</el-button>
 			  </div>
 			</el-dialog>
 			<div class="information-list">
@@ -89,7 +89,7 @@ export default {
 				endDate:'',
 				title:'',
 				content:'',
-				people:'',
+				sort:'',
 			},
 			options:[{
 				value:'1',
@@ -130,8 +130,33 @@ export default {
 			}]
 		}
 	},
+	beforeMount() {
+		// this.http.get(this.api.findByPlatformMessage,
+		// {
+		// },sessionStorage.getItem('token')).then(res => {
+		// 	console.log(res)
+		//           if(res.code == 0){
+		// 			 this.$message.success(res.data)
+		// 			 this.dialogFormVisible=false;
+		//           }
+		//        });
+	},
 	methods:{
-		
+		subMessageFn:function(){
+			this.http.post(this.api.addPlatformMessage,
+			{
+				 sort:this.form.sort,
+				title:this.form.title,
+				content:this.form.content,
+			
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						 this.$message.success(res.data)
+						 this.dialogFormVisible=false;
+			          }
+			       });
+			}
 		},
 }
 </script>

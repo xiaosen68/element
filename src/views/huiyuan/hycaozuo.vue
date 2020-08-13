@@ -4,9 +4,11 @@
 		<div class="zh-info-box">
 			<div class="seach-box">
 				<div class="seach-item">手机号 <div class="search-input">  
-				<el-input placeholder="请输入内容" type="tel" maxlength="11" prefix-icon="el-icon-search" v-model="tel"></el-input></div> </div>
+				<el-input placeholder="请输入内容" type="tel" maxlength="11"
+				 prefix-icon="el-icon-search" v-model="phone"></el-input></div> </div>
 				<div class="seach-item">姓名 <div class="search-input">  
-				<el-input placeholder="请输入内容" type="text" maxlength="5" prefix-icon="el-icon-search" v-model="name"></el-input></div> </div>
+				<el-input placeholder="请输入内容" type="text" maxlength="5" 
+				prefix-icon="el-icon-search" v-model="userName"></el-input></div> </div>
 				<div class="seach-item">实名状态 <div class="search-input">  
 					<el-select v-model="shiming" placeholder="请选择" :popper-append-to-body="false">
 						<el-option
@@ -33,17 +35,23 @@
 				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
 			</div>
 			<div class="hyinfo-box">
-				<div class="sign-waring"> 平台注册人数: <b class="font-fei">123123</b>,平台实名人数:<b class="font-fei">123123</b></div>
+				<div class="sign-waring"> 平台注册人数: <b class="font-fei">{{registNum}}</b>,平台实名人数:<b class="font-fei">{{realNameNum}}</b></div>
 				  <el-table :data="tableData" stripe style="width: 100%" :highlight-current-row="true">
 					<el-table-column type="index"width="40"></el-table-column>
-				    <el-table-column prop="date" label="日期" width="100" > </el-table-column>
-				    <el-table-column prop="name" label="姓名" width="100"></el-table-column>
-				    <el-table-column prop="tel" label="手机号" width="100"> </el-table-column>
+				    <el-table-column prop="createTime" label="日期" width="100" > </el-table-column>
+				    <el-table-column prop="userName" label="姓名" width="100"></el-table-column>
+				    <el-table-column prop="phone" label="手机号" width="120"> </el-table-column>
 					<el-table-column prop="houtaiNum" label="后台登录账号" width="120"> </el-table-column>
-					<el-table-column prop="shiming" label="实名状态" width="80"> 
+					<el-table-column prop="realNameState" label="实名状态" width="100">
+						<template slot-scope="scope">
+							<div class="shiming-status1" v-if="scope.row.realNameState==='PASS'">已实名</div>
+							<div class="shiming-status1" v-if="scope.row.realNameState==='TO_BE_REVIEWED'">审核中</div>
+							<div class="shiming-status1" v-if="scope.row.realNameState==='PAIL'">未通过</div>
+							<div class="shiming-status2" v-if="scope.row.realNameState==='NOT_COMMITTED'">未提交</div>
+						</template>
 					</el-table-column>
-					<el-table-column prop="level" label="等级" width="60"></el-table-column>
-					<el-table-column prop="level" label="操作">
+					<el-table-column prop="userLevelName" label="等级" width="120"></el-table-column>
+					<el-table-column prop="level" label="操作" width="260">
 						<template slot-scope="scope">
 							<el-button size="small" type="text" @click="dengjiFn(scope.row)">等级</el-button>
 							<el-button size="small" type="text" @click="limitsFN(scope.row)">权限</el-button>
@@ -56,9 +64,16 @@
 						<el-table-column prop="level" label="黑名单状态" width="100"></el-table-column>
 				  </el-table>
 			</div>
+			<!-- 主页面分页 -->
 			<el-pagination
 			   layout="prev, pager, next"
-			   :total="tableData.length">
+			   :total="totalSize"
+			   :page-size="size"
+			    :current-page.sync="currentPage"
+			   @current-change="searchHyFn"
+			   @prev-click="prevFn"
+			   @next-click="nextFn"
+			   >
 			 </el-pagination>
 			 <!-- 等级弹框 -->
 			 <el-dialog title="更改用户等级" :visible.sync="dengjiVisible" width="500px">
@@ -117,16 +132,17 @@
 			   </div>
 			 </el-dialog>
 			 <!-- 黑名单弹框 -->
-			 <el-dialog title="拉入黑名单" :visible.sync="blackVisible" width="500px">
+			 <el-dialog title="拉入黑名单" :visible.sync="blackVisible" 
+			 width="500px">
 			   <el-form :model="blackForm" label-width="120px">
 			     <el-form-item label="用户编号" >
-			       <el-input v-model="blackForm.num" ></el-input>
+			       <el-input v-model="blackForm.uId" ></el-input>
 			     </el-form-item>
 			     <el-form-item label="用户姓名">
-			      <el-input v-model="blackForm.name" ></el-input>
+			      <el-input v-model="blackForm.userName" ></el-input>
 			     </el-form-item>
 				 <el-form-item label="用户手机号">
-				  <el-input v-model="blackForm.tel" ></el-input>
+				  <el-input v-model="blackForm.phone" ></el-input>
 				 </el-form-item>
 				 <el-form-item label="黑名单类型" >
 				  <el-select v-model="blackForm.black" placeholder="请选择">
@@ -144,58 +160,58 @@
 			   </el-form>
 			   <div slot="footer" class="dialog-footer">
 			     <el-button @click="blackVisible = false">取 消</el-button>
-			     <el-button type="primary" @click="blackVisible = false">确 定</el-button>
+			     <el-button type="primary" @click="subBlackFn">确 定</el-button>
 			   </div>
 			 </el-dialog>
 			 <!-- 详情信息 -->
 			 <el-dialog
 			   title="详情信息"
-			   :visible.sync="statusVisible"
+			   :visible.sync="dialogVisible"
 			   width="60%"
 			   :before-close="statushandleClose">
-			 				<div class="dialog-box-item"> 
+			 				<div class="dialog-box-item">
 			 					<span class="dialog-box-title">注册时间：</span> 
-			 					<span class="dialog-box-value">{{statusDialog.date}}</span>
+			 					<span class="dialog-box-value">{{dialogValue.createTime}}</span>
 			 				</div>
 			 				<div class="dialog-box-item">
 			 					<span class="dialog-box-title">注册品牌：</span> 
-			 					<span class="dialog-box-value">{{statusDialog.date}}</span>
+			 					<span class="dialog-box-value">{{dialogValue.date}}</span>
 			 				</div>
 			 				<div class="dialog-box-item">
 			 					<span class="dialog-box-title">手机号：</span> 
-			 					<span class="dialog-box-value">{{statusDialog.date}}</span>
+			 					<span class="dialog-box-value">{{dialogValue.phone}}</span>
 			 				</div>
 			 				<div class="dialog-box-item">
 			 					<span class="dialog-box-title">实名状态：</span> 
-			 					<span class="dialog-box-value">{{statusDialog.date}}</span>
+			 					<span class="dialog-box-value">{{dialogValue.userName}}</span>
 			 				</div>
 			 				<div class="dialog-box-item">
 			 					<span class="dialog-box-title">实名审核：</span> 
-			 					<span class="dialog-box-value">{{statusDialog.date}}</span>
+			 					<span class="dialog-box-value">{{ dialogValue.realNameState|realNameFilter}}</span>
 			 				</div>
 			 				<div class="dialog-box-item">
 			 					<span class="dialog-box-title">账户余额：</span> 
-			 					<span class="dialog-box-value">{{statusDialog.date}}</span>
+			 					<span class="dialog-box-value">{{dialogValue.balance}}</span>
 			 				</div>
 			 				<div class="dialog-box-item">
 			 					<span class="dialog-box-title">账户积分：</span> 
-			 					<span class="dialog-box-value">{{statusDialog.date}}</span>
+			 					<span class="dialog-box-value">{{dialogValue.score}}</span>
 			 				</div>
 			 				<div class="dialog-box-item">
-			 					<span class="dialog-box-title">总收益：</span> 
-			 					<span class="dialog-box-value">{{statusDialog.date}}</span>
+			 					<span class="dialog-box-title">全部收益：</span> 
+			 					<span class="dialog-box-value">{{dialogValue.totalRevenue}}</span>
 			 				</div>
 			 				<div class="dialog-box-item">
-			 					<span class="dialog-box-title">收益余额：</span> 
-			 					<span class="dialog-box-value">{{statusDialog.date}}</span>
+			 					<span class="dialog-box-title">账户收益：</span> 
+			 					<span class="dialog-box-value">{{dialogValue.revenue}}</span>
 			 				</div>
 			 				<div class="dialog-box-item">
-			 					<span class="dialog-box-title">账户提现：</span> 
-			 					<span class="dialog-box-value">{{statusDialog.date}}</span>
+			 					<span class="dialog-box-title">账户已提现：</span> 
+			 					<span class="dialog-box-value">{{dialogValue.withdrawnAmount}}</span>
 			 				</div>
 			 				<div class="dialog-box-item">
 			 					<span class="dialog-box-title">额外手续费：</span> 
-			 					<span class="dialog-box-value">{{statusDialog.date}}</span>
+			 					<span class="dialog-box-value">{{dialogValue.date}}</span>
 			 				</div>
 			 </el-dialog>
 			 <!-- 收益信息 -->
@@ -266,10 +282,20 @@
 export default {
 	data (){
 		return {
-			tel:'',
-			name:'',
+			currentPage:1,
+			size:2,
+			totalPage:0,
+			totalSize:0,
+			xcurrentPage:1,
+			xsize:1,
+			xtotalPage:0,
+			xtotalSize:0,
+			phone:'',
+			userName:'',
 			shiming:'',
 			level:'',
+			realNameNum:'',
+			registNum:'',
 			dengjiVisible:false,//修改等级弹框
 			dengjiForm:{
 				name:'www',
@@ -308,32 +334,33 @@ export default {
 			],
 			blackVisible:false,//拉入黑名单
 			blackForm:{
-				name:'www',
-				num:'123123',
-				tel:'1231231231',
-				black:'2',
-				blackStatus:'sadasd'
+				userName:'',
+				uId:'',
+				phone:'',
+				black:'',
+				blackStatus:''
 			},
 			blackOption:[
 				{
-					value:'1',
+					value:'app_no_login',
 					label:'禁止登录'
 				},
 				{
-					value:'2',
+					value:'no_withdrawal',
 					label:'禁止提现'
 				},
 				{
-					value:'3',
-					label:'禁止刷卡到账'
+					value:'no_credit_card',
+					label:'禁止消费'
 				},
 			],
-			statusVisible:false,
-			statusDialog:{
+			dialogVisible:false,
+			dialogValue:{
 				
 			},
 			earningsVisible:false,
-			earningsDialog:[{
+			earningsDialog:[
+				{
 				label:'直推',
 				num:12,
 				consumMoney:2131,
@@ -405,74 +432,65 @@ export default {
 				label:'普通会员'
 				},
 			],
-		 tableData: [{
-		          date: '2016-05-02',
-		          name: '王小虎',
-				  tel:'13012131',
-				  houtaiNum:'12312312',
-				  shiming:1,
-				  shangpu:2,
-				  level:0,
-				  beizhu:'qwe',
-				  shangji:[
-					  {
-						  guanxi:'上级',
-						  name:'哈哈',
-						  level:'1',
-						  tel:'1213213123'
-					  }
-				  ],
-		          address: '上海市普陀区金沙江路 1518 弄'
-		        }, 
-				{
-				  date: '2016-05-02',
-				  name: '王小虎',
-				  tel:'13012131',
-				  shiming:1,
-				  shangpu:1,
-				  level:0,
-				  shangji:[
-					  {
-						  guanxi:'上级',
-						  name:'哈哈',
-						  level:'1',
-						  tel:'1213213123'
-					  }
-				  ],
-				  address: '上海市普陀区金沙江路 1518 弄'
-				}, 
-				{
-				  date: '2016-05-02',
-				  name: '王小虎',
-				  tel:'13012131',
-				  shiming:1,
-				  shangpu:1,
-				  level:0,
-				  shangji:[
-					  {
-						  guanxi:'上级',
-						  name:'哈哈',
-						  level:'1',
-						  tel:'1213213123'
-					  }
-				  ],
-				  address: '上海市普陀区金沙江路 1518 弄'
-				}, 
-				],
+		 tableData: [],
 		}
 	},
+	beforeMount(){
+		this.searchHyFn();
+	},
 	methods:{
-		beizhuFn:function(item){
-			console.log(item)
+		
+		prevFn(){
+			if( this.currentPage>0){
+				this.currentPage--;
+			}
 		},
-		// 添加备注，发送信息
-		  beizhuFn() {
+		nextFn(){
+		if(this.currentPage<this.totalPage){
+			this.currentPage++;
+		}	
+		},
+		// 查询会员
+		searchHyFn(){
+			this.http.post(this.api.pageAccountList,
+			{
+				 page:this.currentPage,
+				size:this.size,
+				phone:this.phone,
+				userName:this.userName,
+			
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						 this.tableData=res.data.list; 
+						 this.registNum=res.data.registNum;
+						 this.realNameNum=res.data.realNameNum;
+						 this.totalSize=res.data.total_size;
+						 this.currentPage=res.data.current_page;
+			          }
+			       });
+		},
+		// 发送信息
+		  beizhuFn(userStatus) {
 		        this.$prompt('请输入推送', '提示', {
 		          confirmButtonText: '确定',
 		          cancelButtonText: '取消',
 		          inputPlaceholder: '请输入信息',
 		        }).then(({ value }) => {
+					console.log(value)
+		          this.http.post(this.api.addPersonalMessage,
+		          {
+		          	 userId:userStatus.uId,
+		          	title:'后台推送',
+		          	content:value,
 		          
+		          },sessionStorage.getItem('token')).then(res => {
+		          	console.log(res)
+		                    if(res.code == 0){
+		          			 this.$message.success(res.data)
+		                    }
+		                 });
+				  
 		        }).catch(() => {
 
 		        });
@@ -492,15 +510,34 @@ export default {
 				this.$set(this.limitsForm,'limits',item.limits);
 				  this.limitsVisible=true;
 			  },
+			  // 打开黑名单弹框
 			  blackFN:function(item){
 				  console.log(item);
-				  this.$set(this.blackForm,'name',item.name);
-				  this.$set(this.blackForm,'tel',item.tel);
-				  this.$set(this.blackForm,'black',item.black);
+				  this.$set(this.blackForm,'uId',item.uId);
+				  this.$set(this.blackForm,'userName',item.userName);
+				  this.$set(this.blackForm,'phone',item.phone);
 				    this.blackVisible=true;
+					
+			  },
+			  subBlackFn:function(){
+				  this.http.post(this.api.addBlack,
+				  {
+				  	 userId:this.blackForm.uId,
+					 phone:this.blackForm.phone,
+				  	blackType:this.blackForm.black,
+				  	blackoutReason:this.blackForm.blackStatus,
+				  
+				  },sessionStorage.getItem('token')).then(res => {
+				  	console.log(res)
+				            if(res.code == 0){
+								this.blackVisible=false;
+				  			 this.$message.success(res.data)
+				            }
+				         });
 			  },
 			  statusFn:function(item){
-				  this.statusVisible=true;
+				  this.dialogVisible=true;
+				   this.dialogValue=item;
 			  },
 			  earningsFn:function(item){
 				  this.earningsVisible=true;
@@ -512,8 +549,21 @@ export default {
 			  earninghandleClose:function(){
 				  this.earningsVisible=false;
 			  },statushandleClose:function(){
-				  this.statusVisible=false;
+				  this.dialogVisible=false;
 			  }
+	},
+	filters:{
+		realNameFilter(val){
+			if(val==='PASS'){
+				return '已实名'
+			}else if(val==='TO_BE_REVIEWED'){
+				return '审核中'
+			}else if(val==='PAIL'){
+				return '未通过'
+			}else if(val==='NOT_COMMITTED'){
+				return '未提交'
+			}
+		}
 	}
 }
 </script>

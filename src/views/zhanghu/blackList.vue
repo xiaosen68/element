@@ -16,7 +16,8 @@
 					  </el-select>
 				</div> </div>
 				<div class="seach-item">原因 <div class="search-input">
-				<el-input size="small" placeholder="请输入原因" type="text" maxlength="11" prefix-icon="el-icon-search" v-model="blackoutReason"></el-input></div> </div>
+				<el-input size="small" placeholder="请输入原因" type="text" 
+				maxlength="11" prefix-icon="el-icon-search" v-model="blackoutReason"></el-input></div> </div>
 				
 				<div class="seach-item"><el-button type="primary"  size="small " @click="addBlack">添加黑名单</el-button></div>
 				<div style="width: 100%;"> </div><!-- 强制换行 -->
@@ -107,7 +108,7 @@ export default {
 					value:'app_no_login'
 				},	{
 					label:'提现',
-					value:'no_withdrsssawal'
+					value:'no_withdrawal'
 				},	{
 					label:'消费',
 					value:'no_credit_card'
@@ -128,6 +129,7 @@ export default {
 				"size":10
 			
 			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
 			          if(res.code == 0){
 						  this.tableData=res.data.list
 						  if(res.data.list.length==0){
@@ -161,24 +163,28 @@ export default {
 			{
 				phone:this.phone,
 				blackType:this.blackType,
-				blackoutReason:this.phone,
+				blackoutReason:this.blackoutReason,
 			
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)
 			          if(res.code == 0){
-						  this.tableData=res.data.list
+						  this.$message.success(res.data)
+						  // this.tableData=res.data.list
+						  this.refreshBlackList()
 			          }
 			       });
 				   // setTimeout( this.refreshBlackList(),200)
 				   // this.refreshBlackList()
 		},
 		// 移除黑名单
-		removeBlack(uid,blackType){
+		removeBlack(uid,blackType,phone){
+			console.log(uid)
+			console.log(blackType)
 			this.http.post(this.api.removeBlack,
 			{
 				userId:uid,
 				blackType:blackType,
-				blackoutReason:this.phone,
+				blackoutReason:'asdasd',
 			
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)

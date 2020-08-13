@@ -63,7 +63,7 @@
 			    <el-table
 			       :data="dialogValue"
 			       style="width: 100%"
-			       :row-class-name="tableRowClassName">
+			      >
 			       <el-table-column
 			         prop="date"
 			         label="商品id"
@@ -293,6 +293,9 @@ export default {
 			  }];
 			  this.lowerDialogtitle=tel+'的下级会员共有：'+this.lowerDate.length+'名';
 			  this.lowerDialogTableVisible=true;
+		  },
+		  handleClose(){
+			  
 		  }
 	}
 }
