@@ -107,28 +107,28 @@
 			 <el-dialog title="更改用户权限" :visible.sync="limitsVisible" width="500px">
 			   <el-form :model="limitsForm" label-width="120px">
 			     <el-form-item label="用户编号" >
-			       <el-input v-model="limitsForm.num" ></el-input>
+			       <el-input v-model="limitsForm.userId" disabled></el-input>
 			     </el-form-item>
 			     <el-form-item label="用户姓名">
-			      <el-input v-model="limitsForm.name" ></el-input>
+			      <el-input v-model="limitsForm.userName" disabled></el-input>
 			     </el-form-item>
-			 				 <el-form-item label="用户手机号">
-			 				  <el-input v-model="limitsForm.tel" ></el-input>
-			 				 </el-form-item>
-			 				 <el-form-item label="用户权限" >
-			 				  <el-select v-model="limitsForm.limits" placeholder="请选择">
-			 				      <el-option
-			 				        v-for="item in limitsOption"
-			 				        :key="item.value"
-			 				        :label="item.label"
-			 				        :value="item.value">
-			 				      </el-option>
-			 				    </el-select>
-			 				 </el-form-item>
+				 <el-form-item label="备注">
+				  <el-input v-model="limitsForm.remarks" ></el-input>
+				 </el-form-item>
+				 <el-form-item label="用户权限" >
+				  <el-select v-model="limitsForm.roleId" placeholder="请选择">
+					  <el-option
+						v-for="item in limitsOption"
+						:key="item.roleId"
+						:label="item.description"
+						:value="item.id">
+					  </el-option>
+					</el-select>
+				 </el-form-item>
 			   </el-form>
 			   <div slot="footer" class="dialog-footer">
 			     <el-button @click="limitsVisible = false">取 消</el-button>
-			     <el-button type="primary" @click="limitsVisible = false">确 定</el-button>
+			     <el-button type="primary" @click="setlimitsFn">确 定</el-button>
 			   </div>
 			 </el-dialog>
 			 <!-- 黑名单弹框 -->
@@ -305,32 +305,12 @@ export default {
 			},//修改等级
 			limitsVisible:false,//修改用户权限
 			limitsForm:{
-				name:'www',
-				num:'123123',
-				tel:'1231231231',
-				limits:'2',
+				userName:'',
+				remarks:'',
+				userId:'',
+				roleId:'',
 			},//修改用户权限
 			limitsOption:[
-				{
-					value:'1',
-					label:'老板'
-				},
-				{
-					value:'2',
-					label:'审核员'
-				},
-				{
-					value:'3',
-					label:'客服'
-				},
-				{
-					value:'4',
-					label:'代理商'
-				},
-				{
-					value:'5',
-					label:'商家'
-				},
 			],
 			blackVisible:false,//拉入黑名单
 			blackForm:{
@@ -435,6 +415,18 @@ export default {
 		 tableData: [],
 		}
 	},
+	created() {
+		this.http.get(this.api.getRole,
+		{
+		},sessionStorage.getItem('token')).then(res => {
+			console.log(res)
+		          if(res.code == 0){
+					this.limitsOption=res.data;
+					console.log(this.limitsOption)
+		          }
+		       });
+		
+	},
 	beforeMount(){
 		this.searchHyFn();
 	},
@@ -503,12 +495,31 @@ export default {
 				  this.dengjiVisible=true;
 				  
 			  },
+			  // 打开权限弹框
 			  limitsFN:function(item){
 				console.log(item);
-				this.$set(this.limitsForm,'name',item.name);
-				this.$set(this.limitsForm,'tel',item.tel);
-				this.$set(this.limitsForm,'limits',item.limits);
+				
+				this.$set(this.limitsForm,'userName',item.userName);
+				this.$set(this.limitsForm,'userId',item.uId);
 				  this.limitsVisible=true;
+			  },
+			  // 设置权限
+			  setlimitsFn:function(){
+				  console.log(this.limitsForm)
+				  this.http.post(this.api.setUserRole,
+				  {
+				  	userName:this.limitsForm.userName,
+				  	remarks:this.limitsForm.remarks,
+				  	userId:this.limitsForm.userId,
+				  	roleId:this.limitsForm.roleId,
+				  },sessionStorage.getItem('token')).then(res => {
+				  	console.log(res)
+				            if(res.code == 0){
+				  			 this.$message.success(res.data)
+							 this.limitsVisible=false;
+				            }
+				         });
+				  
 			  },
 			  // 打开黑名单弹框
 			  blackFN:function(item){

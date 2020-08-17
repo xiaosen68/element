@@ -28,6 +28,8 @@ import Blacklist from '../views/zhanghu/blackList.vue'
 import Goodsclassify from '../views/store/goodsClassify.vue'
 import Searchconsumeorder from '../views/store/searchconsumeorder.vue'
 import Businesslist from '../views/store/businessList.vue'
+import Caidan from '../views/houtai/caidan.vue'
+import Quanxian from '../views/houtai/quanxian.vue'
 
 Vue.use(VueRouter)
 
@@ -141,8 +143,15 @@ Vue.use(VueRouter)
 		{
 			path:'tixianlist',
 			component:Tixianlist
+		},
+		{
+			path: 'caidan',
+			component:Caidan
+		},
+		{
+			path:'quanxian',
+			component:Quanxian
 		}
-		
 		
 	]
   }

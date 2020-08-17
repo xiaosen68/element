@@ -251,13 +251,33 @@ export default {
 						path:'/home/blacklist'
 					}
 				]
+			},
+			{
+				index:'7',
+				lable:'后台管理',
+				show:true,
+				icon:'el-icon-s-custom',
+				children:[
+					{
+						index:'7-1',
+						lable:'菜单管理',
+						show:true,
+						path:'/home/caidan'
+					},
+					{
+						index:'7-2',
+						lable:'权限配置',
+						show:true,
+						path:'/home/quanxian'
+					}
+				]
 			}
 		],//导航数组
 		dynamicTags: [
 		],//标签栏内容
 		breadcrumb:[],//面包屑数组
 		select:{},//储存打开的导航栏内容
-		defActive:'3-3',//默认打开导航栏
+		defActive:'6-1',//默认打开导航栏
 	}
   },
 	  beforeMount:function(){
