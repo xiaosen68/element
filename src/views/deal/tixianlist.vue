@@ -6,10 +6,20 @@
 				<div class="seach-item">手机号 
 					<div class="search-input"><el-input placeholder="请输入内容" type="tel" maxlength="11"  v-model="tel1"></el-input></div> 
 				</div>
-				<div class="seach-item">提现状态状态 <div class="search-input">
+				<div class="seach-item">提现状态 <div class="search-input">
 					<el-select v-model="tixianStatus" placeholder="请选择" :popper-append-to-body="false">
 						<el-option
 						  v-for="item in txOptions"
+						  :key="item.type"
+						  :label="item.label"
+						  :value="item.type">
+						</el-option>
+					  </el-select></div> 
+				</div>
+				<div class="seach-item">提现类型 <div class="search-input">
+					<el-select v-model="tixianClassify" placeholder="请选择" :popper-append-to-body="false">
+						<el-option
+						  v-for="item in txClassify"
 						  :key="item.type"
 						  :label="item.label"
 						  :value="item.type">
@@ -25,45 +35,56 @@
 			    <el-table-column
 			      prop="createTime"
 			      label="创建日期"
-			      width="180">
+			      width="100">
 			    </el-table-column>
 				<el-table-column
 				  prop="phone"
-				  label="手机号"
-				  width="180">
+				  label="姓名/手机号"
+				  width="140">
+				  <template slot-scope="scope">
+					  <p>{{scope.row.userName}}</p>
+					  <p>{{scope.row.phone}}</p>
+				  </template>
 				  </el-table-column>
-				  <el-table-column
-				    prop="userName"
-				    label="姓名"
-				    width="180">
-				</el-table-column>
 				<el-table-column
 				    prop="cashOutBank"
 				    label="银行"
-				    width="180">
+				    width="120">
 				</el-table-column>	  
 				<el-table-column
 				    prop="cashOutBankNo"
 				    label="银行卡"
 				    width="180">
 				</el-table-column>	  
-				<el-table-column
+			<!-- 	<el-table-column
 				  prop="updateTime"
 				  label="更新日期"
-				  width="180">
-				</el-table-column>
+				  width="100">
+				</el-table-column> -->
 			    <el-table-column
 			      prop="frozenAmount"
 			      label="提现金额"
-			      width="180">
+			      width="100">
 			    </el-table-column>
 			    <el-table-column
 			      prop="amount"
-			      label="余额">
+			      label="剩余金额"
+				  width="100">
 			    </el-table-column>
+				<el-table-column
+				  prop="classify"
+				  label="类型">
+				</el-table-column>
 				<el-table-column
 				  prop="state"
 				  label="状态">
+				</el-table-column>
+				<el-table-column
+				  prop="state"
+				  label="详情">
+				  <template slot-scope="scope">
+				  	<el-button size="mini" type="primary">导出</el-button>
+				  </template>
 				</el-table-column>
 			  </el-table>
 		</div>
@@ -76,6 +97,7 @@ export default {
 		return {
 			tel1:'',
 			tixianStatus:'',
+			tixianClassify:'',
 			tixianList:[],
 			txOptions:[{
 				type:'ACCEPTED',
@@ -98,6 +120,15 @@ export default {
 				code:'5',
 				label:'拒绝',
 			},],
+			txClassify:[{
+				type:'21',
+				code:'1',
+				label:'收益提现',
+			},{
+				type:'12',
+				code:'2',
+				label:'营业额提现',
+			}],
 			tableData:[
 				{
 					date:'2020-02-21 08:32:23',

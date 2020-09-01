@@ -88,11 +88,6 @@ export default {
 						show:true,
 						path:'/home/shiming'
 					},{
-						index:'1-5',
-						lable:'提现审核',
-						show:true,
-						path:'/home/tixianlist'
-					},{
 						index:'1-6',
 						lable:'实名审核信息上传',
 						show:true,
@@ -209,6 +204,11 @@ export default {
 						lable:'分润信息',
 						show:true,
 						path:'/home/fenruninfo'
+					},{
+						index:'4-4',
+						lable:'提现查询',
+						show:true,
+						path:'/home/tixianlist'
 					},
 				]
 			},

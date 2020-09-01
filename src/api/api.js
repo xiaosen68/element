@@ -19,6 +19,7 @@ export default {
 	cashWithdrawalByAudit:"/api/v1/admin/account/cashWithdrawalByAudit",//用户提现审核
 	updateUserLevel:"/api/v1/admin/account/updateUserLevel",//修改用户等级
 	getRole:"/api/v1/admin/rolePermission/getRole",//获取权限列表
+	updateRealNameState:"/api/v1/admin/account/updateRealNameState",//实名审核
 	
 	// 商城
 	uploadImage:"/api/v1/admin/upload/image",//上传图片
@@ -29,6 +30,19 @@ export default {
 	getMailingProductAll:"/api/v1/admin/mall/getMailingProductAll",//寄售商品列表
 	getGeneralProductAll:"/api/v1/admin/mall/getGeneralProductAll",//消费商品列表
 	setPermissionRole:"/api/v1/admin/rolePermission/setPermissionRole",//初始化消费专区订单
+	getMerchInfo:"/api/v1/admin/account/getMerchInfo",//商户列表
+	setMerch:"/api/v1/admin/account/setMerch",//新增商户信息
+	registerMerchFailedLogPage:"/api/v1/admin/account/registerMerchFailedLogPage",//自动注册商户失败的日志信息
+	registerMerchFailedLogByLogId:"/api/v1/admin/account/registerMerchFailedLogByLogId",//商户注册失败的id信息查询
+	userRealNameListPage:"/api/v1/admin/account/userRealNameListPage",//用户实名制信息列表
+	toBeReviewedRealNamePage:"/api/v1/admin/account/toBeReviewedRealNamePage",//待审核实名制用户信息
+	userRealNameById:"/api/v1/admin/account/userRealNameById",//根据实名制id查询实名制信息
+	findRealNameSystemByUserId:"/api/v1/admin/account/findRealNameSystemByUserId",//根据用户id查询实名制信息
+	uploadRealNameAuthentication:"/api/v1/admin/account/uploadRealNameAuthentication",//上传实名制信息
+	findSharingPosters:"/api/v1/admin/mall/findSharingPosters",//获取分享海报
+	saveSharingPoster:"/api/v1/admin/mall/saveSharingPoster",//新增海报
+	deleteSharingPoster:"/api/v1/admin/mall/deleteSharingPoster",//删除海报
+	
 	
 	// 类别管理
 	generalLableAll:"/api/v1/admin/mall/generalLableAll",//标签列表
@@ -41,7 +55,9 @@ export default {
 	getPassageWayBankByPassageWayId:"/api/v1/admin/passageway/getPassageWayBankByPassageWayId",//查看银行卡支持列表
 	getPassageWay:"/api/v1/admin/passageway/getPassageWay",//通道费率总览
 	addPassageWay:"/api/v1/admin/passageway/addPassageWay",//添加通道
+	// 交易管理
 	
+	getUserRevelPage:"/api/v1/admin/account/getUserRevelPage",//分润信息查询
 	// 账户管理
 	
 	backgroundQueryUser:"/api/v1/admin/account/backgroundQueryUser",//个人信息管理

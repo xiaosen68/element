@@ -258,7 +258,21 @@ export default {
 				],
 		}
 	},
+	created() {
+		this.getMerchInfo();
+	},
 	methods:{
+		getMerchInfo:function(){
+			console.log('asd')
+			this.http.post(this.api.getMerchInfo,
+			{
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						  this.tableData=res.data.list
+			          }
+			       });
+		},
 		beizhuFn:function(item){
 			console.log(item)
 		},

@@ -203,7 +203,7 @@ export default {
 			dialogValue:{},
 			lowerDialogTableVisible:false,
 			lowerDialogtitle:'',
-			lowerDate:[{}],//下级列表
+			lowerDate:[],//下级列表
 			smOptions:[
 				{
 				value:'1',

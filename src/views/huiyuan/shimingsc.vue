@@ -2,13 +2,16 @@
 	<div class="main-box">
 		<div class="zh-head">上传实名信息 </div>
 		<div class="zh-info-box">
-			<div> <b class="input-title">姓名：</b> <div class="input-box"><el-input class="input-item"  placeholder="请输入姓名" v-model="name"></el-input> </div> </div>
-			<div> <b class="input-title">手机号：</b> <div class="input-box"><el-input class="input-item"  placeholder="请输入姓名" v-model="tel"></el-input> </div> </div>
-			<div> <b class="input-title">身份证号：</b> <div class="input-box"><el-input class="input-item"  placeholder="请输入姓名" v-model="idCard"></el-input> </div> </div>
+			<div> <b class="input-title">姓名：</b> <div class="input-box">
+			<el-input class="input-item"  placeholder="请输入姓名" v-model="realName"></el-input> </div> </div>
+			<div> <b class="input-title">手机号：</b> <div class="input-box">
+			<el-input class="input-item"  placeholder="请输入姓名" v-model="phone"></el-input> </div> </div>
+			<div> <b class="input-title">身份证号：</b> <div class="input-box">
+			<el-input class="input-item"  placeholder="请输入姓名" v-model="idNumber"></el-input> </div> </div>
 			<div>
 				<b class="input-title">上传身份证：</b>
 			<el-upload
-			  action="/dev/api/v1/admin/upload/image"
+			  :action="baseUrl+'/api/v1/admin/upload/image'"
 			  :headers="{'Content-Type':'application/json',
 			'token':token}"
 			list-type="picture-card"
@@ -21,7 +24,7 @@
 			</div>
 			<div class="btn-box">
 				<b class="input-title"></b> 
-				<el-button type="primary">确认上传</el-button>
+				<el-button type="primary" @click="uploadRealNameAuthentication">确认上传</el-button>
 			</div>
 			
 		</div>
@@ -32,13 +35,17 @@
 export default {
 	data (){
 		return {
-			name:'',
-			tel:'',
-			idCard:'',
-			pho1:'',
-			pho2:'',
-			pho3:''
+			realName:'',
+			phone:'',
+			idNumber:'',
+			phoList:[],
+			token:'',
+			baseUrl:'',
 		}
+	},
+	created() {
+		this.token=sessionStorage.getItem('token');
+		this.baseUrl= process.env.VUE_APP_BASE_URL;
 	},
 	methods:{
 		// 上传图
@@ -50,10 +57,46 @@ export default {
 			formData,sessionStorage.getItem('token')).then(res => {
 				console.log(res)
 			          if(res.code == 0){
-						  this.jsGoods.productUrl=res.data
+						  if(this.phoList.length>0){
+							  if(this.phoList.length>1){
+								  this.$set(this.phoList,2,res.data);
+							  }else{
+								  this.$set(this.phoList,1,res.data);
+							  }
+						  }else{
+							this.$set(this.phoList,0,res.data);  
+						  }
+						  console.log(this.phoList)
 			          }
 			       });
 		},
+		// 上传实名信息
+		uploadRealNameAuthentication:function(){
+			if(!this.realName||!this.idNumber||!this.phone||this.phoList.length!==3){
+				this.$message.warning("请填写完整信息")
+				return false
+			}
+			this.http.post(this.api.uploadRealNameAuthentication,
+			{
+				phone:this.phone,
+				realName:this.realName,
+				idNumber:this.idNumber,
+				frontPhotoOfIdCard:this.phoList[0],
+				reversePhotoOfIdCard:this.phoList[1],
+				holdingIdCard:this.phoList[2]
+				
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						 this.tableData=res.data.list; 
+						 this.totalSize=res.data.total_size;
+						 this.currentPage=res.data.current_page;
+						
+						//  this.totalSize=res.data.total_size;
+						//  this.currentPage=res.data.current_page;
+			          }
+			       });
+		}
 	}
 }
 </script>
