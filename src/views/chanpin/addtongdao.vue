@@ -24,8 +24,6 @@
 				<el-popover trigger="click" placement="top" v-model="popover">
 					<div class="pop-box-item"><div class="pop-input-title">底价费率</div>
 						<div class="pop-input-box"><el-input v-model="baseRate"></el-input></div></div>
-					<div class="pop-box-item"><div class="pop-input-title">创始合伙人</div>
-						<div class="pop-input-box"><el-input v-model="foundingPartner"></el-input></div></div>
 					<div class="pop-box-item"><div class="pop-input-title">联合创始人</div>
 						<div class="pop-input-box"><el-input v-model="coFounder"></el-input></div></div>
 					<div class="pop-box-item"><div class="pop-input-title">高级合伙人</div>
@@ -34,10 +32,10 @@
 						<div class="pop-input-box"><el-input v-model="businessParter"></el-input></div></div>
 					<div class="pop-box-item"><div class="pop-input-title">VIP会员</div>
 						<div class="pop-input-box"><el-input v-model="vipMembers"></el-input></div></div>
+						<div class="pop-box-item"><div class="pop-input-title">会员</div>
+							<div class="pop-input-box"><el-input v-model="members"></el-input></div></div>
 					<div class="pop-box-item"><div class="pop-input-title">普通用户</div>
 						<div class="pop-input-box"><el-input v-model="ordinaryUsers"></el-input></div></div>
-					<div class="pop-box-item"><div class="pop-input-title">消费率</div>
-						<div class="pop-input-box"><el-input v-model="consumptionRate"></el-input></div></div>
 					<div class="pop-btn-box">
 						<el-button  size="mini" type="warning" @click="popover=!popover">确定</el-button>
 						<el-button  size="mini" type="info"  @click="popover=!popover">取消</el-button>
@@ -70,13 +68,12 @@
 			displayName:'',
 			passageWayStatus:'NORMAL',
 			baseRate:'',
-			foundingPartner:'',
 			coFounder:'',
 			seniorPartner:'',
 			businessParter:'',
 			vipMembers:'',
+			members:'',
 			ordinaryUsers:'',
-			consumptionRate:'',
 			singleAdditionalHandlingCharge:'',
 			singleLimit:'',
 			oneDayLimit:'',
@@ -110,6 +107,7 @@
 			seniorPartner:this.seniorPartner,
 			businessParter:this.businessParter,
 			vipMembers:this.vipMembers,
+			members:this.members,
 			ordinaryUsers:this.ordinaryUsers,
 			singleAdditionalHandlingCharge:this.singleAdditionalHandlingCharge,
 			singleLimit:this.singleLimit,
