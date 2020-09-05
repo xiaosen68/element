@@ -13,13 +13,14 @@ export default {
 	fastRegistration:"/api/v1/admin/account/fastRegistration",//快速注册
 	pageAccountList:"/api/v1/admin/account/pageAccountList",//会员列表
 	pageAccountList:"/api/v1/admin/account/pageAccountList",//查看会员下级
+	superiorUserList:"/api/v1/admin/account/superiorUserList",//查看上级接口
 	addPersonalMessage:"/api/v1/pri/meassage/addPersonalMessage",//个人信息推送
 	addPlatformMessage:"/api/v1/pri/meassage/addPlatformMessage",//平台推送
-	getWithdrawalAmountAll:"/api/v1/admin/account/getWithdrawalAmountAll",//查询用户提现信息
-	cashWithdrawalByAudit:"/api/v1/admin/account/cashWithdrawalByAudit",//用户提现审核
 	updateUserLevel:"/api/v1/admin/account/updateUserLevel",//修改用户等级
 	getRole:"/api/v1/admin/rolePermission/getRole",//获取权限列表
 	updateRealNameState:"/api/v1/admin/account/updateRealNameState",//实名审核
+	creditCardByUserList:"/api/v1/admin/account/creditCardByUserList",//获取信用卡列表
+	savingsCardByUserList:"/api/v1/admin/account/savingsCardByUserList",//获取储蓄卡列表
 	
 	// 商城
 	uploadImage:"/api/v1/admin/upload/image",//上传图片
@@ -42,7 +43,10 @@ export default {
 	findSharingPosters:"/api/v1/admin/mall/findSharingPosters",//获取分享海报
 	saveSharingPoster:"/api/v1/admin/mall/saveSharingPoster",//新增海报
 	deleteSharingPoster:"/api/v1/admin/mall/deleteSharingPoster",//删除海报
-	
+	getMailingOrder:"/api/v1/admin/mall/getMailingOrder",//订单查询
+	transactionInquiry:"api/v1/admin/mall/transactionInquiry",//交易查询
+	getMailingOrderById:"/api/v1/admin/mall/getMailingOrderById",//根据寄售订单id查询订单详情
+	getGeneralOrderById:"/api/v1/admin/mall/getGeneralOrderById",//根据销售订单id查询订单详情
 	
 	// 类别管理
 	generalLableAll:"/api/v1/admin/mall/generalLableAll",//标签列表
@@ -58,6 +62,8 @@ export default {
 	// 交易管理
 	
 	getUserRevelPage:"/api/v1/admin/account/getUserRevelPage",//分润信息查询
+	getWithdrawalAmountAll:"/api/v1/admin/account/getWithdrawalAmountAll",//提现信息查询
+	cashWithdrawalByAudit:"/api/v1/admin/account/cashWithdrawalByAudit",//提现信息审核
 	// 账户管理
 	
 	backgroundQueryUser:"/api/v1/admin/account/backgroundQueryUser",//个人信息管理
