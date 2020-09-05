@@ -68,7 +68,7 @@ export default {
 				icon:'el-icon-user',
 				children:[
 					{
-						index:'1-1',
+						index:'8',
 						lable:'快速注册会员',
 						show:true,//是否显示
 						path:'/home/hysign'
@@ -281,6 +281,14 @@ export default {
 	}
   },
 	  beforeMount:function(){
+		  this.http.get(this.api.getPermissionByUserId,
+		  {
+		  },sessionStorage.getItem('token')).then(res => {
+		  	console.log(res)
+		            if(res.code == 0){
+		            }
+		         });
+		  
 		  // 加载默认打开的导航栏
 		  this.menuList1.forEach((item)=>{
 			  if(item.children){

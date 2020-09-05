@@ -76,6 +76,7 @@ export default {
 			sessionStorage.getItem('token')).then(res => {
 					console.log(res)
 							 if(res.code == 0){
+								 this.$message.success(res.data)
 							  // this.treeData=res.data;
 							 }
 						  });

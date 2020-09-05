@@ -3,10 +3,12 @@
 		<div class="zh-head">用户分润明细</div>
 		<div class="zh-info-box" >
 			<div class="seach-box">
-				<div class="seach-item">手机号 <div class="search-input">
-				<el-input placeholder="请输入手机号" type="tel" maxlength="11" size="small"  v-model="tel1"></el-input></div> </div>
+				<div class="seach-item">下单手机号 <div class="search-input">
+				<el-input placeholder="请输入手机号" type="tel" maxlength="11" size="small" 
+				 v-model="orderUserPhone"></el-input></div> </div>
 				<div class="seach-item">收益人手机号 <div class="search-input">
-				<el-input placeholder="请输入手机号" type="tel" maxlength="11" size="small"  v-model="tel2"></el-input></div> </div>
+				<el-input placeholder="请输入手机号" type="tel" maxlength="11" size="small" 
+				 v-model="relUserPhone"></el-input></div> </div>
 				<div class="seach-item">交易流水号 <div class="search-input">
 				<el-input placeholder="请输入交易流水号" type="text" maxlength="20" size="small"  v-model="dealNum"></el-input></div> </div>
 				<div class="seach-item">日期
@@ -24,7 +26,7 @@
 					</div> 
 				</div>
 				
-				<div class="seach-item"><el-button type="primary"  size="small ">查询</el-button></div>
+				<div class="seach-item"><el-button type="primary"  size="small " @click="getUserRevelPage">查询</el-button></div>
 				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
 				
 			</div>
@@ -40,25 +42,25 @@
 					  label="上级" width="60px" >
 					</el-table-column>
 				    <el-table-column
-				      prop="dealDate"
+				      prop="withdrawnTime"
 				      label="交易时间" >
 				    </el-table-column>
 				    <el-table-column
-				      prop="dealName"
+				      prop="orderUserRealName"
 				      label="刷卡人">
 					  <template slot-scope="scope">
-						  <p>{{scope.row.dealName}}</p>
-						  <p>{{scope.row.dealTel | telFilter}}</p>
+						  <p>{{scope.row.orderUserRealName}}</p>
+						  <p>{{scope.row.orderUserPhone | telFilter}}</p>
 					  </template>
 				    </el-table-column>
 				    <el-table-column
-				      prop="dealNum"
+				      prop="revenueOrder"
 				      label="交易流水号" >
 				    </el-table-column>
 					<el-table-column
-					  prop="dealNum"
+					  prop="revenueAmount"
 					  label="分润">
-					 <template slot-scope="scope">
+					<!-- <template slot-scope="scope">
 					 	<el-popover trigger="click" placement="top" width="800">
 							<div class="popover-head-box">分润详情（注意：还款消费不产生分润）</div>
 							<div class="popover-header-status">
@@ -77,7 +79,7 @@
 								  </el-table>
 							 <el-button slot="reference" size="mini" type="success">查看</el-button>
 						</el-popover>	
-					 </template>
+					 </template> -->
 					</el-table-column>
 					<el-table-column
 					  prop="dealMoney"
@@ -88,11 +90,11 @@
 					  label="交易费率">
 					</el-table-column>
 					<el-table-column
-					  prop="superiorName"
+					  prop="relUserRealName"
 					  label="受益人">
 					  <template slot-scope="scope">
-						  <p>{{scope.row.superiorName}}</p>
-						  <p>{{scope.row.superiorTel | telFilter}}</p>
+						  <p>{{scope.row.relUserRealName}}</p>
+						  <p>{{scope.row.relUserPhone | telFilter}}</p>
 					  </template>
 					</el-table-column>
 					<el-table-column
@@ -104,15 +106,21 @@
 					  label="获得分润">
 					</el-table-column>
 					<el-table-column
-					  prop="superiorStatus"
+					  prop="revenueReason"
 					  label="分润备注">
 					</el-table-column>
 				  </el-table>
-				  <!-- 分页 -->
-				  <el-pagination
-				     layout="prev, pager, next"
-				     :total="10">
-				   </el-pagination>
+				 <!-- 主页面分页 -->
+				 <el-pagination
+				    layout="prev, pager, next"
+				    :total="totalSize"
+				    :page-size="size"
+				     :current-page.sync="currentPage"
+				    @current-change="getUserRevelPage"
+				    @prev-click="prevFn"
+				    @next-click="nextFn"
+				    >
+				  </el-pagination>
 			</div>
 		
 			
@@ -126,8 +134,13 @@
 export default {
 	data (){
 		return {
-			tel1:'',//手机号
-			tel2:'',//受益人手机号
+			orderUserPhone:'',//手机号
+			relUserPhone:'',//受益人手机号
+			page:1,
+			size:20,
+			currentPage:0,
+			totalPage:0,
+			totalSize:0,
 			dealNum:'',//交易流水号
 			selectDate:[],//日期范围
 			pickerOption:{//日期选择器配置
@@ -191,8 +204,42 @@ export default {
 		 }
 	},
 	methods:{
+		prevFn:function(){
+			if(this.currentPage==1){
+				this.currentPage=1;
+			}else{
+				this.currentPage--;
+			}
+		},
+		nextFn:function(){
+			if(this.currentPage==this.totalPage){
+				this.currentPage=this.totalPage
+			}else{
+				this.currentPage++
+			}
+		},
 		beizhuFn:function(item){
 			console.log(item)
+		},
+		// 分润信息查询
+		getUserRevelPage:function(){
+			this.http.post(this.api.getUserRevelPage,
+			{
+				 page:this.currentPage,
+				size:this.size,
+				orderUserPhone:this.relUserPhone,
+				relUserPhone:this.relUserPhone,
+				startTime:this.selectDate[0],
+				endTime:this.selectDate[1],
+			
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						 this.tableData=res.data.list; 
+						 this.totalSize=res.data.total_size;
+						 this.currentPage=res.data.current_page;
+			          }
+			       });
 		},
 	},
 	filters:{

@@ -34,7 +34,9 @@
 						  active-color="#13ce66"
 						  inactive-color="#ff4949"
 						  active-text="使用"
-						  inactive-text="维护">
+						  inactive-text="维护"
+						   active-value="NORMAL"
+						      inactive-value="STOP">
 						</el-switch>
 				  </template>
 				</el-table-column>
@@ -51,10 +53,7 @@
 							<div class="pop-input-title">基础费率</div>
 							<div class="pop-input-box"><el-input v-model="scope.row.baseRate"></el-input></div>
 						</div>
-						<div class="pop-box-item">
-							<div class="pop-input-title">创始合伙人</div>
-							<div class="pop-input-box"><el-input v-model="scope.row.foundingPartner"></el-input></div>
-						</div>
+					
 						<div class="pop-box-item">
 							<div class="pop-input-title">联合创始人</div>
 							<div class="pop-input-box"><el-input v-model="scope.row.coFounder"></el-input></div>
@@ -68,18 +67,17 @@
 							<div class="pop-input-box"><el-input v-model="scope.row.businessParter"></el-input></div>
 						</div>
 						<div class="pop-box-item">
-							<div class="pop-input-title">VIP用户</div>
+							<div class="pop-input-title">VIP会员</div>
 							<div class="pop-input-box"><el-input v-model="scope.row.vipMembers"></el-input></div>
+						</div>
+						<div class="pop-box-item">
+							<div class="pop-input-title">会员</div>
+							<div class="pop-input-box"><el-input v-model="scope.row.members"></el-input></div>
 						</div>
 						<div class="pop-box-item">
 							<div class="pop-input-title">普通用户</div>
 							<div class="pop-input-box"><el-input v-model="scope.row.ordinaryUsers"></el-input></div>
-						</div>
-						<div class="pop-box-item">
-							<div class="pop-input-title">消费费率</div>
-							<div class="pop-input-box"><el-input v-model="scope.row.consumptionRate"></el-input></div>
-						</div>
-						
+						</div>	
 						<div class="pop-btn-box">
 							<el-button  size="mini" type="warning" @click="feiSureFn(scope.row)">确定</el-button>
 							<el-button  size="mini" type="info"  @click="feiCancleFn">取消</el-button>
@@ -222,6 +220,7 @@
 				 this.http.post(this.api.updatePassageWay,
 			 n,sessionStorage.getItem('token')).then(res => {
 					   if(res.code == 0){
+						   this.$message.success(res.data)
 						  console.log(res)
 					   }
 					}); 

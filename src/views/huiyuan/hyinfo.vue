@@ -9,7 +9,7 @@
 				<el-input placeholder="请输入内容" type="text" maxlength="5"
 				 prefix-icon="el-icon-search" v-model="userName"></el-input></div> </div>
 				<div class="seach-item">实名状态 <div class="search-input">  
-					<el-select v-model="shiming" placeholder="请选择" :popper-append-to-body="false">
+					<el-select v-model="realNameState" placeholder="请选择" :popper-append-to-body="false">
 						<el-option
 						  v-for="item in smOptions"
 						  :key="item.value"
@@ -52,12 +52,12 @@
 					<el-table-column prop="userLevelName" label="代理等级"> </el-table-column>
 					<el-table-column prop="revenue" label="查看上级" width="80">
 						<template slot-scope="scope">
-						        <el-popover trigger="hover" placement="top">
-						        <el-table :data="scope.row.revenue">
-									 <el-table-column prop="guanxi" label="关系" width="80"></el-table-column>
-									 <el-table-column prop="name" label="姓名" width="80"></el-table-column>
-									 <el-table-column prop="dengji" label="等级" width="60"> </el-table-column>
-									 <el-table-column prop="phone" label="手机号" width="120"> </el-table-column>
+						        <el-popover trigger="click" @show="searchUp(scope.row.uId)" placement="top">
+						        <el-table :data="superiorList">
+									 <el-table-column prop="superiorLevelName" label="关系" width="80"></el-table-column>
+									 <el-table-column prop="superiorLevelName" label="姓名" width="80"></el-table-column>
+									 <el-table-column prop="userLevelName" label="等级" width="120"> </el-table-column>
+									 <el-table-column prop="superiorUserPhone" label="手机号" width="120"> </el-table-column>
 								</el-table>
 						          <div slot="reference" class="name-wrapper">
 						            <el-tag size="medium">查看</el-tag>
@@ -67,7 +67,7 @@
 					</el-table-column>
 					<el-table-column prop="dengji" label="查看下级">
 						<template slot-scope="scope">
-							<el-button size="small" @click="lowerFn(scope.row.uId)">下级</el-button>
+							<el-button size="small" @click="lowerFn('dd',scope.row.uId)">下级</el-button>
 						</template>
 					</el-table-column>
 					<el-table-column prop="revenue" label="收益" width="80"> </el-table-column>
@@ -89,52 +89,62 @@
 			 <el-dialog
 			   title="详情信息"
 			   :visible.sync="dialogVisible"
-			   width="30%"
+			   width="80%"
 			   >
-				<div class="dialog-box-item"> 
-					<span class="dialog-box-title">注册时间：</span> 
-					<span class="dialog-box-value">{{dialogValue.createTime}}</span>
-				</div>
-				<div class="dialog-box-item">
-					<span class="dialog-box-title">注册品牌：</span> 
-					<span class="dialog-box-value">{{dialogValue.date}}</span>
-				</div>
-				<div class="dialog-box-item">
-					<span class="dialog-box-title">手机号：</span> 
-					<span class="dialog-box-value">{{dialogValue.phone}}</span>
-				</div>
-				<div class="dialog-box-item">
-					<span class="dialog-box-title">实名状态：</span> 
-					<span class="dialog-box-value">{{dialogValue.userName}}</span>
-				</div>
-				<div class="dialog-box-item">
-					<span class="dialog-box-title">实名审核：</span> 
-					<span class="dialog-box-value">{{ dialogValue.realNameState|realNameFilter}}</span>
-				</div>
-				<div class="dialog-box-item">
-					<span class="dialog-box-title">账户余额：</span> 
-					<span class="dialog-box-value">{{dialogValue.balance}}</span>
-				</div>
-				<div class="dialog-box-item">
-					<span class="dialog-box-title">账户积分：</span> 
-					<span class="dialog-box-value">{{dialogValue.score}}</span>
-				</div>
-				<div class="dialog-box-item">
-					<span class="dialog-box-title">全部收益：</span> 
-					<span class="dialog-box-value">{{dialogValue.totalRevenue}}</span>
-				</div>
-				<div class="dialog-box-item">
-					<span class="dialog-box-title">账户收益：</span> 
-					<span class="dialog-box-value">{{dialogValue.revenue}}</span>
-				</div>
-				<div class="dialog-box-item">
-					<span class="dialog-box-title">账户已提现：</span> 
-					<span class="dialog-box-value">{{dialogValue.withdrawnAmount}}</span>
-				</div>
-				<div class="dialog-box-item">
-					<span class="dialog-box-title">额外手续费：</span> 
-					<span class="dialog-box-value">{{dialogValue.date}}</span>
-				</div>
+				   <div class="xiangqing-box1">
+					   <div class="dialog-box-item">
+					   	<span class="dialog-box-title">注册时间：</span> 
+					   	<span class="dialog-box-value">{{dialogValue.createTime}}</span>
+					   </div>
+					   <div class="dialog-box-item">
+					   	<span class="dialog-box-title">注册品牌：</span> 
+					   	<span class="dialog-box-value">{{dialogValue.date}}</span>
+					   </div>
+					   <div class="dialog-box-item">
+					   	<span class="dialog-box-title">手机号：</span> 
+					   	<span class="dialog-box-value">{{dialogValue.phone}}</span>
+					   </div>
+					   <div class="dialog-box-item">
+					   	<span class="dialog-box-title">实名状态：</span> 
+					   	<span class="dialog-box-value">{{dialogValue.userName}}</span>
+					   </div>
+					   <div class="dialog-box-item">
+					   	<span class="dialog-box-title">实名审核：</span> 
+					   	<span class="dialog-box-value">{{ dialogValue.realNameState|realNameFilter}}</span>
+					   </div>
+					   <div class="dialog-box-item">
+					   	<span class="dialog-box-title">账户余额：</span> 
+					   	<span class="dialog-box-value">{{dialogValue.balance}}</span>
+					   </div>
+					   <div class="dialog-box-item">
+					   	<span class="dialog-box-title">账户积分：</span> 
+					   	<span class="dialog-box-value">{{dialogValue.score}}</span>
+					   </div>
+					   <div class="dialog-box-item">
+					   	<span class="dialog-box-title">全部收益：</span> 
+					   	<span class="dialog-box-value">{{dialogValue.totalRevenue}}</span>
+					   </div>
+					   <div class="dialog-box-item">
+					   	<span class="dialog-box-title">账户收益：</span> 
+					   	<span class="dialog-box-value">{{dialogValue.revenue}}</span>
+					   </div>
+					   <div class="dialog-box-item">
+					   	<span class="dialog-box-title">账户已提现：</span> 
+					   	<span class="dialog-box-value">{{dialogValue.withdrawnAmount}}</span>
+					   </div>
+					   <div class="dialog-box-item">
+					   	<span class="dialog-box-title">额外手续费：</span> 
+					   	<span class="dialog-box-value">{{dialogValue.date}}</span>
+					   </div>
+				   </div>
+					<div class="xiangqing-box2">
+						<h4>信用卡列表</h4>
+						<div>银行名称、卡号、账单日、还款日、卡ID</div>
+						<div v-for="item in xinyongList">{{item.bank}},{{item.cardNo}},{{item.billingDate}},{{item.repaymentDate}},{{item.id}}</div>
+						<h4>储蓄卡列表</h4>
+						<div>银行名称、卡号、手机号、卡ID</div>
+						<div v-for="item in chuxvList">{{item.bank}},{{item.cardNo}},{{item.reservePhone}},{{item.id}}</div>
+					</div>
 			 </el-dialog>
 			 <!-- 下级弹框 -->
 			 <el-dialog :title="lowerDialogtitle" :visible.sync="lowerDialogTableVisible" width="80%">
@@ -146,7 +156,7 @@
 				 <el-table-column property="dengji" label="等级"></el-table-column>
 				 <el-table-column property="dengji" label="查看下级">
 					 <template slot-scope="scope">
-					 	<el-button size="small" @click="lowerFn(scope.row.uId,scope.row.phone)">下级</el-button>
+					 	<el-button size="small" @click="lowerFn('dd',scope.row.uId)">下级</el-button>
 					 </template>
 				 </el-table-column>
 				 <el-table-column property="balance" label="余额"></el-table-column>
@@ -186,16 +196,17 @@ export default {
 	data (){
 		return {
 			currentPage:1,
-			size:2,
+			size:20,
 			totalPage:0,
 			totalSize:0,
 			xcurrentPage:1,
-			xsize:1,
+			xsize:10,
 			xtotalPage:0,
 			xtotalSize:0,
+			xId:0,//下级id
 			phone:'',
 			userName:'',
-			shiming:'',
+			realNameState:'',
 			dengji:'',
 			realNameNum:'',
 			registNum:'',
@@ -206,23 +217,23 @@ export default {
 			lowerDate:[],//下级列表
 			smOptions:[
 				{
-				value:'1',
+				value:'',
 				label:'全部'
 				},
 				{
-				value:'2',
+				value:'TO_BE_REVIEWED',
 				label:'审核中'
 				},
 				{
-				value:'3',
+				value:'PASS',
 				label:'已实名'
 				},
 				{
-				value:'4',
+				value:'FAIL',
 				label:'审核失败'
 				},
 				{
-				value:'5',
+				value:'NOT_COMMITTED',
 				label:'未提交'
 				},
 			],
@@ -253,13 +264,27 @@ export default {
 				},
 			],
 		 tableData: [],
+		 superiorList:[],
+		 xinyongList:[],
+		 chuxvList:[]
 		}
 	},
 	beforeMount(){
 		this.searchHyFn();
 	},
 	methods:{
-		
+		searchUp:function(id){
+			console.log(id)
+			this.http.post(this.api.superiorUserList,
+			{
+				userId:id
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						  this.superiorList=res.data;
+			          }
+			       });
+		},
 		prevFn(){
 			if( this.currentPage>0){
 				this.currentPage--;
@@ -278,7 +303,7 @@ export default {
 				size:this.size,
 				phone:this.phone,
 				userName:this.userName,
-			
+				realNameState:this.realNameState
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)
 			          if(res.code == 0){
@@ -290,6 +315,32 @@ export default {
 			          }
 			       });
 		},
+		//获取信用卡列表
+		getxinyong:function(id){
+			console.log(id)
+			this.http.post(this.api.creditCardByUserList,
+			{
+				userId:id
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						this.xinyongList=res.data
+			          }
+			       });
+		},
+		// 获取储蓄卡列表
+		getchuxv:function(id){
+			this.http.post(this.api.savingsCardByUserList,
+			{
+				userId:id
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						this.chuxvList=res.data
+			          }
+			       });
+		},
+		
 		// 添加备注，发送信息
 		  beizhuFn() {
 		        this.$prompt('请输入备注', '提示', {
@@ -303,7 +354,10 @@ export default {
 		        });
 		      },
 		  dialogFn:function(item){
-			  console.log(item);
+			 
+			  this.getxinyong(item.uId);
+			   console.log(item);
+			  this.getchuxv(item.uId);
 			  this.dialogVisible=true;
 			  this.dialogValue=item;
 		  },
@@ -311,7 +365,7 @@ export default {
 			  
 		  },
 		  xprevFn(){
-		  	if( this.xcurrentPage>0){
+		  	if( this.xcurrentPage>1){
 		  		this.xcurrentPage--;
 		  	}
 		  },
@@ -321,12 +375,15 @@ export default {
 		  }	
 		  },
 		  // 获取下级会员列表
-		  lowerFn:function(id,userPhone){
+		  lowerFn:function(id,idd){
+			  if(idd){
+				this.xId=idd;  
+			  }
 			  this.http.post(this.api.pageAccountList,
 			  {
 				  "page":this.xcurrentPage,
 				  "size":this.xsize,
-				  superiorUserId:id,
+				  superiorUserId:this.xId,
 				  
 			  },sessionStorage.getItem('token')).then(res => {
 			  	console.log(res)
@@ -404,5 +461,16 @@ export default {
 		  width: 120px;
 		  text-align: right;
 		 margin-right: 40px; 
+		 }
+		 .xiangqing-box1{
+			 display: inline-block;
+			 width:30%;
+		 }
+		 .xiangqing-box2{
+			 display: inline-block;
+			 width: 60%;
+			 vertical-align: top;
+			 padding-left: 30px;
+			 line-height: 2em;
 		 }
 </style>

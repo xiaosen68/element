@@ -42,12 +42,19 @@
 					</template >
 				</el-table-column>
 				<el-table-column   label="操作"  > 
-					<template slot-scope="scope">
+					<template slot-scope="scope" v-if="scope.row.state==='PASS'">
+						
+					</template>
+					<template slot-scope="scope" v-else>
 						<el-button size="small" type="text" @click="updateRealNameState(scope.row.user_id,'PASS')">通过</el-button>
 						<el-button size="small" type="text" @click="updateRealNameState(scope.row.user_id,'FAIL')">不通过</el-button>
-					</template>
+					</template slot-scope="scope">
+					
 				</el-table-column>
-				<el-table-column  prop="zhuangtai" label="审核状态"> 
+				<el-table-column  prop="state" label="审核状态">
+					<template slot-scope="scope">
+						{{scope.row.state|shimingstateFilters}}
+					</template>
 				</el-table-column>
 			</el-table>
 			<!-- 主页面分页 -->
@@ -75,7 +82,7 @@ export default {
 			state:'',
 			page:0,
 			size:20,
-			totalSize:'',
+			totalSize:0,
 			currentPage:0,
 			tableData:[{
 				
@@ -147,6 +154,19 @@ export default {
 						//  this.currentPage=res.data.current_page;
 			          }
 			       });
+		}
+	},
+	filters:{
+		shimingstateFilters:function(val){
+			if(val==='PASS'){
+				return '已通过'
+			}else if('TO_BE_REVIEWED'){
+				return "待审核"
+			}else if('FAIL'){
+				return "不通过"
+			}else if('NOT_COMMITTED'){
+					return "未提交"
+			}
 		}
 	}
 }

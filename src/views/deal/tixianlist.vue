@@ -16,7 +16,7 @@
 						</el-option>
 					  </el-select></div> 
 				</div>
-				<div class="seach-item">提现类型 <div class="search-input">
+				<!-- <div class="seach-item">提现类型 <div class="search-input">
 					<el-select v-model="tixianClassify" placeholder="请选择" :popper-append-to-body="false">
 						<el-option
 						  v-for="item in txClassify"
@@ -25,8 +25,8 @@
 						  :value="item.type">
 						</el-option>
 					  </el-select></div> 
-				</div>
-				<div class="seach-item"><el-button type="primary"  size="small ">查询</el-button></div>
+				</div> -->
+				<div class="seach-item"><el-button type="primary"  size="small " @click="getTixianList">查询</el-button></div>
 			</div>
 			  <el-table
 			    :data="tixianList"
@@ -56,11 +56,11 @@
 				    label="银行卡"
 				    width="180">
 				</el-table-column>	  
-			<!-- 	<el-table-column
+				<el-table-column
 				  prop="updateTime"
 				  label="更新日期"
 				  width="100">
-				</el-table-column> -->
+				</el-table-column>
 			    <el-table-column
 			      prop="frozenAmount"
 			      label="提现金额"
@@ -72,21 +72,40 @@
 				  width="100">
 			    </el-table-column>
 				<el-table-column
-				  prop="classify"
-				  label="类型">
-				</el-table-column>
-				<el-table-column
 				  prop="state"
-				  label="状态">
+				  label="状态"
+				  width="120">
+				   <template slot-scope="scope">
+						   	<el-select v-model="scope.row.state" placeholder="请选择" 
+							:popper-append-to-body="true" size="mini" @change="cashWithdrawalByAudit( scope.row.state,scope.row.wId)">
+							<el-option
+							  v-for="item in txOptions"
+							  :key="item.type"
+							  :label="item.label"
+							  :value="item.type">
+							</el-option>
+						  </el-select>
+					
+				   </template>
 				</el-table-column>
 				<el-table-column
 				  prop="state"
 				  label="详情">
 				  <template slot-scope="scope">
-				  	<el-button size="mini" type="primary">导出</el-button>
+				  	<el-button size="mini" type="primary">恩恩</el-button>
 				  </template>
 				</el-table-column>
 			  </el-table>
+			  <el-pagination
+			     layout="prev, pager, next"
+			     :total="totalSize"
+			     :page-size="size"
+			      :current-page.sync="currentPage"
+			     @current-change="getTixianList"
+			     @prev-click="prevFn"
+			     @next-click="nextFn"
+			     >
+			   </el-pagination>
 		</div>
 	</div>
 </template>
@@ -99,6 +118,11 @@ export default {
 			tixianStatus:'',
 			tixianClassify:'',
 			tixianList:[],
+			tixianId:0,
+			currentPage:1,
+			size:20,
+			totalPage:0,
+			totalSize:0,
 			txOptions:[{
 				type:'ACCEPTED',
 				code:'1',
@@ -130,14 +154,7 @@ export default {
 				label:'营业额提现',
 			}],
 			tableData:[
-				{
-					date:'2020-02-21 08:32:23',
-					name:'哈哈',
-					tel1:'123212312',
-					tel2:'213123123',
-					vip1:'普通用户',
-					vip2:'vip会员'
-				}
+			
 			]
 		}
 	},
@@ -145,17 +162,43 @@ export default {
 		this.getTixianList()
 	},
 	methods:{
-		getTixianList(){
+		prevFn(){
+			if( this.currentPage>0){
+				this.currentPage--;
+			}
+		},
+		nextFn(){
+			if(this.currentPage<this.totalPage){
+				this.currentPage++;
+			}	
+		},
+		getTixianList:function(){
 			this.http.post(this.api.getWithdrawalAmountAll,
 			{
-				page:1,
-				size:30
-			
+				page:this.currentPage,
+				size:this.size,
+				phone:this.phone,
+				state:this.tixianStatus,
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)
 			          if(res.code == 0){
 						  this.tixianList=res.data.list;
+						  this.totalSize=res.data.total_size;
+						  this.currentPage=res.data.current_page;
 						  // this.refreshLable();
+			          }
+			       });
+		},
+		cashWithdrawalByAudit:function(tixianState,tixianId){
+			this.http.post(this.api.cashWithdrawalByAudit,
+			{
+				id:tixianId,
+				state:tixianState
+			
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						  this.$message.success(res.data)
 			          }
 			       });
 		}

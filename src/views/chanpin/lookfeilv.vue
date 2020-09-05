@@ -17,11 +17,6 @@
 				 >
 				</el-table-column>
 				<el-table-column
-				  prop="foundingPartner"
-				  label="创始合伙人"
-				 >
-				</el-table-column>
-				<el-table-column
 				  prop="coFounder"
 				  label="联合创始人"
 				 >
@@ -38,17 +33,17 @@
 				</el-table-column>
 				<el-table-column
 				  prop="vipMembers"
-				  label="VIP用户"
+				  label="VIP会员"
+				 >
+				</el-table-column>
+				<el-table-column
+				  prop="members"
+				  label="会员"
 				 >
 				</el-table-column>
 				<el-table-column
 				  prop="ordinaryUsers"
 				  label="普通用户"
-				 >
-				</el-table-column>
-				<el-table-column
-				  prop="ordinaryUsers"
-				  label="消费费率"
 				 >
 				</el-table-column>
 			  </el-table>

@@ -122,7 +122,7 @@
 				  prop="discount"
 				  label="折扣" width="80">
 				  <template slot-scope="scope">
-						<el-input v-model="scope.row.discount"></el-input>
+						<el-input v-model="scope.row.discount" max="1" min="0.1"></el-input>
 				  </template>
 				</el-table-column>
 				<el-table-column
@@ -255,8 +255,7 @@ export default {
 			{
 				"id":item.id,
 				"productName":item.productName,
-				"productType":"MAILING",
-				"productUrl":item.productUrl,
+				"productType":"GENERAL",
 				"transactionPrice":item.transactionPrice,
 				"amount":item.amount,
 				"state":item.state,

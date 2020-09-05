@@ -1,7 +1,7 @@
 <template>
 	<div class="main-box">
 		<div class="zh-head">
-			 <el-button type="primary" autofocus="true" plain size="small" @click="statistics=true">交易统计</el-button>
+			 <el-button type="primary" autofocus plain size="small" @click="statistics=true">交易统计</el-button>
 			  <el-button type="success" plain size="small" @click="statistics=false">交易汇总</el-button>
 		</div>
 		<div class="zh-info-box" v-show="statistics">

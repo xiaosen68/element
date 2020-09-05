@@ -27,7 +27,7 @@ export default {
 			this.http.post(this.api.fastRegistration,
 			{
 				phone:this.phone,
-			password:this.password,
+			superiorUserPhone:this.superiorUserPhone,
 			},sessionStorage.getItem('token')).then(res => {
 			          if(res.code == 0){
 						   this.$message({

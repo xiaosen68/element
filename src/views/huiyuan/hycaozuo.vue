@@ -10,7 +10,7 @@
 				<el-input placeholder="请输入内容" type="text" maxlength="5" 
 				prefix-icon="el-icon-search" v-model="userName"></el-input></div> </div>
 				<div class="seach-item">实名状态 <div class="search-input">  
-					<el-select v-model="shiming" placeholder="请选择" :popper-append-to-body="false">
+					<el-select v-model="realNameState" placeholder="请选择" :popper-append-to-body="false">
 						<el-option
 						  v-for="item in smOptions"
 						  :key="item.value"
@@ -31,7 +31,7 @@
 						  </el-select>
 					</div> 
 				</div>
-				<div class="seach-item"><el-button type="primary"  size="small ">查询</el-button></div>
+				<div class="seach-item"><el-button type="primary"  size="small " @click="searchHyFn">查询</el-button></div>
 				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
 			</div>
 			<div class="hyinfo-box">
@@ -79,28 +79,28 @@
 			 <el-dialog title="更改用户等级" :visible.sync="dengjiVisible" width="500px">
 			   <el-form :model="dengjiForm" label-width="120px">
 			     <el-form-item label="用户编号" >
-			       <el-input v-model="dengjiForm.num" ></el-input>
+			       <el-input v-model="dengjiForm.uId" ></el-input>
 			     </el-form-item>
 			     <el-form-item label="用户姓名">
-			      <el-input v-model="dengjiForm.name" ></el-input>
+			      <el-input v-model="dengjiForm.userName" ></el-input>
 			     </el-form-item>
 				 <el-form-item label="用户手机号">
-				  <el-input v-model="dengjiForm.tel" ></el-input>
+				  <el-input v-model="dengjiForm.phone" ></el-input>
 				 </el-form-item>
 				 <el-form-item label="用户等级" >
-				  <el-select v-model="dengjiForm.level" placeholder="请选择">
+				  <el-select v-model="dengjiForm.userLevel" placeholder="请选择">
 				      <el-option
-				        v-for="item in djOptions"
-				        :key="item.value"
-				        :label="item.label"
-				        :value="item.value">
+				        v-for="(item,index) in djOptions"
+				        :key="item.index"
+				        :label="item.userLevelName"
+				        :value="item.userLevel">
 				      </el-option>
 				    </el-select>
 				 </el-form-item>
 			   </el-form>
 			   <div slot="footer" class="dialog-footer">
 			     <el-button @click="dengjiVisible = false">取 消</el-button>
-			     <el-button type="primary" @click="dengjiVisible = false">确 定</el-button>
+			     <el-button type="primary" @click="dengjiChange">确 定</el-button>
 			   </div>
 			 </el-dialog>
 			 <!-- 权限弹框 -->
@@ -283,25 +283,26 @@ export default {
 	data (){
 		return {
 			currentPage:1,
-			size:2,
+			size:20,
 			totalPage:0,
 			totalSize:0,
 			xcurrentPage:1,
-			xsize:1,
+			xsize:10,
 			xtotalPage:0,
 			xtotalSize:0,
 			phone:'',
 			userName:'',
-			shiming:'',
+			realNameState:'',
 			level:'',
 			realNameNum:'',
 			registNum:'',
 			dengjiVisible:false,//修改等级弹框
 			dengjiForm:{
-				name:'www',
-				num:'123123',
-				tel:'1231231231',
-				level:'2',
+				userName:'www',
+				uId:21,
+				phone:'1231231231',
+				userLevel:'hjhj',
+				userLevelName:'哈哈哈'
 			},//修改等级
 			limitsVisible:false,//修改用户权限
 			limitsForm:{
@@ -366,51 +367,57 @@ export default {
 			earningDate:'',
 			smOptions:[
 				{
-				value:'1',
+				value:'',
 				label:'全部'
 				},
 				{
-				value:'2',
+				value:'TO_BE_REVIEWED',
 				label:'审核中'
 				},
 				{
-				value:'3',
+				value:'PASS',
 				label:'已实名'
 				},
 				{
-				value:'4',
+				value:'FAIL',
 				label:'审核失败'
 				},
 				{
-				value:'5',
+				value:'NOT_COMMITTED',
 				label:'未提交'
 				},
 			],
 			djOptions:[
 				{
-				value:'1',
-				label:'创始合伙人'
+				userLevel:'ORDINARY_USERS',
+				userLevelId:6,
+				userLevelName:'普通用户',
 				},
 				{
-				value:'2',
-				label:'联合创始人'
+				userLevel:'MEMBERS',
+				userLevelId:5,
+				userLevelName:'会员',
 				},
 				{
-				value:'3',
-				label:'高级合伙人'
+				userLevel:'VIP_MEMBERS',
+				userLevelId:4,
+				userLevelName:'VIP会员',
 				},
 				{
-				value:'4',
-				label:'业务合伙人'
+				userLevel:'BUSINESS_PARTER',
+				userLevelId:3,
+				userLevelName:'业务合伙人',
 				},
 				{
-				value:'5',
-				label:'VIP会员'
+				userLevel:'SENIOR_PARTNER',
+				userLevelId:2,
+				userLevelName:'高级合伙人',
 				},
 				{
-				value:'6',
-				label:'普通会员'
-				},
+				userLevel:'CO_FOUNDER',
+				userLevelId:1,
+				userLevelName:'联合创始人',
+				}
 			],
 		 tableData: [],
 		}
@@ -450,7 +457,7 @@ export default {
 				size:this.size,
 				phone:this.phone,
 				userName:this.userName,
-			
+				realNameState:this.realNameState
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)
 			          if(res.code == 0){
@@ -464,6 +471,7 @@ export default {
 		},
 		// 发送信息
 		  beizhuFn(userStatus) {
+			  console.log(userStatus.uId)
 		        this.$prompt('请输入推送', '提示', {
 		          confirmButtonText: '确定',
 		          cancelButtonText: '取消',
@@ -487,11 +495,37 @@ export default {
 
 		        });
 		      },
+			  // 修改等级
+			  dengjiChange(){
+				  console.log(this.dengjiForm)
+				 let _this =this;
+				 _this.djOptions.forEach((item)=>{
+					 if(item.userLevel==_this.dengjiForm.userLevel){
+						_this.$set(_this.dengjiForm,'userLevelName',item.userLevelName);
+					 }
+				 })
+				    console.log(this.dengjiForm)
+				  this.http.post(this.api.updateUserLevel,
+				  {
+				  	 userId:this.dengjiForm.uId,
+				  	userLevel:this.dengjiForm.userLevel,
+				  	userLevelName:this.dengjiForm.userLevelName,
+				  
+				  },sessionStorage.getItem('token')).then(res => {
+				  	console.log(res)
+				            if(res.code == 0){
+				  			 this.$message.success(res.data)
+							 this.dengjiVisible=false
+				            }
+				         });
+			  },
 			  dengjiFn:function(item){
 				  console.log(item);
-				  this.$set(this.dengjiForm,'name',item.name);
-				  this.$set(this.dengjiForm,'tel',item.tel);
-				  this.$set(this.dengjiForm,'level',item.level);
+				  this.$set(this.dengjiForm,'userName',item.userName);
+				  this.$set(this.dengjiForm,'phone',item.phone);
+				  this.$set(this.dengjiForm,'uId',item.uId);
+				  this.$set(this.dengjiForm,'userLevelName',item.userLevelName);
+				  this.$set(this.dengjiForm,'userLevel',item.userLevel);
 				  this.dengjiVisible=true;
 				  
 			  },
