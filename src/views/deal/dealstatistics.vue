@@ -12,46 +12,28 @@
 				    stripe
 				    style="width: 100%">
 				    <el-table-column
-				      prop="date"
+				      prop="days"
 				      label="统计日期" >
 				    </el-table-column>
 				    <el-table-column
-				      prop="name"
+				      prop="totalTransactionPrice"
 				      label="NP交易金额">
 				    </el-table-column>
 				    <el-table-column
-				      prop="address"
+				      prop="tiaoshu"
 				      label="Np交易笔数">
 				    </el-table-column>
-					<el-table-column
-					  prop="address"
-					  label="小额快捷金额">
-					</el-table-column>
-					<el-table-column
-					  prop="address"
-					  label="小额快捷笔数">
-					</el-table-column>
-					<el-table-column
-					  prop="address"
-					  label="消费金额">
-					</el-table-column>
-					<el-table-column
-					  prop="address"
-					  label="消费笔数">
-					</el-table-column>
-					<el-table-column
-					  prop="address"
-					  label="提现金额">
-					</el-table-column>
-					<el-table-column
-					  prop="address"
-					  label="提现笔数">
-					</el-table-column>
+					
 				  </el-table>
 				  <!-- 分页 -->
 				  <el-pagination
-				     layout="prev, pager, next"
-				     :total="10">
+				    layout="prev, pager, next"
+				    :total="totalSize"
+				    :page-size="size"
+				     :current-page.sync="currentPage"
+				    @current-change="dealstatisticFn"
+				    @prev-click="prevFn"
+				    @next-click="nextFn">
 				   </el-pagination>
 			</div>
 		
@@ -81,22 +63,13 @@
 						  </el-select>
 					</div> 
 				</div>
-				<div class="seach-item">日期
-					<div class="search-input seach-date">
-						  <el-date-picker
-							value-format='yyyy-MM-dd'
-						      v-model="selectDate"
-						      type="daterange"
-						      range-separator="至"
-						      start-placeholder="开始日期"
-						      end-placeholder="结束日期"
-							  :picker-options='pickerOption'
-							  >
-						    </el-date-picker>
-					</div> 
+				<div class="seach-item">天数
+					<div class="search-input">
+					<el-input placeholder="天数" type="tel" 
+					maxlength="11" size="small"  v-model="days"></el-input></div>
 				</div>
 				
-				<div class="seach-item"><el-button type="primary"  size="small ">查询</el-button></div>
+				<div class="seach-item"><el-button type="primary"  size="small " @click="gethuizongFn">查询</el-button></div>
 				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
 				
 			</div>
@@ -113,6 +86,7 @@ export default {
 		return {
 			statistics:true,//统计显示
 			selectDate:[],//日期范围
+			days:10,
 			pickerOption:{//日期选择器配置
 				disabledDate:function(newDate){
 					if(Date.parse(newDate)>Date.parse(new Date())){
@@ -158,12 +132,60 @@ export default {
 			],
 			collectDate:[{
 				
-			}]
+			}],
+			dayList:[],
+			totalTransactionPrice:[],
+			tiaoshu:[],
+			currentPage:0,
+			size:20,
+			totalSize:0,
 		 }
 	},
+	beforeMount() {
+			this.dealstatisticFn();
+			// this.gethuizongFn();
+	},
 	methods:{
+		prevFn:function(){
+			if(this.currentPage>1){
+					this.currentPage--;
+			}
+		},
+		nextFn:function(){
+			if(this.currentPage<this.totalPage){
+					this.currentPage++;
+			}
+		},
 		beizhuFn:function(item){
 			console.log(item)
+		},
+		gethuizongFn:function(){
+			this.currentPage=1;
+			this.size-this.days;
+			this.dealstatisticFn();
+		},
+		gethuizongdata:function(){
+			let _this=this;
+			_this.collectDate.forEach((item)=>{
+				_this.dayList.push(item.days);
+				_this.tiaoshu.push(item.tiaoshu);
+				_this.totalTransactionPrice.push(item.totalTransactionPrice)
+			})
+		},
+		// 获取数据
+		dealstatisticFn:function(){
+			this.http.post(this.api.transactionStatistics,
+			{
+				 page:this.currentPage,
+				size:this.size,
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						 this.collectDate=res.data.list; 
+						 this.totalSize=res.data.total_size;
+						 this.currentPage=res.data.current_page;
+			          }
+			       });
 		},
 	},
 	filters:{
@@ -175,6 +197,7 @@ export default {
 		}
 	},
 	mounted() {
+		let _this=this;
 		var myChart = echarts.init(document.getElementById('echarts_box'));
 		
 		        // 指定图表的配置项和数据
@@ -205,7 +228,7 @@ export default {
 		            },
 		            xAxis: [
 					{
-					    data: ["2/2","2/3","2/4","2/5","2/6","2/7"]
+					    data: _this.dayList
 					}
 					],
 		            yAxis: [{
@@ -226,7 +249,7 @@ export default {
 		            series: [{
 		                name: '金额',
 		                type: 'bar',
-		                data: [500, 2000, 360, 100, 10000, 2000],
+		                data: _this.totalTransactionPrice,
 						yAxisIndex:0,
 						itemStyle:{
 							normal:{
@@ -237,7 +260,7 @@ export default {
 					{
 					    name: '笔数',
 					    type: 'line',
-					    data: [5, 20, 36, 10, 10, 20],
+					    data: _this.tiaoshu,
 						yAxisIndex:1,
 						itemStyle:{
 							normal:{

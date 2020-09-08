@@ -18,13 +18,14 @@
 		   
 		<el-menu :default-active="defActive" background-color="#434343" text-color="#ffffff" 
 		class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" @select="handSelect" :unique-opened="true" :collapse="isCollapse">
-		  <el-submenu :index="items.index" v-for="(items, indexs) in menuList1" v-if="items.show">
+		  <el-submenu :index="items.permissionId" v-for="(items, indexs) in menuList1">
 		    <template slot="title">
-		      <i :class="items.icon"></i>
-		      <span slot="title">{{items.lable}}</span>
+		      <i :class="iconList[indexs]"></i>
+		      <span slot="title">{{items.pnameZh}}</span>
 		    </template>
 		    <el-menu-item-group>
-		      <el-menu-item :index="item.index" v-if="item.show" v-for="(item,index) in items.children">{{item.lable}}</el-menu-item>
+		      <el-menu-item :index="item.permissionId" 
+			   v-for="(item,index) in items.childPermission">{{item.pnameZh}}</el-menu-item>
 		     </el-menu-item-group>
 		  </el-submenu>
 		</el-menu>
@@ -39,7 +40,7 @@
 				 v-for="item in dynamicTags"
 			     @close="tagsColse(item)"
 				 @click="tagsClick(item)">
-				 {{item.lable}}
+				 {{item.pnameZh}}
 			   </el-tag>
 		   </div>
 		   <router-view></router-view>
@@ -61,223 +62,14 @@ export default {
 		isCollapse: false,
 		isCollapseClass:"el-icon-s-fold",//el-icon-s-unfold,el-icon-s-fold，导航伸缩图标样式
 		menuList1:[
-			{
-				index:'1',
-				lable:'会员管理',
-				show:true,
-				icon:'el-icon-user',
-				children:[
-					{
-						index:'8',
-						lable:'快速注册会员',
-						show:true,//是否显示
-						path:'/home/hysign'
-					},{
-						index:'1-2',
-						lable:'会员信息查询',
-						show:true,
-						path:'/home/hyinfo'
-					},{
-						index:'1-3',
-						lable:'会员操作',
-						show:true,
-						path:'/home/hycaozuo'
-					},{
-						index:'1-4',
-						lable:'实名审核',
-						show:true,
-						path:'/home/shiming'
-					},{
-						index:'1-6',
-						lable:'实名审核信息上传',
-						show:true,
-						path:'/home/shimingsc'
-					},{
-						index:'1-7',
-						lable:'VIP信息变更查询',
-						show:true,
-						path:'/home/vipcx'
-					}
-				]
-			},
-			{
-				index:'2',
-				lable:'商城管理',
-				show:true,
-				icon:'el-icon-office-building',
-				children:[
-					{
-						index:'2-1',
-						lable:'添加商品',
-						show:true,
-						path:'/home/addgoods',
-					},{
-						index:'2-2',
-						lable:'商品列表',
-						show:true,
-						path:'/home/goodslist'
-					},{
-						index:'2-3',
-						lable:'寄售订单查询',
-						show:true,
-						path:'/home/searchorder'
-					}
-					// ,{
-					// 	index:'2-4',
-					// 	lable:'寄售订单查询',
-					// 	show:true,
-					// 	path:'/home/searchorderjs'
-					// }
-					,{
-						index:'2-5',
-						lable:'消费订单查询',
-						show:true,
-						path:'/home/searchconsumeorder'
-					},{
-						index:'2-6',
-						lable:'宣传海报',
-						show:true,
-						path:'/home/postermanage'
-					},{
-						index:'2-7',
-						lable:'类别管理',
-						show:true,
-						path:'/home/goodsclassify'
-					},{
-						index:'2-8',
-						lable:'商户列表',
-						show:true,
-						path:'/home/businesslist',
-					}
-				]
-			},
-			{
-				index:'3',
-				lable:'产品管理',
-				show:true,
-				icon:'el-icon-goods',
-				children:[
-					{
-						index:'3-1',
-						lable:'通道列表',
-						show:true,
-						path:'/home/tongdaolist'
-					},{
-						index:'3-2',
-						lable:'通道费率总览',
-						show:true,
-						path:'/home/lookfeilv'
-					},{
-						index:'3-3',
-						lable:'添加通道',
-						show:true,
-						path:'/home/addtongdao'
-					},{
-						index:'3-4',
-						lable:'信息推送',
-						show:true,
-						path:'/home/informationpush'
-					}
-					
-				]
-			},
-			{
-				index:'4',
-				lable:'交易管理',
-				show:true,
-				icon:'el-icon-s-order',
-				children:[
-					{
-						index:'4-1',
-						lable:'交易查询',
-						show:true,
-						path:'/home/dealquery'
-					},
-					{
-						index:'4-2',
-						lable:'交易汇总',
-						show:true,
-						path:'/home/dealstatics'
-					},
-					{
-						index:'4-3',
-						lable:'分润信息',
-						show:true,
-						path:'/home/fenruninfo'
-					},{
-						index:'4-4',
-						lable:'提现查询',
-						show:true,
-						path:'/home/tixianlist'
-					},
-				]
-			},
-			{
-				index:'5',
-				lable:'平台管理',
-				show:true,
-				icon:'el-icon-printer',
-				children:[
-					{
-						index:'5-1',
-						lable:'平台列表',
-						show:true,
-						path:'/home/terracelist'
-					},
-					{
-						index:'5-2',
-						lable:'添加平台',
-						show:true,
-						path:'/home/addterrace'
-					},
-				]
-			},
-			{
-				index:'6',
-				lable:'账户管理',
-				show:true,
-				icon:'el-icon-s-custom',
-				children:[
-					{
-						index:'6-1',
-						lable:'个人信息管理',
-						show:true,
-						path:'/home/zhinfo'
-					},
-					{
-						index:'6-2',
-						lable:'黑名单管理',
-						show:true,
-						path:'/home/blacklist'
-					}
-				]
-			},
-			{
-				index:'7',
-				lable:'后台管理',
-				show:true,
-				icon:'el-icon-s-custom',
-				children:[
-					{
-						index:'7-1',
-						lable:'菜单管理',
-						show:true,
-						path:'/home/caidan'
-					},
-					{
-						index:'7-2',
-						lable:'权限配置',
-						show:true,
-						path:'/home/quanxian'
-					}
-				]
-			}
 		],//导航数组
 		dynamicTags: [
 		],//标签栏内容
 		breadcrumb:[],//面包屑数组
 		select:{},//储存打开的导航栏内容
-		defActive:'6-1',//默认打开导航栏
+		defActive:'6',//默认打开导航栏
+		hehe:[],
+		iconList:['el-icon-user','el-icon-office-building','el-icon-goods','el-icon-s-order','el-icon-printer','el-icon-s-custom','el-icon-s-custom']
 	}
   },
 	  beforeMount:function(){
@@ -286,14 +78,27 @@ export default {
 		  },sessionStorage.getItem('token')).then(res => {
 		  	console.log(res)
 		            if(res.code == 0){
+						// this.menuList1=res.data;
+						this.hehe=res.data.map((item)=>{
+							if( item.childPermission){
+								 item.childPermission.map((items)=>{
+									 items.permissionId=items.permissionId.toString();
+									 return items
+								 })
+							}
+							item.permissionId=item.permissionId.toString()
+							return item
+						})
+						this.menuList1=this.hehe
+						console.log(this.menuList1)
 		            }
 		         });
 		  
 		  // 加载默认打开的导航栏
 		  this.menuList1.forEach((item)=>{
-			  if(item.children){
-				  item.children.forEach((items)=>{
-					  if(items.index===this.defActive){
+			  if(item.childPermission){
+				  item.childPermission.forEach((items)=>{
+					  if(items.permissionId===this.defActive){
 						   this.tagsAdd(items)
 					  }
 				  })
@@ -326,18 +131,19 @@ export default {
 		},
 		// 导航栏选择
 		handSelect(key,keyPath){
+			console.log(key)
 			let _this=this;
 			// 添加面包屑
 			_this.menuList1.forEach((items)=>{
-					if(items.children){
-						items.children.forEach((item)=>{
-							if(item.index===key){
+					if(items.childPermission){
+						items.childPermission.forEach((item)=>{
+							if(item.permissionId==key){
 								this.tagsAdd(item);
 							}
 						})
 						
 					}else{
-						if(items.index==key){
+						if(items.permissionId==key){
 							this.tagsAdd(items);
 						}
 					}
@@ -349,26 +155,26 @@ export default {
 			this.select=item;
 			this.dynamicTags.forEach((dy)=>{
 				this.$set(dy,'select',false)
-				if(dy.index===this.select.index){
+				if(dy.permissionId===this.select.permissionId){
 					this.$set(dy,'select',true);
 					
 				}
 			})
-			this.defActive=this.select.index;
+			this.defActive=this.select.permissionId;
 			// console.log(this.select.path)
 			this.menuList1.forEach((item)=>{
-				if(item.index===this.select.index[0]){
-					this.breadcrumb[0]=item.lable;
-					if(item.children){
-						item.children.forEach((items)=>{
-							if(items.index===this.select.index)
-							this.breadcrumb[1]=items.lable;
+				if(item.permissionId===this.select.permissionId[0]){
+					this.breadcrumb[0]=item.pnameZh;
+					if(item.childPermission){
+						item.childPermission.forEach((items)=>{
+							if(items.permissionId===this.select.permissionId)
+							this.breadcrumb[1]=items.pnameZh;
 						})
 					}
 					
 				}
 			})
-			this.$router.push({path:this.select.path})
+			this.$router.push({path:this.select.purl})
 		},
 		// 关闭页面标签
 		tagsColse:function(tag){
@@ -382,7 +188,7 @@ export default {
 		// 点击页面标签
 		tagsClick:function(tag){
 			// 不重复点击
-			if( this.select.index!==tag.index){
+			if( this.select.permissionId!==tag.permissionId){
 				 this.sameSelect(tag);
 			}
 		},
@@ -390,11 +196,11 @@ export default {
 		tagsAdd:function(tag){
 			// 判断标签是否已存在
 			if(this.dynamicTags.some((item)=>{
-				return item.index===tag.index
+				return item.permissionId===tag.permissionId
 			})){
 				// 存在
 				this.dynamicTags.forEach((item)=>{
-					if(item.index===tag.index){
+					if(item.permissionId===tag.permissionId){
 						// 判断重复点击不跳转，不重复跳转
 						if(item.select===false){
 							// console.log(tag)
@@ -407,9 +213,9 @@ export default {
 			}else{
 				// 不存在
 				this.dynamicTags.push({
-					index:tag.index,
-					lable:tag.lable,
-					path:tag.path,
+					permissionId:tag.permissionId,
+					pnameZh:tag.pnameZh,
+					purl:tag.purl,
 					select:true,
 				})
 				 this.sameSelect(tag);

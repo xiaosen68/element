@@ -24,9 +24,9 @@
 						<el-select v-model="level" placeholder="请选择" :popper-append-to-body="false">
 							<el-option
 							  v-for="item in djOptions"
-							  :key="item.value"
-							  :label="item.label"
-							  :value="item.value">
+							  :key="item.userLevel"
+							  :label="item.userLevelName"
+							  :value="item.userLevel">
 							</el-option>
 						  </el-select>
 					</div> 

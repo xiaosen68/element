@@ -66,8 +66,10 @@ export default {
 			  });
 	},
 	methods:{
+		
 		// 配置权限菜单
 		quanXIanSure:function(){
+			console.log(this.roleId)
 			this.http.post(this.api.setPermissionRole,
 			{
 				roleId:this.roleId,

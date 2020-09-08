@@ -109,9 +109,9 @@ export default {
 			stateCode:'',
 			userLevel:'',
 			size:20,
-			totalSize:'',
+			totalSize:0,
 			currentPage:0,
-			totalPage:'',
+			totalPage:0,
 		}
 	},
 	beforeMount() {

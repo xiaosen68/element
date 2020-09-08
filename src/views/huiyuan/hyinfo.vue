@@ -20,12 +20,12 @@
 				</div>
 				<div class="seach-item">等级 
 					<div class="search-input">
-						<el-select v-model="dengji" placeholder="请选择" :popper-append-to-body="false">
+						<el-select v-model="level" placeholder="请选择" :popper-append-to-body="false">
 							<el-option
 							  v-for="item in djOptions"
-							  :key="item.value"
-							  :label="item.label"
-							  :value="item.value">
+							 :key="item.userLevel"
+							 :label="item.userLevelName"
+							 :value="item.userLevel">
 							</el-option>
 						  </el-select>
 					</div> 
@@ -207,7 +207,7 @@ export default {
 			phone:'',
 			userName:'',
 			realNameState:'',
-			dengji:'',
+			level:'',
 			realNameNum:'',
 			registNum:'',
 			dialogVisible:false,//详情信息弹框
@@ -239,29 +239,35 @@ export default {
 			],
 			djOptions:[
 				{
-				value:'1',
-				label:'创始合伙人'
+				userLevel:'ORDINARY_USERS',
+				userLevelId:6,
+				userLevelName:'普通用户',
 				},
 				{
-				value:'2',
-				label:'联合创始人'
+				userLevel:'MEMBERS',
+				userLevelId:5,
+				userLevelName:'会员',
 				},
 				{
-				value:'3',
-				label:'高级合伙人'
+				userLevel:'VIP_MEMBERS',
+				userLevelId:4,
+				userLevelName:'VIP会员',
 				},
 				{
-				value:'4',
-				label:'业务合伙人'
+				userLevel:'BUSINESS_PARTER',
+				userLevelId:3,
+				userLevelName:'业务合伙人',
 				},
 				{
-				value:'5',
-				label:'VIP会员'
+				userLevel:'SENIOR_PARTNER',
+				userLevelId:2,
+				userLevelName:'高级合伙人',
 				},
 				{
-				value:'6',
-				label:'普通会员'
-				},
+				userLevel:'CO_FOUNDER',
+				userLevelId:1,
+				userLevelName:'联合创始人',
+				}
 			],
 		 tableData: [],
 		 superiorList:[],
@@ -303,7 +309,8 @@ export default {
 				size:this.size,
 				phone:this.phone,
 				userName:this.userName,
-				realNameState:this.realNameState
+				realNameState:this.realNameState,
+				level:this.level
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)
 			          if(res.code == 0){

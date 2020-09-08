@@ -131,7 +131,7 @@
 					</div>
 				</div>
 				<div class="jt-status">
-					<div class="jt-status-title">王操马汉大酒店王操马汉大酒店王操马汉大酒店</div>
+					<div class="jt-status-title">{{diaodan.merch_name}}</div>
 					<div class="jt-status-money">￥ <span style="color: #ff5500;">{{diaodan.totalTransactionPrice}}</span> </div>
 				</div>
 				<div class="jt-status1">
@@ -149,7 +149,7 @@
 					</div>
 					<div class="jt-status-item">
 						<div class="jt-status-item-title">支付方式</div>
-						<div class="jt-status-item-status">{{diaodan.payBank}}信用卡({{diaodan.payNo|bankFilters}})</div>
+						<div class="jt-status-item-status">{{diaodan.payBank}}信用卡{{diaodan.payNo|bankFilters}}</div>
 					</div>
 					<div class="jt-status-item">
 						<div class="jt-status-item-title">交易类型</div>
@@ -158,11 +158,11 @@
 					
 					<div class="jt-status-item">
 						<div class="jt-status-item-title">交易单号</div>
-						<div class="jt-status-item-status">1231231231122312312423</div>
+						<div class="jt-status-item-status">{{diaodan.orderNo}}</div>
 					</div>
 					<div class="jt-status-item">
 						<div class="jt-status-item-title">商户号</div>
-						<div class="jt-status-item-status">4321312312123123123223</div>
+						<div class="jt-status-item-status">{{diaodan.merch_id}}</div>
 					</div>
 				</div>
 				<div class="js-status2">
@@ -241,7 +241,9 @@ export default {
 					orderNum:'5'
 				},
 			],
-			diaodan:'',
+			diaodan:{
+				payNo:902131203,
+			},
 		}
 	},
 	beforeMount() {
@@ -324,7 +326,7 @@ export default {
 		}
 	},filters:{
 		bankFilters:function(val){
-			return val.substring(val.length-4)
+			return val.toString().substring(val.length-4)
 		}
 	}
 }

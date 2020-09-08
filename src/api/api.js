@@ -21,6 +21,7 @@ export default {
 	updateRealNameState:"/api/v1/admin/account/updateRealNameState",//实名审核
 	creditCardByUserList:"/api/v1/admin/account/creditCardByUserList",//获取信用卡列表
 	savingsCardByUserList:"/api/v1/admin/account/savingsCardByUserList",//获取储蓄卡列表
+	vipChangeUserLevelList:"/api/v1/admin/account/vipChangeUserLevelList",//vip变更信息查询
 	
 	// 商城
 	uploadImage:"/api/v1/admin/upload/image",//上传图片
@@ -64,6 +65,7 @@ export default {
 	getUserRevelPage:"/api/v1/admin/account/getUserRevelPage",//分润信息查询
 	getWithdrawalAmountAll:"/api/v1/admin/account/getWithdrawalAmountAll",//提现信息查询
 	cashWithdrawalByAudit:"/api/v1/admin/account/cashWithdrawalByAudit",//提现信息审核
+	transactionStatistics:"/api/v1/admin/mall/transactionStatistics",//交易汇总
 	// 账户管理
 	
 	backgroundQueryUser:"/api/v1/admin/account/backgroundQueryUser",//个人信息管理
