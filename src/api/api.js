@@ -60,6 +60,7 @@ export default {
 	getPassageWayBankByPassageWayId:"/api/v1/admin/passageway/getPassageWayBankByPassageWayId",//查看银行卡支持列表
 	getPassageWay:"/api/v1/admin/passageway/getPassageWay",//通道费率总览
 	addPassageWay:"/api/v1/admin/passageway/addPassageWay",//添加通道
+	findByPlatformMessageAll:"/api/v1/pri/meassage/findByPlatformMessageAll",//获取推送信息列表
 	// 交易管理
 	
 	getUserRevelPage:"/api/v1/admin/account/getUserRevelPage",//分润信息查询

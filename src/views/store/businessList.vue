@@ -146,17 +146,17 @@
 			<div class="hyinfo-box haha">
 				<div class="sign-waring"> 实名商户: <b class="font-fei">123123</b></div>
 				  <el-table :data="registerList" stripe style="width: 100%" :highlight-current-row="true">
-				    <el-table-column prop="infoMerchType" label="类型">
+				    <el-table-column prop="logMerchType" label="类型">
 				    	 <template slot-scope="scope">{{scope.row.logMerchType | merchTypefilter}} </template>
 				    </el-table-column>
 					<el-table-column prop="uUserName" label="姓名"></el-table-column>
 				    <el-table-column prop="uPhone" label="手机号"> </el-table-column>
-					<el-table-column prop="infoMerchType" label="状态">
+					<el-table-column prop="logState" label="状态">
 						 <template slot-scope="scope">{{scope.row.logState | logState}} </template>
 					</el-table-column>
-					<el-table-column prop="dengji" label="操作">
-						<template slot-scope="scope">
-							<el-button size="small">重新注册</el-button>
+					<el-table-column prop="logState" label="操作">
+						<template slot-scope="scope" v-if="scope.row.logState=='"MERCH_LOGIN_FAILED"'">
+							<el-button size="small" @click="setMerchFn(scope.row)">重新注册</el-button>
 						</template>
 					</el-table-column>
 					
@@ -189,6 +189,7 @@ export default {
 			merchStatu:'',
 			merchId:'',
 			phone:'',
+			cardId:'',
 			merchTypeOp:[
 				{
 					merchType:'MERCHANTS',
@@ -221,6 +222,34 @@ export default {
 		// this.registerMerchFailedLogPage();
 	},
 	methods:{
+		// 重新注册
+		setMerchFn:function(user){
+			console.log(user)
+			this.http.post(this.api.savingsCardByUserList,
+			{
+				userId:user.uId,
+			},sessionStorage.getItem('token')).then(res => {
+			          if(res.code == 0){
+							if(res.data[0].id){
+								this.cardId=res.data[0].id;
+								// 若是开通店铺，注册店铺号。
+							this.http.post(this.api.setMerch,
+							{
+								userId:user.uId,
+								merchType:user.logMerchType,
+								cardId:this.cardId,
+							},sessionStorage.getItem('token')).then(res => {
+								console.log(res)
+									  if(res.code == 0){
+										
+									  }
+								   });		 
+							}else{
+								this.$message.warning('会员未绑定银行卡')
+							}
+						}
+			 })
+		},
 		statisticsFn:function(t){
 			if(t){
 				this.statistics=true;

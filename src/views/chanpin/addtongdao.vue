@@ -116,6 +116,7 @@
 			bankList:this.getBankList(this.bankListstring)},sessionStorage.getItem('token')).then(res => {
 									   if(res.code == 0){
 										  console.log(res)
+										  this.$message.success(res.data)
 									   }
 									}); 
 			}

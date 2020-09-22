@@ -41,17 +41,13 @@
 				    stripe
 				    style="width: 100%">
 					 <el-table-column
-					      type="index"
+					     prop="id"
+					     label="id"
 					      width="50">
 					    </el-table-column>
 				    <el-table-column
-				      prop="startDate"
+				      prop="create_time"
 				      label="创建日期"
-				      width="100">
-				    </el-table-column>
-				    <el-table-column
-				      prop="endDate"
-				      label="结束日期"
 				      width="100">
 				    </el-table-column>
 				    <el-table-column
@@ -60,8 +56,8 @@
 					  width="140">
 				    </el-table-column>
 					<el-table-column
-					  prop="people"
-					  label="推送等级"
+					  prop="sort"
+					  label="排序"
 					  width="100">
 					</el-table-column>
 					<el-table-column
@@ -122,24 +118,16 @@ export default {
 			dialogFormVisible:false,//推送弹框
 			formLabelWidth:'120px',
 			tableData:[{
-				startDate:'2020/02/20 23:12:12',
-				endDate:'2020/02/20 23:12:12',
+				create_time:'2020/02/20 23:12:12',
+				id:'2020/02/20 23:12:12',
 				title:'很重很重要很重要要',
-				people:'不限',
-				content:'啊实打实大多撒所大所大所多',
+				content:'不限',
+				sort:'啊实打实大多撒所大所大所多',
 			}]
 		}
 	},
 	beforeMount() {
-		// this.http.get(this.api.findByPlatformMessage,
-		// {
-		// },sessionStorage.getItem('token')).then(res => {
-		// 	console.log(res)
-		//           if(res.code == 0){
-		// 			 this.$message.success(res.data)
-		// 			 this.dialogFormVisible=false;
-		//           }
-		//        });
+		this.findByPlatformMessageAll();
 	},
 	methods:{
 		subMessageFn:function(){
@@ -156,6 +144,18 @@ export default {
 						 this.dialogFormVisible=false;
 			          }
 			       });
+			},
+			findByPlatformMessageAll:function(){
+				this.http.get(this.api.findByPlatformMessageAll,
+				{
+				},sessionStorage.getItem('token')).then(res => {
+					console.log(res)
+				          if(res.code == 0){
+							  this.tableData=res.data.list;
+							 this.$message.success(res.data)
+							 this.dialogFormVisible=false;
+				          }
+				       });
 			}
 		},
 }

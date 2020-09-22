@@ -10,7 +10,7 @@ import './plugins/element.js'
 
 Vue.prototype.api = api;
 Vue.prototype.http =http;
-
+// process.env.VUE_APP_BASE_URL="http://47.96.91.58:8088/huqing"
 Vue.config.productionTip = false
 console.log(process.env.VUE_APP_BASE_URL)
 new Vue({

@@ -77,7 +77,7 @@
 			  	formData,sessionStorage.getItem('token')).then(res => {
 			  		console.log(res)
 			  	          if(res.code == 0){
-							  this.uploadUrl=res.data;
+							  this.uploadUrl=res.data.url;
 			  	          }
 			  	       });
 			  },
@@ -104,7 +104,6 @@
 	        },
 			// 删除海报
 			deleteImg:function(n){
-				console.log(n)
 				this.http.post(this.api.deleteSharingPoster,
 				{
 					id:n

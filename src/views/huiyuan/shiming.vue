@@ -45,7 +45,7 @@
 					<template slot-scope="scope" v-if="scope.row.state==='PASS'">
 						
 					</template>
-					<template slot-scope="scope" v-else>
+					<template slot-scope="scope" v-if-else="scope.row.state==='TO_BE_REVIEWED'">
 						<el-button size="small" type="text" @click="updateRealNameState(scope.row.user_id,'PASS')">通过</el-button>
 						<el-button size="small" type="text" @click="updateRealNameState(scope.row.user_id,'FAIL')">不通过</el-button>
 					</template slot-scope="scope">

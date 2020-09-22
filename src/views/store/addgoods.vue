@@ -180,7 +180,7 @@ export default {
 			this.http.post(this.api.uploadImage,
 			formData,sessionStorage.getItem('token')).then(res => {
 			          if(res.code == 0){
-						  this.jsGoods.productUrl=res.data
+						  this.jsGoods.productUrl=res.data.url
 			          }
 			       });
 		},
@@ -192,7 +192,7 @@ export default {
 			this.http.post(this.api.uploadImage,
 			formData,sessionStorage.getItem('token')).then(res => {
 			          if(res.code == 0){
-						  this.xfGoods.productUrl=res.data
+						  this.xfGoods.productUrl=res.data.url
 			          }
 			       });
 		},
@@ -204,13 +204,13 @@ export default {
 			this.http.post(this.api.uploadImage,
 			formData,sessionStorage.getItem('token')).then(res => {
 			          if(res.code == 0){
-						  this.xfGoods.productDetailsUrl=res.data
+						  this.xfGoods.productDetailsUrl=res.data.url
 			          }
 			       });
 		},
 		// 添加寄售商品
 		addJsFN(){
-			console.log(this.jsGoods.productUrl)
+			console.log(this.jsGoods)
 			this.http.post(this.api.addMailingProduct,
 			{
 				 "productName":this.jsGoods.productName,
@@ -231,6 +231,7 @@ export default {
 		},
 		// 添加消费商品
 		addXfFn(){
+			console.log(this.xfGoods)
 			if(this.xfGoods.discount>1||this.xfGoods.discount<=0){
 				this.$message.error('折扣数额不能大于1，小于0');
 				return false
@@ -249,7 +250,6 @@ export default {
 				"reason":this.xfGoods.reason,
 				"discount":this.xfGoods.discount,
 				"lable":this.selectClassify.toString(),
-			
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)
 			          if(res.code == 0){

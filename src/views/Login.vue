@@ -18,8 +18,8 @@ export default {
   },
   data (){
 	return {
-		phone:'13071035369',
-		password:'111',
+		phone:'',
+		password:'',
 		checked:true
 	}  
   },

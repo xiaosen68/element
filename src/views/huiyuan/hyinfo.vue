@@ -162,7 +162,7 @@
 				 <el-table-column property="balance" label="余额"></el-table-column>
 				 <el-table-column property="frozenAmount" label="冻结余额"></el-table-column>
 				 <el-table-column property="score" label="账户积分"></el-table-column>
-				 <el-table-column property="phone" label="收益余额"></el-table-column>
+				 <el-table-column property="turnover" label="收益余额"></el-table-column>
 			   </el-table>
 			   <!-- 下级分页 -->
 			   <el-pagination

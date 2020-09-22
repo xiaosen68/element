@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { Message } from 'element-ui';
-let localhosts = process.env.VUE_APP_BASE_URL;   //请求的后台域名
-
+let localhosts = "http://47.96.91.58:8088/huqing";   //请求的后台域名
 
 axios.interceptors.request.use(config => {//请求之前(可以设置token)
 // console.log(config)

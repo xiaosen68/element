@@ -54,7 +54,7 @@
 				  prop="productUrl"
 				  label="图片">
 				  <template slot-scope="scope">
-					  <img :src="scope.row.productUrl|changUrl" />
+					  <img class="product-img-scope" :src="scope.row.productUrl|changUrl" />
 					<!--  <el-image
 					       style="width: 100px; height: 100px"
 					       :src="scope.row.productUrl"
@@ -287,5 +287,8 @@ export default {
 </script>
 
 <style>
-	
+	.product-img-scope{
+		width: 100px;
+		
+	}
 </style>

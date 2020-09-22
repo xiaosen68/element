@@ -313,6 +313,7 @@ export default {
 			},//修改用户权限
 			limitsOption:[
 			],
+			cardId:'',//开通商户时的结算卡信息
 			blackVisible:false,//拉入黑名单
 			blackForm:{
 				userName:'',
@@ -532,28 +533,73 @@ export default {
 			  // 打开权限弹框
 			  limitsFN:function(item){
 				console.log(item);
-				
 				this.$set(this.limitsForm,'userName',item.userName);
 				this.$set(this.limitsForm,'userId',item.uId);
 				  this.limitsVisible=true;
 			  },
 			  // 设置权限
 			  setlimitsFn:function(){
-				  console.log(this.limitsForm)
-				  this.http.post(this.api.setUserRole,
-				  {
-				  	userName:this.limitsForm.userName,
-				  	remarks:this.limitsForm.remarks,
-				  	userId:this.limitsForm.userId,
-				  	roleId:this.limitsForm.roleId,
-				  },sessionStorage.getItem('token')).then(res => {
-				  	console.log(res)
-				            if(res.code == 0){
-				  			 this.$message.success(res.data)
-							 this.limitsVisible=false;
-				            }
-				         });
-				  
+				  if(this.limitsForm.roleId==5){
+					  this.http.post(this.api.savingsCardByUserList,
+					  {
+					  	userId:this.limitsForm.userId,
+					  },sessionStorage.getItem('token')).then(res => {
+					            if(res.code == 0){
+									if(res.data[0].id){
+										this.cardId=res.data[0].id;
+										// 修改权限
+										this.http.post(this.api.setUserRole,
+										{
+											userName:this.limitsForm.userName,
+											remarks:this.limitsForm.remarks,
+											userId:this.limitsForm.userId,
+											roleId:this.limitsForm.roleId,
+										},sessionStorage.getItem('token')).then(res => {
+											console.log(res)
+										          if(res.code == 0){
+													  // 若是开通店铺，注册店铺号。
+													   	this.http.post(this.api.setMerch,
+													   	{
+													   		userId:this.limitsForm.userId,
+													   		merchType:'SHOP',
+													   		cardId:this.cardId,
+													   	},sessionStorage.getItem('token')).then(res => {
+													   		console.log(res)
+													   	          if(res.code == 0){
+													  				
+													   	          }
+													   	       });	
+													 this.$message.success(res.data)
+													 this.limitsVisible=false;
+													}
+																	
+										       });
+										
+									}else{
+										this.$message.warning('会员未绑定银行卡')
+									}
+					            }
+					         });		
+							  
+					}else{
+						// 修改权限
+						this.http.post(this.api.setUserRole,
+						{
+							userName:this.limitsForm.userName,
+							remarks:this.limitsForm.remarks,
+							userId:this.limitsForm.userId,
+							roleId:this.limitsForm.roleId,
+						},sessionStorage.getItem('token')).then(res => {
+							console.log(res)
+						          if(res.code == 0){
+									 this.$message.success(res.data)
+													 this.limitsVisible=false;
+													 }
+													
+						       });
+					
+					}
+				
 			  },
 			  // 打开黑名单弹框
 			  blackFN:function(item){
