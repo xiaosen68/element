@@ -12,7 +12,7 @@ module.exports = {
          hotOnly: true, //是否开启热更新
          proxy: {
 			 '/dev':{
-				 target:'http://localhost:8081/huqing',
+				 target:'http://localhost:8081',
 				 // target:'http://47.96.91.58:8081',
 				 ws: true,
 				 changeOrigin: true,

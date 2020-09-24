@@ -22,34 +22,44 @@
 				<el-table-column  prop="id_number" label="身份证号" > </el-table-column>
 				<el-table-column  prop="photo" label="查看照片" >
 					<template slot-scope="scope">
-					<el-popover  placement="right"trigger="click">
+					<el-popover  placement="right" trigger="click">
 						<div class="photo-box">
-							<el-image style="width: 280px; height: 280px"
-							    :src="scope.row.front_phone_of_id_card" 
-							    >
+							<el-image style="width: 280px; height: 280px ;margin: 20px;" 
+							    :src="scope.row.front_photo_of_id_card" 
+								 >
 							  </el-image>
-							  <el-image style="width: 280px; height: 280px"
-							      :src="scope.row.reverse_phone_of_id_card" 
+							 <el-image style="width: 280px; height: 280px ;margin: 20px;"
+							      :src="scope.row.reverse_photo_of_id_card" 
 							      >
 							    </el-image>
-								<el-image style="width: 280px; height: 280px"
+								<el-image style="width: 280px; height: 280px;margin: 20px;"
 								    :src="scope.row.holding_id_card" 
 								    >
-								  </el-image>
+								  </el-image> 
 						</div>
 						<el-button size="small"  slot="reference" @click="">查看</el-button>
 					 </el-popover>
 					</template >
 				</el-table-column>
 				<el-table-column   label="操作"  > 
-					<template slot-scope="scope" v-if="scope.row.state==='PASS'">
+					<!-- <template slot-scope="scope" v-if="scope.row.state==='PASS'">
 						
 					</template>
 					<template slot-scope="scope" v-if-else="scope.row.state==='TO_BE_REVIEWED'">
 						<el-button size="small" type="text" @click="updateRealNameState(scope.row.user_id,'PASS')">通过</el-button>
 						<el-button size="small" type="text" @click="updateRealNameState(scope.row.user_id,'FAIL')">不通过</el-button>
-					</template slot-scope="scope">
-					
+					</template slot-scope="scope"> -->
+					<template slot-scope="scope"v-if="scope.row.state==='TO_BE_REVIEWED'">
+							<el-button size="small"   type="text"
+							@click="updateRealNameState(scope.row.user_id,'PASS')">通过</el-button>
+							<el-button size="small" type="text" 
+							@click="updateRealNameState(scope.row.user_id,'FAIL')">不通过</el-button>
+						</template>
+						
+						<template slot-scope="scope" v-else-if="scope.row.state==='PASS'" >
+						<el-button size="small" type="text"
+						@click="dialogVisibleFn(scope.row)">查看详情</el-button>
+					</template>
 				</el-table-column>
 				<el-table-column  prop="state" label="审核状态">
 					<template slot-scope="scope">
@@ -68,7 +78,54 @@
 			   @next-click="nextFn"
 			   >
 			 </el-pagination>
+			 <el-dialog
+			   title="详情信息"
+			   :visible.sync="dialogVisible"
+			   width="80%"
+			   >
+			 	   <div class="xiangqing-box1">
+			 		   <div class="dialog-box-item">
+			 			<span class="dialog-box-title">真实姓名：</span> 
+			 			<span class="dialog-box-value">{{dialogValue.front_name}}({{dialogValue.front_sex}})</span>
+			 		   </div>
+			 		   <div class="dialog-box-item">
+			 			<span class="dialog-box-title">身份证地址：</span> 
+			 			<span class="dialog-box-value">{{dialogValue.front_address}}</span>
+			 		   </div>
+			 		   <div class="dialog-box-item">
+			 			<span class="dialog-box-title">身份证有效期：</span> 
+			 			<span class="dialog-box-value">{{dialogValue.back_timelimit}}</span>
+			 		   </div>
+			 		   <div class="dialog-box-item">
+			 			<span class="dialog-box-title">身份证号：</span> 
+			 			<span class="dialog-box-value">{{dialogValue.front_number}}</span>
+			 		   </div>
+			 		   <div class="dialog-box-item">
+			 			<span class="dialog-box-title">实名审核：</span> 
+			 			<span class="dialog-box-value">{{ dialogValue.realNameState|realNameFilter}}</span>
+			 		   </div>
+			 		   <div class="dialog-box-item">
+			 			<span class="dialog-box-title">手机号：</span> 
+			 			<span class="dialog-box-value">{{dialogValue.phone}}</span>
+			 		   </div>
+			 		 <div class="photo-box">
+			 		 	<el-image style="width: 180px; height: 180px ;margin: 20px;" 
+			 		 	    :src="dialogValue.front_photo_of_id_card" 
+			 		 		 >
+			 		 	  </el-image>
+			 		 	 <el-image style="width: 180px; height: 180px ;margin: 20px;"
+			 		 	      :src="dialogValue.reverse_photo_of_id_card" 
+			 		 	      >
+			 		 	    </el-image>
+			 		 		<el-image style="width: 180px; height: 180px;margin: 20px;"
+			 		 		    :src="dialogValue.holding_id_card" 
+			 		 		    >
+			 		 		  </el-image> 
+			 		 </div>
+			 	   </div>
+			 </el-dialog>
 		</div>
+		
 	</div>
 </template>
 
@@ -87,14 +144,20 @@ export default {
 			tableData:[{
 				
 			}
-			]
+			],
+			dialogValue:{},
+			dialogVisible:false
 		}
+		
 	},
 	beforeMount(){
 		this.userRealNameListPage();
 	},
 	methods:{
-		
+		dialogVisibleFn:function(item){
+			this.dialogValue=item;
+			this.dialogVisible=true;
+		},
 		prevFn(){
 			if( this.currentPage>0){
 				this.currentPage--;

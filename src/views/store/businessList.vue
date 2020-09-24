@@ -155,7 +155,7 @@
 						 <template slot-scope="scope">{{scope.row.logState | logState}} </template>
 					</el-table-column>
 					<el-table-column prop="logState" label="操作">
-						<template slot-scope="scope" v-if="scope.row.logState=='"MERCH_LOGIN_FAILED"'">
+						<template slot-scope="scope" v-if="scope.row.logState=='MERCH_LOGIN_FAILED'">
 							<el-button size="small" @click="setMerchFn(scope.row)">重新注册</el-button>
 						</template>
 					</el-table-column>
