@@ -29,7 +29,7 @@
 				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
 			</div>
 			<div class="hyinfo-box">
-				<div class="sign-waring"> 实名商户: <b class="font-fei">123123</b></div>
+				<div class="sign-waring"> 实名商户: <b class="font-fei">{{totalPeople}}</b></div>
 				  <el-table :data="tableData" stripe style="width: 100%" :highlight-current-row="true">
 					<el-table-column type="index"width="40"></el-table-column>
 					<el-table-column prop="uId" label="id"></el-table-column>
@@ -144,7 +144,7 @@
 				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
 			</div>
 			<div class="hyinfo-box haha">
-				<div class="sign-waring"> 实名商户: <b class="font-fei">123123</b></div>
+				<div class="sign-waring"> 实名商户: <b class="font-fei">{{wTotalPeople}}</b></div>
 				  <el-table :data="registerList" stripe style="width: 100%" :highlight-current-row="true">
 				    <el-table-column prop="logMerchType" label="类型">
 				    	 <template slot-scope="scope">{{scope.row.logMerchType | merchTypefilter}} </template>
@@ -178,6 +178,8 @@ export default {
 		return {
 			statistics:true,
 			name:'',
+			totalPeople:'',//商户个数
+			wTotalPeople:'',//注册失败个数
 			dialogVisible:false,//详情信息弹框
 			dialogValue:{},
 			tableData: [],
@@ -284,6 +286,7 @@ export default {
 				console.log(res)
 			          if(res.code == 0){
 						  this.registerList=res.data.list;
+						  this.wTotalPeople=res.data.total_size;
 						  this.registerList.forEach((item)=>{
 							  _this.registerMerchFailedLogByLogId(item.logId)
 							  // console.log(_this.registerMerchFailedLogByLogId(item.logId))
@@ -306,7 +309,8 @@ export default {
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)
 			          if(res.code == 0){
-						  this.tableData=res.data.list
+						  this.tableData=res.data.list;
+						  this.totalPeople=res.data.total_size;
 			          }
 			       });
 		},

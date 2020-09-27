@@ -146,13 +146,13 @@ export default {
 			       });
 			},
 			findByPlatformMessageAll:function(){
-				this.http.get(this.api.findByPlatformMessageAll,
+				this.http.post(this.api.findByPlatformMessageAll,
 				{
 				},sessionStorage.getItem('token')).then(res => {
 					console.log(res)
 				          if(res.code == 0){
 							  this.tableData=res.data.list;
-							 this.$message.success(res.data)
+							 this.$message.success(res.data.type)
 							 this.dialogFormVisible=false;
 				          }
 				       });
