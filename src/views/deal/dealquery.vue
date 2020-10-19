@@ -71,7 +71,7 @@
 					<el-table-column prop="orderNo" label="订单编号"> 
 						<template slot-scope="scope">
 							<div>{{scope.row.orderNo | cardNumFilter}}</div>
-							<el-button size="small" type="text" @click="jiaoyiShow()">查看详情</el-button>
+							<el-button size="small" type="text" @click="jiaoyiShow(scope.row)">查看详情</el-button>
 						</template>	
 					</el-table-column>
 					<el-table-column prop="payNo" label="交易卡">
@@ -95,29 +95,29 @@
 			<!-- 用户信息 -->
 			<el-dialog  title="用户信息" :visible.sync="userInfoPopo"  width="60%" >
 				<div class="user-box">
-					<div>姓名：<b>{{userInfo.name}}</b></div>
-					<div>手机号：<b>{{userInfo.tel}}</b></div>
-					<div>身份证号：<b>{{userInfo.idCard}}</b></div>
-					<div>银行名称：<b>{{userInfo.bankName}}</b></div>
-					<div>银行卡号：<b>{{userInfo.bankNum}}</b></div>
-					<div>用户上传照片：
+					<div>姓名：<b>{{userInfo.realName}}</b></div>
+					<div>手机号：<b>{{userInfo.phone}}</b></div>
+					<div>身份证号：<b>{{userInfo.idNumber}}</b></div>
+					<div>银行卡号：<b>{{userInfo.payNo}}</b></div>
+				<!-- 	<div>用户上传照片：
 						<el-image  style="width: 120px; height: 100px; margin-left: 20px; " v-for="item in userInfo.picList" :src="item"  :preview-src-list=" userInfo.picList"> </el-image>
-					</div>
+					</div> -->
 				</div>
 			</el-dialog>
 			<!-- 交易信息 -->
 			<el-dialog  title="用户信息" :visible.sync="jiaoyiInfoPopo"  width="60%" >
 				<div class="jiaoyi-box">
-					<div>交易时间：<b>{{userInfo.name}}</b></div>
-					<div>姓名：<b>{{userInfo.tel}}</b></div>
-					<div>总金额：<b>{{userInfo.idCard}}</b></div>
-					<div>刷卡费率：<b>{{userInfo.bankName}}</b></div>
-					<div>商品订单号：<b>{{userInfo.bankNum}}</b></div>
-					<div>交易订单号：<b>{{userInfo.bankNum}}</b></div>
-					<div>支付通道：<b>{{userInfo.name}}</b></div>
-					<div>出款卡：<b>{{userInfo.bankNum}}</b></div>
-					<div>到账卡：<b>{{userInfo.bankNum}}</b></div>
-					<div>商户订单编号：<b>{{userInfo.bankNum}}</b></div>
+					<div>交易时间：<b>{{userInfo.createTime}}</b></div>
+					<div>姓名：<b>{{userInfo.realName}}</b></div>
+					<div>总金额：<b>{{userInfo.totalTransactionPrice}}</b></div>
+					<div>刷卡费率：<b>{{userInfo.rate}}</b></div>
+					<div>手续费：<b>{{userInfo.fee}}</b></div>
+					<div>交易订单号：<b>{{userInfo.orderNo}}</b></div>
+					<div>支付通道：<b>{{userInfo.passageWayName}}</b></div>
+					<div>结算卡：<b>{{userInfo.payNo}}</b></div>
+					<div>到账卡：<b>{{userInfo.payNo}}</b></div>
+					<div>商户名：<b>{{userInfo.merchName}}</b></div>
+					<div>商户订单编号：<b>{{userInfo.merchId}}</b></div>
 					<div>描述：<b>{{userInfo.name}}</b></div>
 					<div>类型：<b>{{userInfo.name}}</b></div>
 					<div>状态：<b>{{userInfo.name}}</b></div>
@@ -145,13 +145,7 @@ export default {
 		return {
 			userInfoPopo:false,//用户信息弹框
 			userInfo:{
-				name:'haha',
-				tel:'12312312',
-				idCard:'123123123213123',
-				bankName:'民生银行',
-				bankNum:'12312312312312312',
-				picList:[require('../../assets/n1.jpg'),require('../../assets/n2.jpg'),require('../../assets/n3.jpg')],
-			},
+				},
 			jiaoyiInfoPopo:false,//交易详情信息弹框
 			phone:'',
 			realName:'',
@@ -166,7 +160,7 @@ export default {
 			orderDate:'',
 			payNo:'',
 			page:0,
-			size:0,
+			size:20,
 			dealsClass:[
 				{
 				value:'1',
@@ -199,30 +193,7 @@ export default {
 				label:'交易待结算'
 				}
 			],
-		 tableData: [{
-		          date: '2016-05-02',
-		          name: '王小虎',
-				  tel:'13012131',
-				  money1:'12312312',
-				  feilv:1,
-				  money2:2,
-				  dingdan:'123123123123123123',
-				  xinyongka:
-					  {
-						  cardName:'中国银行',
-						  cardNum:'23123123123123'
-					  }
-				  ,
-				  chuxvka:
-					  {
-						  cardName:'中国银行',
-						  cardNum:'213123123123'
-					  }
-				  ,
-				  tongdao:'KS小额',
-				  status:'2',
-				  miaoshu:'qwe',
-		        }],
+		 tableData: [],
 				
 		}
 	},
@@ -247,10 +218,12 @@ export default {
 		beizhuFn:function(item){
 			console.log(item)
 		},
-		showUserInfo:function(){
+		showUserInfo:function(item){
+			this.userInfo=item;
 			this.userInfoPopo=true;
 		},
-		jiaoyiShow:function(){
+		jiaoyiShow:function(item){
+			this.userInfo=item;
 			this.jiaoyiInfoPopo=true;
 		},
 		// 查询交易信息

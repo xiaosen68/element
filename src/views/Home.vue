@@ -131,7 +131,7 @@ export default {
 		},
 		// 导航栏选择
 		handSelect(key,keyPath){
-			console.log(key)
+			// console.log(key)
 			let _this=this;
 			// 添加面包屑
 			_this.menuList1.forEach((items)=>{

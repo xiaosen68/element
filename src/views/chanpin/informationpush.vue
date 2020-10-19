@@ -17,7 +17,7 @@
 			    <el-form-item label="推送标题" :label-width="formLabelWidth">
 			      <el-input v-model="form.title" autocomplete="off"></el-input>
 			    </el-form-item>
-				<el-form-item label="推送人员等级" :label-width="formLabelWidth">
+				<!-- <el-form-item label="推送人员等级" :label-width="formLabelWidth">
 				  <el-select v-model="form.sort" placeholder="请选择">
 				      <el-option
 				        v-for="item in options"
@@ -26,6 +26,9 @@
 				        :value="item.value">
 				      </el-option>
 				    </el-select>
+				</el-form-item> -->
+				<el-form-item label="排序" :label-width="formLabelWidth">
+				  <el-input v-model="form.sort" autocomplete="off"></el-input>
 				</el-form-item>
 				<el-form-item label="推送内容" :label-width="formLabelWidth">
 				  <el-input type="textarea" v-model="form.content" autocomplete="off"></el-input>

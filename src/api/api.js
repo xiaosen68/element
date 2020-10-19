@@ -44,7 +44,8 @@ export default {
 	findSharingPosters:"/api/v1/admin/mall/findSharingPosters",//获取分享海报
 	saveSharingPoster:"/api/v1/admin/mall/saveSharingPoster",//新增海报
 	deleteSharingPoster:"/api/v1/admin/mall/deleteSharingPoster",//删除海报
-	getMailingOrder:"/api/v1/admin/mall/getMailingOrder",//订单查询
+	getMailingOrder:"/api/v1/admin/mall/getMailingOrder",//寄售订单查询
+	getGeneralOrder:"/api/v1/admin/mall/getGeneralOrder",//销售订单列表查询
 	transactionInquiry:"api/v1/admin/mall/transactionInquiry",//交易查询
 	getMailingOrderById:"/api/v1/admin/mall/getMailingOrderById",//根据寄售订单id查询订单详情
 	getGeneralOrderById:"/api/v1/admin/mall/getGeneralOrderById",//根据销售订单id查询订单详情
@@ -67,6 +68,7 @@ export default {
 	getWithdrawalAmountAll:"/api/v1/admin/account/getWithdrawalAmountAll",//提现信息查询
 	cashWithdrawalByAudit:"/api/v1/admin/account/cashWithdrawalByAudit",//提现信息审核
 	transactionStatistics:"/api/v1/admin/mall/transactionStatistics",//交易汇总
+	queryOrderSettlement:"/api/v1/admin/account/queryOrderSettlement",//结算信息查询
 	// 账户管理
 	
 	backgroundQueryUser:"/api/v1/admin/account/backgroundQueryUser",//个人信息管理

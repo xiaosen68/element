@@ -545,7 +545,7 @@ export default {
 					  	userId:this.limitsForm.userId,
 					  },sessionStorage.getItem('token')).then(res => {
 					            if(res.code == 0){
-									if(res.data[0].id){
+									if(res.data[0]){
 										this.cardId=res.data[0].id;
 										// 修改权限
 										this.http.post(this.api.setUserRole,

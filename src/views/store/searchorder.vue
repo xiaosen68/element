@@ -99,14 +99,14 @@
 				  prop="payBank"
 				  label="交易卡">
 				  <template slot-scope="scope">
-					  {{payBank}}{{payNo}}
+					  {{scope.row.payBank}}{{scope.row.payNo}}
 				  </template>
 				</el-table-column>
 				<el-table-column
 				  prop="receiveBank"
 				  label="结算卡">
 				  <template slot-scope="scope">
-					  {{receiveBank}}{{receiveNo}}
+					  {{scope.row.receiveBank}}{{scope.row.receiveNo}}
 				  </template>
 				</el-table-column>
 			  </el-table>
@@ -117,7 +117,7 @@
 		  width="380px"
 		  @closed="jtClose"
 		  >
-			<div class="jt-box" id="jtbox" @click="saveImg">
+			<div class="jt-box" id="jtbox">
 				<div class="jt-header">
 					<b class="jt-time">{{jtTime}}</b>
 					<img class="jt-icon" src="../../assets/wi3.png" />
@@ -131,7 +131,8 @@
 					</div>
 				</div>
 				<div class="jt-status">
-					<div class="jt-status-title">{{diaodan.merch_name}}</div>
+					<div class="jt-status-title">{{diaodan.merchName}}</div>
+					<!-- <input class="jt-status-title" v-model="diaodan.merchName"> -->
 					<div class="jt-status-money">￥ <span style="color: #ff5500;">{{diaodan.totalTransactionPrice}}</span> </div>
 				</div>
 				<div class="jt-status1">
@@ -162,7 +163,8 @@
 					</div>
 					<div class="jt-status-item">
 						<div class="jt-status-item-title">商户号</div>
-						<div class="jt-status-item-status">{{diaodan.merch_id}}</div>
+						<!-- <input class="jt-status-item-status " v-model="diaodan.merchId"> -->
+						<div class="jt-status-item-status">{{diaodan.merchId}}</div>
 					</div>
 				</div>
 				<div class="js-status2">
@@ -236,9 +238,9 @@ export default {
 					orderNum:'3'
 				},
 				{
-					orderType:'CUSTOM_ORDER',
-					orderName:'自定义',
-					orderNum:'5'
+					orderType:'',
+					orderName:'全部',
+					orderNum:'6'
 				},
 			],
 			diaodan:{
@@ -272,7 +274,7 @@ export default {
 				phone:this.phone,
 				stateCode:this.stateCode,
 				userLevel:this.userLevel,
-				orderType:"CONSUMPTION_ZONE",
+				orderType:this.orderType,
 				size:this.size,
 				page:this.currentPage
 			},sessionStorage.getItem('token')).then(res => {
@@ -345,6 +347,7 @@ export default {
 		.jt-status-item-status{
 			display: inline-block;
 			color: #2d2d2d;
+			border: none;
 			/* width: 220px; */
 			/* text-align: right; */
 		}
@@ -357,9 +360,10 @@ export default {
 			font-size: 14px;
 			width: 200px;
 			margin: 0 auto;
-			/* font-weight: 600; */
+			
 			padding-top: 20px;
 		}
+	
 		.jt-status-money{
 			text-align: center;
 			padding-top: 8px;

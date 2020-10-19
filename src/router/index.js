@@ -30,6 +30,7 @@ import Searchconsumeorder from '../views/store/searchconsumeorder.vue'
 import Businesslist from '../views/store/businessList.vue'
 import Caidan from '../views/houtai/caidan.vue'
 import Quanxian from '../views/houtai/quanxian.vue'
+import Jiesuan from '../views/deal/jiesuan.vue'
 
 Vue.use(VueRouter)
 
@@ -151,6 +152,10 @@ Vue.use(VueRouter)
 		{
 			path:'quanxian',
 			component:Quanxian
+		},
+		{
+			path:'jiesuan',
+			component:Jiesuan
 		}
 		
 	]

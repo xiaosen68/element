@@ -9,6 +9,16 @@
 				<div class="seach-item">手机号 <div class="search-input">  
 				<el-input placeholder="请输入手机号" type="tel" maxlength="11" 
 				prefix-icon="el-icon-search" v-model="phone"></el-input></div> </div>
+				<div class="seach-item">销售订单 <div class="search-input">
+					<el-select v-model="orderType" placeholder="请选择" :popper-append-to-body="false">
+						<el-option
+						  v-for="item in orderOp"
+						  :key="item.value"
+						  :label="item.orderName"
+						  :value="item.orderType">
+						</el-option>
+					  </el-select></div>
+					  </div>
 				<div class="seach-item"><el-button type="primary"  size="small " @click="getMailingOrder">查询</el-button></div>
 				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
 			</div>
@@ -79,7 +89,7 @@
 				  prop="credit.num"
 				  label="交易卡">
 				  <template slot-scope="scope">
-					 {{payBank}}-{{payNo}}
+					 {{scope.row.payBank}}-{{scope.row.payNo}}
 				  </template>
 				</el-table-column>
 			  </el-table>
@@ -112,6 +122,24 @@ export default {
 			totalSize:0,
 			currentPage:0,
 			totalPage:0,
+			orderType:'',
+			orderOp:[
+				{
+					orderType:'CONSUMPTION_ZONE',
+					orderName:'消费专区',
+					orderNum:'4'
+				},
+				{
+					orderType:'CUSTOM_ORDER',
+					orderName:'扫码消费',
+					orderNum:'5'
+				},
+				{
+					orderType:'',
+					orderName:'全部',
+					orderNum:'8'
+				},
+			],
 		}
 	},
 	beforeMount() {
@@ -135,13 +163,13 @@ export default {
 			}
 		},
 		getMailingOrder:function(){
-			this.http.post(this.api.getMailingOrder,
+			this.http.post(this.api.getGeneralOrder,
 			{
 				orderNo:this.orderNo,
 				phone:this.phone,
 				stateCode:this.stateCode,
 				userLevel:this.userLevel,
-				orderType:"CONSUMPTION_ZONE",
+				orderType:this.orderType,
 				size:this.size,
 				page:this.currentPage
 			},sessionStorage.getItem('token')).then(res => {
