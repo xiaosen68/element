@@ -62,11 +62,14 @@ export default {
 	getPassageWay:"/api/v1/admin/passageway/getPassageWay",//通道费率总览
 	addPassageWay:"/api/v1/admin/passageway/addPassageWay",//添加通道
 	findByPlatformMessageAll:"/api/v1/pri/meassage/findByPlatformMessageAll",//获取推送信息列表
+	deletePlatformMessageList:"/api/v1/pri/meassage/deletePlatformMessageList",//批量删除通知信息
 	// 交易管理
 	
 	getUserRevelPage:"/api/v1/admin/account/getUserRevelPage",//分润信息查询
 	getWithdrawalAmountAll:"/api/v1/admin/account/getWithdrawalAmountAll",//提现信息查询
 	cashWithdrawalByAudit:"/api/v1/admin/account/cashWithdrawalByAudit",//提现信息审核
+	excelWithdrawalAmountAll:"/api/v1/admin/account/excelWithdrawalAmountAll",//导出提现列表
+	importExcelUpdateWithdrawal:"/api/v1/admin/account/importExcelUpdateWithdrawal",//导入提现列表
 	transactionStatistics:"/api/v1/admin/mall/transactionStatistics",//交易汇总
 	queryOrderSettlement:"/api/v1/admin/account/queryOrderSettlement",//结算信息查询
 	// 账户管理
