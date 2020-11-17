@@ -71,7 +71,7 @@
 					  prop="title"
 					  label="操作">
 					  <template slot-scope="scope">
-							 <el-button type="danger" size="mini">删除</el-button>
+							 <el-button type="danger" size="mini" @click="deletePlatformMessageList(scope.row.id)">删除</el-button>
 					  </template>
 					</el-table-column>
 				  </el-table>
@@ -155,7 +155,22 @@ export default {
 					console.log(res)
 				          if(res.code == 0){
 							  this.tableData=res.data.list;
-							 this.$message.success(res.data.type)
+							 // this.$message.success(res.data.type)
+							 // this.dialogFormVisible=false;
+				          }
+				       });
+			},
+			// 批量删除通知信息
+			deletePlatformMessageList:function(idItem){
+				let idList=[idItem]
+				this.http.post(this.api.deletePlatformMessageList,
+				{
+					ids:idList
+				},sessionStorage.getItem('token')).then(res => {
+					console.log(res)
+				          if(res.code == 0){
+							  this.tableData=res.data;
+							 this.$message.success(res.data)
 							 this.dialogFormVisible=false;
 				          }
 				       });

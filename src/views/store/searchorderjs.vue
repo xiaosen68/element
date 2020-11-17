@@ -10,6 +10,7 @@
 				<div class="seach-item"><el-button type="primary"  size="small ">查询</el-button></div>
 				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
 			</div>
+			<div class="hyinfo-box">
 			<el-table
 			    :data="tableData"
 			    stripe
@@ -81,6 +82,7 @@
 				  label="到账卡">
 				</el-table-column>
 			  </el-table>
+			  </div>
 		</div>
 	</div>
 </template>

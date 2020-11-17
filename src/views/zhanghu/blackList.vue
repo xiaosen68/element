@@ -28,9 +28,8 @@
 				<div class="seach-item" ><el-button type="primary"  size="small " @click="searchBlack">查询</el-button></div>
 				
 			</div>
-			<div class="seach-box">
-					
-			</div>
+			
+			<div class="hyinfo-box">
 			  <el-table
 			    :data="tableData"
 			    stripe
@@ -87,7 +86,7 @@
 				  	 </template>
 				</el-table-column>
 			  </el-table>
-		
+			</div>
 		</div>
 	</div>
 </template>

@@ -27,6 +27,9 @@
 					  </el-select></div> 
 				</div> -->
 				<div class="seach-item"><el-button type="primary"  size="small " @click="getTixianList">查询</el-button></div>
+				<div class="seach-item"><el-button type="primary"  size="small " @click="getTixianList">导出</el-button></div>
+				<div class="seach-item"><el-button type="primary"  size="small " @click="getTixianList">导入</el-button></div>
+			
 			</div>
 			  <el-table
 			    :data="tixianList"
@@ -172,6 +175,7 @@ export default {
 				this.currentPage++;
 			}	
 		},
+		// 提现信息查询
 		getTixianList:function(){
 			this.http.post(this.api.getWithdrawalAmountAll,
 			{
@@ -189,6 +193,7 @@ export default {
 			          }
 			       });
 		},
+		// 提现信息审核
 		cashWithdrawalByAudit:function(tixianState,tixianId){
 			this.http.post(this.api.cashWithdrawalByAudit,
 			{
@@ -199,6 +204,40 @@ export default {
 				console.log(res)
 			          if(res.code == 0){
 						  this.$message.success(res.data)
+			          }
+			       });
+		},
+		// 导出提现列表
+		excelWithdrawalAmountAll:function(){
+			this.http.post(this.api.excelWithdrawalAmountAll,
+			{
+				phone:this.phone,
+				state:this.tixianStatus
+
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						  this.tixianList=res.data.list;
+						  this.totalSize=res.data.total_size;
+						  this.currentPage=res.data.current_page;
+						  // this.refreshLable();
+			          }
+			       });
+		},
+		// 导入提现列表
+		importExcelUpdateWithdrawal:function(){
+			this.http.post(this.api.importExcelUpdateWithdrawal,
+			{
+				phone:this.phone,
+				state:this.tixianStatus
+		
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						  this.tixianList=res.data.list;
+						  this.totalSize=res.data.total_size;
+						  this.currentPage=res.data.current_page;
+						  // this.refreshLable();
 			          }
 			       });
 		}

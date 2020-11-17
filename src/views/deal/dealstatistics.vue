@@ -171,6 +171,7 @@ export default {
 				_this.tiaoshu.push(item.tiaoshu);
 				_this.totalTransactionPrice.push(item.totalTransactionPrice)
 			})
+			this.drowChart();
 		},
 		// 获取数据
 		dealstatisticFn:function(){
@@ -186,7 +187,87 @@ export default {
 						 this.currentPage=res.data.current_page;
 			          }
 			       });
+				   
 		},
+		drowChart:function(){
+			let _this=this;
+			var myChart = echarts.init(document.getElementById('echarts_box'));
+			
+			        // 指定图表的配置项和数据
+			        var option = {
+						// type:'pie',
+			            title: {
+			                text: '日统计明细'
+			            },
+						toolbox:{
+							 show: true,
+							  feature:{
+								dataView:{
+									show:true
+								},
+								magicType: {
+									type: [ 'bar', 'tiled','line']
+								},
+								restore:{
+									show: true,   
+								}
+							  }
+						},
+			            tooltip:{
+							trigger: 'axis'
+						},
+			            legend: {
+			                data:['笔数','金额']
+			            },
+			            xAxis: [
+						{
+						    data: _this.dayList
+						}
+						],
+			            yAxis: [{
+							type:'value',
+							scale:true,
+							name:'金额',
+							max:15000,
+							min:0,
+							boundaryGap:[0.2,0.2]
+						},{
+							type:'value',
+							scale:true,
+							name:'笔数',
+							max:100,
+							min:0,
+							boundaryGap:[0.2,0.2]
+						}],
+			            series: [{
+			                name: '金额',
+			                type: 'bar',
+			                data: _this.totalTransactionPrice,
+							yAxisIndex:0,
+							itemStyle:{
+								normal:{
+									color:'#ff5500'
+								}
+							}
+			            },
+						{
+						    name: '笔数',
+						    type: 'line',
+						    data: _this.tiaoshu,
+							yAxisIndex:1,
+							itemStyle:{
+								normal:{
+									lineStyle:{
+										color:'#00ffff'
+									}
+								}
+							}
+						}]
+			        };
+			
+			        // 使用刚指定的配置项和数据显示图表。
+			        myChart.setOption(option);
+		}
 	},
 	filters:{
 		cardNumFilter:function(value){
@@ -197,83 +278,7 @@ export default {
 		}
 	},
 	mounted() {
-		let _this=this;
-		var myChart = echarts.init(document.getElementById('echarts_box'));
-		
-		        // 指定图表的配置项和数据
-		        var option = {
-					// type:'pie',
-		            title: {
-		                text: '日统计明细'
-		            },
-					toolbox:{
-						 show: true,
-						  feature:{
-							dataView:{
-								show:true
-							},
-							magicType: {
-								type: [ 'bar', 'tiled','line']
-							},
-							restore:{
-								show: true,   
-							}
-						  }
-					},
-		            tooltip:{
-						trigger: 'axis'
-					},
-		            legend: {
-		                data:['笔数','金额']
-		            },
-		            xAxis: [
-					{
-					    data: _this.dayList
-					}
-					],
-		            yAxis: [{
-						type:'value',
-						scale:true,
-						name:'金额',
-						max:15000,
-						min:0,
-						boundaryGap:[0.2,0.2]
-					},{
-						type:'value',
-						scale:true,
-						name:'笔数',
-						max:100,
-						min:0,
-						boundaryGap:[0.2,0.2]
-					}],
-		            series: [{
-		                name: '金额',
-		                type: 'bar',
-		                data: _this.totalTransactionPrice,
-						yAxisIndex:0,
-						itemStyle:{
-							normal:{
-								color:'#ff5500'
-							}
-						}
-		            },
-					{
-					    name: '笔数',
-					    type: 'line',
-					    data: _this.tiaoshu,
-						yAxisIndex:1,
-						itemStyle:{
-							normal:{
-								lineStyle:{
-									color:'#00ffff'
-								}
-							}
-						}
-					}]
-		        };
-		
-		        // 使用刚指定的配置项和数据显示图表。
-		        myChart.setOption(option);
+		this.drowChart();
 	},
 }
 </script>

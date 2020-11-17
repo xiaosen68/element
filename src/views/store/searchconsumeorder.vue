@@ -22,6 +22,7 @@
 				<div class="seach-item"><el-button type="primary"  size="small " @click="getMailingOrder">查询</el-button></div>
 				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
 			</div>
+			<div class="hyinfo-box">
 			<el-table
 			    :data="tableData"
 			    stripe
@@ -29,11 +30,8 @@
 				 <el-table-column type="expand">
 				   <template slot-scope="props">
 					   <el-form label-position="left" inline class="demo-table-expand" label-width="auto">
-							 <el-form-item label="交易平台编号">
-							   <span>{{ props.row.orderPtNum }}</span>
-							 </el-form-item>
 							 <el-form-item label="商品列表" v-for="item in  props.row.orderList">
-							   <span>名称：{{ item.goodsName}};  成交价：{{item.goodsCj}};  挂牌价：{{item.goodsGp}};  数量：{{item.goodsNum}}</span>
+							   <span>名称：{{ item.productName}};  成交价：{{item.transactionPrice*item.discount}};  挂牌价：{{item.transactionPrice}};  数量：{{item.payamount}}</span>
 							 </el-form-item>
 						</el-form>
 					</template>
@@ -47,30 +45,32 @@
 			      label="订单编号"
 			      >
 			    </el-table-column>
-			  <!--  <el-table-column
-			      prop="orderJyNum"
-			      label="交易编号"
-			      >
-			    </el-table-column> -->
 			    <el-table-column
 			      prop="userName"
 			      label="姓名">	 
+				  <template slot-scope="scope">
+				  	{{scope.row.userName}}{{scope.row.phone}}
+				  </template>
 			    </el-table-column>
+				
 				<el-table-column
-				  prop="phone"
-				  label="手机号">
+				  prop="merchId"
+				  label="商户号">
 				</el-table-column>
-
+				<el-table-column
+				  prop="store"
+				  label="商户">
+				  <template slot-scope="scope">
+				  	{{scope.row.merchName}}{{scope.row.store}}
+				  </template>
+				</el-table-column>
 				<el-table-column
 				  prop="totalTransactionPrice"
 				  label="成交价">
 				</el-table-column>
 				<el-table-column
-				  prop="orderStatus"
+				  prop="stateMsg"
 				  label="支付状态">
-				   <template slot-scope="scope">
-					<div class="order-status success">授权中</div>
-					</template>
 				</el-table-column>
 				<el-table-column
 				  prop="passageWayName"
@@ -93,6 +93,7 @@
 				  </template>
 				</el-table-column>
 			  </el-table>
+			  </div>
 			  <el-pagination
 			     layout="prev, pager, next"
 			     :total="totalSize"

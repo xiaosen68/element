@@ -22,10 +22,12 @@
 				<div class="seach-item"><el-button type="primary"  size="small " @click="getMailingOrder">查询</el-button></div>
 				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
 			</div>
-			<el-table
-			    :data="tableData"
-			    stripe
-			    style="width: 100%">
+			<div class="hyinfo-box">
+				<el-table
+					:data="tableData"
+					stripe
+					style="width: 100%">
+					
 				 <el-table-column type="expand">
 				   <template slot-scope="props">
 					   <el-form label-position="left" inline class="demo-table-expand" label-width="auto">
@@ -110,6 +112,7 @@
 				  </template>
 				</el-table-column>
 			  </el-table>
+			 </div>
 		</div>
 		<el-dialog
 		  title="提示"
@@ -289,7 +292,7 @@ export default {
 		},
 		dialogFn:function(item){
 			
-			
+			console.log(item)
 			this.diaodan=item;
 			this.dialogVisible=true;
 			//显示当前日期

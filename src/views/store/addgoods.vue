@@ -343,7 +343,7 @@ export default {
 		
 	}
 	.sign-input,.photo-wrap{
-		width: 800px;
+		width: 400px;
 	}
 	.zh-info-box{
 		padding-bottom: 20px;

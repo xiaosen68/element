@@ -11,6 +11,7 @@
 		</el-switch></div>
 		<!-- 寄售 -->
 		<div class="zh-info-box" v-if="goodsClass">
+			<div class="hyinfo-box">
 			  <el-table
 			    :data="jsTableData"
 			    stripe
@@ -83,9 +84,22 @@
 				  </template>
 				</el-table-column>
 			  </el-table>
+			  </div>
+			  <!-- 页码 -->
+			  <el-pagination
+			     layout="prev, pager, next"
+			     :total="jtotalSize"
+			     :page-size="size"
+			      :current-page.sync="jcurrentPage"
+			     @current-change="getGoodsList"
+			     @prev-click="prevFn"
+			     @next-click="nextFn"
+			     >
+			   </el-pagination>
 		</div>
 		<!-- 消费 -->
 		<div class="zh-info-box" v-else>
+			<div class="hyinfo-box">
 			  <el-table
 			    :data="xsTableDate"
 			    stripe
@@ -167,7 +181,20 @@
 				  </template>
 				</el-table-column>
 			  </el-table>
+			  </div>
+			  <!-- 页码 -->
+			  <el-pagination
+			     layout="prev, pager, next"
+			     :total="xtotalSize"
+			     :page-size="size"
+			      :current-page.sync="xcurrentPage"
+			     @current-change="getGoodsList"
+			     @prev-click="prevFn"
+			     @next-click="nextFn"
+			     >
+			   </el-pagination>
 		</div>
+		
 	</div>
 </template>
 
@@ -175,6 +202,11 @@
 export default {
 	data (){
 		return {
+			xtotalSize:0,
+			size:20,
+			xcurrentPage:0,
+			jtotalSize:0,
+			jcurrentPage:0,
 			goodsClass:true,
 			
 			jsTableData:[
@@ -190,7 +222,7 @@ export default {
 		this.http.post(this.api.getMailingProductAll,
 		{
 		"page":1,
-		"size":10
+		"size":this.size
 		},sessionStorage.getItem('token')).then(res => {
 			console.log(res)
 		          if(res.code == 0){
@@ -199,27 +231,70 @@ export default {
 		       });
 	},
 	methods:{
+		prevFn:function(){
+			if(this.goodsClass){
+				if(this.jcurrentPage==1){
+					this.jcurrentPage=1;
+				}else if(this.jcurrentPage>1){
+						this.jcurrentPage--;
+				}
+			}else{
+				if(this.xcurrentPage==1){
+					this.xcurrentPage=1;
+				}else if(this.xcurrentPage>1){
+						this.xcurrentPage--;
+				}
+			}
+			
+			
+		},
+		nextFn:function(){
+			if(this.goodsClass){
+				if(this.xcurrentPage==this.xtotalPage){
+					this.xcurrentPage=this.xtotalPage;
+				}else if(this.xcurrentPage<this.xtotalPage){
+						this.xcurrentPage++;
+				}
+			}else{
+				if(this.jcurrentPage==this.jtotalPage){
+					this.jcurrentPage=this.jtotalPage;
+				}else if(this.jcurrentPage<this.jtotalPage){
+						this.jcurrentPage++;
+				}
+			}
+			
+		},
 		getGoodsList(){
+			
+			
+			
+			
 			if(this.goodsClass){
 				this.http.post(this.api.getMailingProductAll,
 				{
-				"page":1,
-				"size":10
+				"page":this.jcurrentPage,
+				"size":this.size
 				},sessionStorage.getItem('token')).then(res => {
 					console.log(res)
 				          if(res.code == 0){
-							  this.jsTableData=res.data.list
+							  this.jsTableData=res.data.list;
+							  this.jtotalSize=res.data.total_size
+							  this.jcurrentPage=res.data.current_page;
+							  this.jtotalSize=res.data.total_page
 				          }
 				       });
 			}else{
 				this.http.post(this.api.getGeneralProductAll,
 				{
-				"page":1,
-				"size":10
+				"page":this.xcurrentPage,
+				"size":this.size
 				},sessionStorage.getItem('token')).then(res => {
 					console.log(res)
 				          if(res.code == 0){
 							  this.xsTableDate=res.data.list
+							  this.xtotalSize=res.data.total_size
+							  this.xcurrentPage=res.data.current_page;
+							  this.xtotalSize=res.data.total_page
 				          }
 				       });
 			}

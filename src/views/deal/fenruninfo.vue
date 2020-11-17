@@ -33,16 +33,12 @@
 			<!-- 交易汇总表 -->
 			<div>
 				 <el-table
-				    :data="collectDate"
+				    :data="tableData"
 				    stripe
 					size="small"
 				    style="width: 100%">
-					<el-table-column
-					  prop="superior"
-					  label="上级" width="60px" >
-					</el-table-column>
 				    <el-table-column
-				      prop="withdrawnTime"
+				      prop="revenueTime"
 				      label="交易时间" >
 				    </el-table-column>
 				    <el-table-column
@@ -50,7 +46,7 @@
 				      label="刷卡人">
 					  <template slot-scope="scope">
 						  <p>{{scope.row.orderUserRealName}}</p>
-						  <p>{{scope.row.orderUserPhone | telFilter}}</p>
+						  <p>{{scope.row.orderUserPhone}}</p>
 					  </template>
 				    </el-table-column>
 				    <el-table-column
@@ -60,26 +56,6 @@
 					<el-table-column
 					  prop="revenueAmount"
 					  label="分润">
-					<!-- <template slot-scope="scope">
-					 	<el-popover trigger="click" placement="top" width="800">
-							<div class="popover-head-box">分润详情（注意：还款消费不产生分润）</div>
-							<div class="popover-header-status">
-								交易时间:29292992898 交易流水号：21312312312321323消费金额：12312
-							</div>
-								<el-table :data="collectDate" >
-								    <el-table-column  property="date" label="上级"></el-table-column>
-								    <el-table-column property="name" label="姓名"></el-table-column>
-								    <el-table-column property="address" label="手机号"></el-table-column>
-									<el-table-column  property="date" label="刷卡费率"></el-table-column>
-									<el-table-column  property="name" label="上级姓名"></el-table-column>
-									<el-table-column   property="address" label="上级手机号"></el-table-column>
-									<el-table-column  property="date" label="费率"></el-table-column>
-									<el-table-column   property="name" label="分润金额"></el-table-column>
-									<el-table-column  property="address" label="分润备注"></el-table-column>
-								  </el-table>
-							 <el-button slot="reference" size="mini" type="success">查看</el-button>
-						</el-popover>	
-					 </template> -->
 					</el-table-column>
 					<el-table-column
 					  prop="dealMoney"
@@ -94,7 +70,7 @@
 					  label="受益人">
 					  <template slot-scope="scope">
 						  <p>{{scope.row.relUserRealName}}</p>
-						  <p>{{scope.row.relUserPhone | telFilter}}</p>
+						  <p>{{scope.row.relUserPhone }}</p>
 					  </template>
 					</el-table-column>
 					<el-table-column
@@ -102,11 +78,15 @@
 					  label="费率">
 					</el-table-column>
 					<el-table-column
-					  prop="superiorMoney"
+					  prop="revenueAmount"
 					  label="获得分润">
 					</el-table-column>
 					<el-table-column
 					  prop="revenueReason"
+					  label="分润备注">
+					</el-table-column>
+					<el-table-column
+					  prop="revenueState"
 					  label="分润备注">
 					</el-table-column>
 				  </el-table>
@@ -186,7 +166,7 @@ export default {
 				label:'交易待结算'
 				}
 			],
-			collectDate:[{
+			tableData:[{
 				superior:'0',
 				superiorName:'请问',
 				superiorTel:'12312312312',
@@ -227,7 +207,7 @@ export default {
 			{
 				 page:this.currentPage,
 				size:this.size,
-				orderUserPhone:this.relUserPhone,
+				orderUserPhone:this.orderUserPhone,
 				relUserPhone:this.relUserPhone,
 				startTime:this.selectDate[0],
 				endTime:this.selectDate[1],

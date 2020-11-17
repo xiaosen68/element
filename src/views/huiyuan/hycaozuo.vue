@@ -209,10 +209,10 @@
 			 					<span class="dialog-box-title">账户已提现：</span> 
 			 					<span class="dialog-box-value">{{dialogValue.withdrawnAmount}}</span>
 			 				</div>
-			 				<div class="dialog-box-item">
+			 				<!-- <div class="dialog-box-item">
 			 					<span class="dialog-box-title">额外手续费：</span> 
 			 					<span class="dialog-box-value">{{dialogValue.date}}</span>
-			 				</div>
+			 				</div> -->
 			 </el-dialog>
 			 <!-- 收益信息 -->
 			 <el-dialog

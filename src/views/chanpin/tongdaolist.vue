@@ -93,6 +93,13 @@
 					<el-input v-model="scope.row.singleAdditionalHandlingCharge"></el-input>
 				</template>
 				</el-table-column>
+				<el-table-column
+				  prop="singleLimit"
+				  label="单笔限额" width="80">
+				  <template slot-scope="scope">
+					<el-input v-model="scope.row.singleLimit"></el-input>
+				</template>
+				</el-table-column>
 			    <el-table-column
 			      prop="bankList"
 			      label="支持列表" width="80">

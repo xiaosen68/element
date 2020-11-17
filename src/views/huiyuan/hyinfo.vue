@@ -54,9 +54,9 @@
 						<template slot-scope="scope">
 						        <el-popover trigger="click" @show="searchUp(scope.row.uId)" placement="top">
 						        <el-table :data="superiorList">
-									 <el-table-column prop="superiorLevelName" label="关系" width="80"></el-table-column>
+									 <!-- <el-table-column prop="superiorLevelName" label="关系" width="80"></el-table-column> -->
 									 <el-table-column prop="superiorLevelName" label="姓名" width="80"></el-table-column>
-									 <el-table-column prop="userLevelName" label="等级" width="120"> </el-table-column>
+									 <el-table-column prop="superiorLevelName" label="等级" width="120"> </el-table-column>
 									 <el-table-column prop="superiorUserPhone" label="手机号" width="120"> </el-table-column>
 								</el-table>
 						          <div slot="reference" class="name-wrapper">
@@ -77,11 +77,6 @@
 							<el-button size="small" @click="dialogFn(scope.row)">详情</el-button>
 						</template>
 					</el-table-column>
-					<!-- <el-table-column prop="beizhu" label="信息推送" > 
-						<template slot-scope="scope">
-							<el-button size="small" @click="beizhuFn(scope.row)">信息</el-button>
-						</template>
-					</el-table-column> -->
 				  </el-table>
 			</div>
 		
@@ -132,10 +127,10 @@
 					   	<span class="dialog-box-title">账户已提现：</span> 
 					   	<span class="dialog-box-value">{{dialogValue.withdrawnAmount}}</span>
 					   </div>
-					   <div class="dialog-box-item">
+					   <!-- <div class="dialog-box-item">
 					   	<span class="dialog-box-title">额外手续费：</span> 
 					   	<span class="dialog-box-value">{{dialogValue.date}}</span>
-					   </div>
+					   </div> -->
 				   </div>
 					<div class="xiangqing-box2">
 						<h4>信用卡列表</h4>
@@ -144,6 +139,25 @@
 						<h4>储蓄卡列表</h4>
 						<div>银行名称、卡号、手机号、卡ID</div>
 						<div v-for="item in chuxvList">{{item.bank}},{{item.cardNo}},{{item.reservePhone}},{{item.id}}</div>
+						<div>实名认证信息</div>
+						<div>
+							<div>身份证号码</div>
+							<div>{{rnsMap.idNumber}}</div>
+						</div>
+						<div>
+							<el-image style="width: 100px; height: 100px ;margin: 10px;"
+							    :src="rnsMap.frontPhotoOfIdCard" 
+								 >
+							  </el-image>
+							  <el-image style="width: 100px; height: 100px ;margin: 10px;"
+							      :src="rnsMap.reversePhotoOfIdCard" 
+							  	 >
+							    </el-image>
+								<el-image style="width: 100px; height: 100px ;margin: 10px;"
+								    :src="rnsMap.holdingIdCard" 
+									 >
+								  </el-image>
+						</div>
 					</div>
 			 </el-dialog>
 			 <!-- 下级弹框 -->
@@ -212,6 +226,7 @@ export default {
 			registNum:'',
 			dialogVisible:false,//详情信息弹框
 			dialogValue:{},
+			rnsMap:{},
 			lowerDialogTableVisible:false,
 			lowerDialogtitle:'',
 			lowerDate:[],//下级列表
@@ -367,6 +382,8 @@ export default {
 			  this.getchuxv(item.uId);
 			  this.dialogVisible=true;
 			  this.dialogValue=item;
+			  this.rnsMap=item.rnsMap;
+			  console.log(this.rnsMap)
 		  },
 		  handleClose:function(){
 			  

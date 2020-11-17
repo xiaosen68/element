@@ -67,17 +67,23 @@
 					</el-table-column>
 					<el-table-column prop="totalTransactionPrice" label="总金额"> </el-table-column>
 					<el-table-column prop="rate" label="刷卡费率"> </el-table-column>
-					<el-table-column prop="money2" label="实际金额"> </el-table-column>
+				<!-- 	<el-table-column prop="" label="实际金额"> </el-table-column> -->
 					<el-table-column prop="orderNo" label="订单编号"> 
 						<template slot-scope="scope">
-							<div>{{scope.row.orderNo | cardNumFilter}}</div>
+							<div>{{scope.row.orderNo}}</div>
 							<el-button size="small" type="text" @click="jiaoyiShow(scope.row)">查看详情</el-button>
 						</template>	
 					</el-table-column>
 					<el-table-column prop="payNo" label="交易卡">
 						<template slot-scope="scope">
-							<div>{{scope.row.payNo}}</div>
+							<div>{{scope.row.payBank}}</div>
 							<div>{{scope.row.payNo | cardNumFilter}}</div>
+						</template>	
+					</el-table-column>
+					<el-table-column prop="receiveNo" label="结算卡">
+						<template slot-scope="scope">
+							<div>{{scope.row.receiveBank}}</div>
+							<div>{{scope.row.receiveNo | cardNumFilter}}</div>
 						</template>	
 					</el-table-column>
 					<el-table-column prop="tongdao" label="通道/状态">
@@ -89,7 +95,11 @@
 							<div style="color: #909399;fontSize:12px" v-else-if="scope.row.status==='4'"><i class="el-icon-info" ></i>待结算</div> -->
 						</template>	
 					</el-table-column>
-					<el-table-column prop="miaoshu" label="描述"> </el-table-column>
+					<el-table-column prop="orderType" label="类型">
+						<template slot-scope="scope">
+							<div>{{scope.row.orderType|orderTypeFile}}</div>
+						</template>	
+					</el-table-column>
 				  </el-table>
 			</div>
 			<!-- 用户信息 -->
@@ -97,31 +107,33 @@
 				<div class="user-box">
 					<div>姓名：<b>{{userInfo.realName}}</b></div>
 					<div>手机号：<b>{{userInfo.phone}}</b></div>
-					<div>身份证号：<b>{{userInfo.idNumber}}</b></div>
+					<div>等级：<b>{{userInfo.userLevelName}}</b></div>
+					<!-- <div>身份证号：<b>{{userInfo.rnsMap.idNumber}}</b></div>
 					<div>银行卡号：<b>{{userInfo.payNo}}</b></div>
-				<!-- 	<div>用户上传照片：
-						<el-image  style="width: 120px; height: 100px; margin-left: 20px; " v-for="item in userInfo.picList" :src="item"  :preview-src-list=" userInfo.picList"> </el-image>
+					<div v-if="userInfo.rnsMap">用户上传照片：
+						<el-image  style="width: 120px; height: 100px; margin-left: 20px; "  :src="userInfo.rnsMap.frontPhotoOfIdCard" > </el-image>
+						<el-image  style="width: 120px; height: 100px; margin-left: 20px; "  :src="userInfo.rnsMap.reversePhotoOfIdCard" > </el-image>
+						<el-image  style="width: 120px; height: 100px; margin-left: 20px; "  :src="userInfo.rnsMap.holdingIdCard" > </el-image>
 					</div> -->
 				</div>
 			</el-dialog>
 			<!-- 交易信息 -->
 			<el-dialog  title="用户信息" :visible.sync="jiaoyiInfoPopo"  width="60%" >
 				<div class="jiaoyi-box">
-					<div>交易时间：<b>{{userInfo.createTime}}</b></div>
-					<div>姓名：<b>{{userInfo.realName}}</b></div>
-					<div>总金额：<b>{{userInfo.totalTransactionPrice}}</b></div>
-					<div>刷卡费率：<b>{{userInfo.rate}}</b></div>
-					<div>手续费：<b>{{userInfo.fee}}</b></div>
-					<div>交易订单号：<b>{{userInfo.orderNo}}</b></div>
-					<div>支付通道：<b>{{userInfo.passageWayName}}</b></div>
-					<div>结算卡：<b>{{userInfo.payNo}}</b></div>
-					<div>到账卡：<b>{{userInfo.payNo}}</b></div>
-					<div>商户名：<b>{{userInfo.merchName}}</b></div>
-					<div>商户订单编号：<b>{{userInfo.merchId}}</b></div>
-					<div>描述：<b>{{userInfo.name}}</b></div>
-					<div>类型：<b>{{userInfo.name}}</b></div>
-					<div>状态：<b>{{userInfo.name}}</b></div>
-					<div>备注：<b>{{userInfo.name}}</b></div>
+					<div>交易时间：<b>{{jiaoInfo.createTime}}</b></div>
+					<div>姓名：<b>{{jiaoInfo.realName}}</b></div>
+					<div>总金额：<b>{{jiaoInfo.totalTransactionPrice}}</b></div>
+					<div>刷卡费率：<b>{{jiaoInfo.rate}}</b></div>
+					<div>手续费：<b>{{jiaoInfo.fee}}</b></div>
+					<div>交易订单号：<b>{{jiaoInfo.orderNo}}</b></div>
+					<div>支付通道：<b>{{jiaoInfo.passageWayName}}</b></div>
+					<div>支付卡：<b>{{jiaoInfo.payBank}}{{jiaoInfo.payNo}}</b></div>
+					<div>到账卡：<b>{{jiaoInfo.receiveBank}}{{jiaoInfo.payNo}}</b></div>
+					<div>商户名：<b>{{jiaoInfo.merchName}}</b></div>
+					<div>商户订单编号：<b>{{jiaoInfo.merchId}}</b></div>
+					<div>描述：<b>{{jiaoInfo.name}}</b></div>
+					<div>类型：<b>{{jiaoInfo.orderType|orderTypeFile}}</b></div>
+					<div>状态：<b>{{jiaoInfo.name}}</b></div>
 				</div>
 			</el-dialog>
 			<!-- 分页 -->
@@ -146,11 +158,12 @@ export default {
 			userInfoPopo:false,//用户信息弹框
 			userInfo:{
 				},
+			jiaoInfo:{},
 			jiaoyiInfoPopo:false,//交易详情信息弹框
 			phone:'',
 			realName:'',
 			orderNo:'',
-			currentPage:0,
+			currentPage:1,
 			totalSize:0,
 			totalpPage:0,
 			totalTransactionPrice:0,
@@ -218,12 +231,25 @@ export default {
 		beizhuFn:function(item){
 			console.log(item)
 		},
+		// 查询详情
 		showUserInfo:function(item){
-			this.userInfo=item;
+			this.http.post(this.api.pageAccountList,
+			{
+				 page:1,
+				size:1,
+				phone:item.phone,
+			},sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						 this.userInfo=res.data.list[0]; 
+			          }
+			       });
 			this.userInfoPopo=true;
 		},
+		// 查询会员
+		
 		jiaoyiShow:function(item){
-			this.userInfo=item;
+			this.jiaoInfo=item;
 			this.jiaoyiInfoPopo=true;
 		},
 		// 查询交易信息
@@ -259,6 +285,19 @@ export default {
 		},
 		telFilter:function(value){
 			return value.substring(0,3)+'***'+value.substring(value.length-4)
+		},
+		orderTypeFile:function(value){
+			if(value=='MEMBER_PLUS'){
+				return '会员PLUS'
+			}else if(value=='EXPRESS_PAYMENT'){
+				return '消费专区'
+			}else if(value=='CONSUMPTION_ZONE'){
+				return '快捷支付'
+			}else if(value=='CARD_COUPON_SPACE'){
+				return '卡券空间'
+			}else if(value=='CUSTOM_ORDER'){
+				return '扫码消费'
+			}
 		}
 	}
 }
