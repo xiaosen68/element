@@ -22,6 +22,10 @@ export default {
 	creditCardByUserList:"/api/v1/admin/account/creditCardByUserList",//获取信用卡列表
 	savingsCardByUserList:"/api/v1/admin/account/savingsCardByUserList",//获取储蓄卡列表
 	vipChangeUserLevelList:"/api/v1/admin/account/vipChangeUserLevelList",//vip变更信息查询
+	getUpgradeUserLevelList:"/api/v1/admin/account/getUpgradeUserLevelList",//提升高级合伙人申请列表
+	updateUpgradeUserLevelState:"/api/v1/admin/account/updateUpgradeUserLevelState",//审核高级合伙人申请
+	upgradeableSeniorPartner:"/api/v1/admin/account/upgradeableSeniorPartner",//获取可提升联合创始人列表
+	updateUpgradeSeniorPartner:"/api/v1/admin/account/updateUpgradeSeniorPartner",//提升至高级业务合伙人
 	
 	// 商城
 	uploadImage:"/api/v1/admin/upload/image",//上传图片
@@ -49,7 +53,7 @@ export default {
 	transactionInquiry:"api/v1/admin/mall/transactionInquiry",//交易查询
 	getMailingOrderById:"/api/v1/admin/mall/getMailingOrderById",//根据寄售订单id查询订单详情
 	getGeneralOrderById:"/api/v1/admin/mall/getGeneralOrderById",//根据销售订单id查询订单详情
-	
+	findScoreLogList:"/api/v1/admin/account/findScoreLogList",//积分查询（phone，size,page）
 	// 类别管理
 	generalLableAll:"/api/v1/admin/mall/generalLableAll",//标签列表
 	addGeneralLable:"/api/v1/admin/mall/addGeneralLable",//新增标签
