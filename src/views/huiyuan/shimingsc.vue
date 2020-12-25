@@ -59,12 +59,12 @@ export default {
 			          if(res.code == 0){
 						  if(this.phoList.length>0){
 							  if(this.phoList.length>1){
-								  this.$set(this.phoList,2,res.data);
+								  this.$set(this.phoList,2,res.data.url);
 							  }else{
-								  this.$set(this.phoList,1,res.data);
+								  this.$set(this.phoList,1,res.data.url);
 							  }
 						  }else{
-							this.$set(this.phoList,0,res.data);  
+							this.$set(this.phoList,0,res.data.url);  
 						  }
 						  console.log(this.phoList)
 			          }
@@ -91,9 +91,6 @@ export default {
 						 this.tableData=res.data.list; 
 						 this.totalSize=res.data.total_size;
 						 this.currentPage=res.data.current_page;
-						
-						//  this.totalSize=res.data.total_size;
-						//  this.currentPage=res.data.current_page;
 			          }
 			       });
 		}

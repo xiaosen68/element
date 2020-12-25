@@ -27,8 +27,31 @@
 					  </el-select></div> 
 				</div> -->
 				<div class="seach-item"><el-button type="primary"  size="small " @click="getTixianList">查询</el-button></div>
-				<div class="seach-item"><el-button type="primary"  size="small " @click="getTixianList">导出</el-button></div>
-				<div class="seach-item"><el-button type="primary"  size="small " @click="getTixianList">导入</el-button></div>
+				<div class="seach-item"><el-button type="primary"  size="small " @click="excelWithdrawalAmountAll">导出</el-button></div>
+				<div class="seach-item">
+					<!-- <el-upload
+					  class="upload-demo"
+					  ref="upload"
+					  :action="baseUrl+'/api/v1/admin/account/importExcelUpdateWithdrawal'"
+					  :headers="{'Content-Type':'application/json',
+					  'token':token}"
+					  :on-change="uploadExecFn"
+					  > -->
+					  <el-upload
+					    class="upload-demo"
+					    ref="upload"
+					    :action="baseUrl+'/api/v1/admin/account/importExcelUpdateWithdrawal'"
+					    :headers="{'Content-Type':'application/json',
+					    'token':token}"
+						:auto-upload="false"
+						:on-preview="uploadExecFn"
+						:on-error="uploaderror"
+						:on-success="uploadsuccess"
+					    >
+					  <el-button slot="trigger" size="small" type="primary">上传</el-button>
+					</el-upload>
+					
+				</div>
 			
 			</div>
 			  <el-table
@@ -158,13 +181,41 @@ export default {
 			}],
 			tableData:[
 			
-			]
+			],
+			baseUrl:'',
+			token:'',
 		}
+	},
+	created() {
+		this.baseUrl= process.env.VUE_APP_BASE_URL;	
+		this.token=sessionStorage.getItem('token');
 	},
 	beforeMount(){
 		this.getTixianList()
 	},
 	methods:{
+		uploadsuccess:function(res){
+			console.log('succe')
+			console.log(res)
+		},
+		uploaderror:function(err){
+			console.log('err')
+			console.log(err)
+		},
+		uploadExecFn(file){
+			let _this=this;
+			let formData = new FormData();
+			formData.append('uploadType','SHARING_POSTERS_URL');
+			formData.append('file',file.raw)
+			this.http.post(this.api.excelWithdrawalAmountAll,
+			formData,sessionStorage.getItem('token')).then(res => {
+				console.log(res)
+			          if(res.code == 0){
+						  
+			          }
+			       });
+		},
+	
 		prevFn(){
 			if( this.currentPage>0){
 				this.currentPage--;
@@ -228,9 +279,6 @@ export default {
 		importExcelUpdateWithdrawal:function(){
 			this.http.post(this.api.importExcelUpdateWithdrawal,
 			{
-				phone:this.phone,
-				state:this.tixianStatus
-		
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)
 			          if(res.code == 0){

@@ -39,7 +39,8 @@
 	  export default {
 	      data() {
 	        return {
-				posterList:[require('../../assets/n1.jpg'),require('../../assets/n2.jpg'),require('../../assets/n3.jpg')],
+				// posterList:[require('../../assets/n1.jpg'),require('../../assets/n2.jpg'),require('../../assets/n3.jpg')],
+				posterList:[],
 	          dialogImageUrl: '',
 	          dialogVisible: false,
 			  uploadUrl:'',

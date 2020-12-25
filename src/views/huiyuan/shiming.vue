@@ -5,10 +5,10 @@
 			<div class="seach-box">
 				<div class="seach-item">手机号 <div class="search-input">  
 					<el-input placeholder="请输入内容" type="tel" maxlength="11" 
-					prefix-icon="el-icon-search" v-model="phone"></el-input></div> </div>
+					 v-model="phone"></el-input></div> </div>
 				<div class="seach-item">姓名 <div class="search-input">  
 					<el-input placeholder="请输入内容" type="text" maxlength="5"
-					 prefix-icon="el-icon-search" v-model="realName"></el-input></div> </div>
+					 v-model="realName"></el-input></div> </div>
 				<div class="seach-item"><el-button type="primary"  size="small " @click="userRealNameListPage">查询</el-button></div>
 			</div>
 			</div>
@@ -16,24 +16,31 @@
 			<el-table  :data="tableData"  stripe style="width: 100%">
 				<el-table-column type="index"  width="50"> </el-table-column>
 			    <el-table-column  prop="create_time" label="注册日期" width="100">   </el-table-column>
-				<el-table-column  prop="update_time" label="提交日期" width="100">   </el-table-column>
-			    <el-table-column  prop="real_name" label="姓名" width="60"> </el-table-column>
-				<el-table-column  prop="phone" label="手机号"  > </el-table-column>
-				<el-table-column  prop="id_number" label="身份证号" > </el-table-column>
-				<el-table-column  prop="photo" label="查看照片" >
+				<!-- <el-table-column  prop="update_time" label="提交日期" width="100">   </el-table-column> -->
+			    <el-table-column  prop="real_name" label="姓名" width="120"> 
+					<template slot-scope="scope">
+						<div>{{scope.row.real_name}}</div>
+						<div>{{scope.row.phone}}</div>
+					</template>
+				</el-table-column>
+				<el-table-column  prop="id_number" label="身份证号" width="160" > </el-table-column>
+				<el-table-column  prop="photo" label="查看照片" width="100">
 					<template slot-scope="scope">
 					<el-popover  placement="right" trigger="click">
 						<div class="photo-box">
 							<el-image style="width: 280px; height: 280px ;margin: 20px;" 
 							    :src="scope.row.front_photo_of_id_card" 
+								:preview-src-list="[scope.row.front_photo_of_id_card,scope.row.reverse_photo_of_id_card,scope.row.holding_id_card]"
 								 >
 							  </el-image>
 							 <el-image style="width: 280px; height: 280px ;margin: 20px;"
 							      :src="scope.row.reverse_photo_of_id_card" 
+								  :preview-src-list="[scope.row.front_photo_of_id_card,scope.row.reverse_photo_of_id_card,scope.row.holding_id_card]"
 							      >
 							    </el-image>
 								<el-image style="width: 280px; height: 280px;margin: 20px;"
 								    :src="scope.row.holding_id_card" 
+									:preview-src-list="[scope.row.front_photo_of_id_card,scope.row.reverse_photo_of_id_card,scope.row.holding_id_card]"
 								    >
 								  </el-image> 
 						</div>
@@ -41,7 +48,7 @@
 					 </el-popover>
 					</template >
 				</el-table-column>
-				<el-table-column   label="操作"  > 
+				<el-table-column   label="操作"  width="100"> 
 					<!-- <template slot-scope="scope" v-if="scope.row.state==='PASS'">
 						
 					</template>
@@ -61,7 +68,7 @@
 						@click="dialogVisibleFn(scope.row)">查看详情</el-button>
 					</template>
 				</el-table-column>
-				<el-table-column  prop="state" label="审核状态">
+				<el-table-column  prop="state" label="审核状态" width="100">
 					<template slot-scope="scope">
 						{{scope.row.state|shimingstateFilters}}
 					</template>
@@ -72,6 +79,7 @@
 			   layout="prev, pager, next"
 			   :total="totalSize"
 			   :page-size="size"
+			    :page-count="totalPage"
 			    :current-page.sync="currentPage"
 			   @current-change="userRealNameListPage"
 			   @prev-click="prevFn"
@@ -102,7 +110,7 @@
 			 		   </div>
 			 		   <div class="dialog-box-item">
 			 			<span class="dialog-box-title">实名审核：</span> 
-			 			<span class="dialog-box-value">{{ dialogValue.realNameState|realNameFilter}}</span>
+			 			<span class="dialog-box-value">{{ dialogValue.realNameState|shimingstateFilters}}</span>
 			 		   </div>
 			 		   <div class="dialog-box-item">
 			 			<span class="dialog-box-title">手机号：</span> 
@@ -140,7 +148,8 @@ export default {
 			page:0,
 			size:20,
 			totalSize:0,
-			currentPage:0,
+			totalPage:0,
+			currentPage:1,
 			tableData:[{
 				
 			}
@@ -185,8 +194,8 @@ export default {
 				phone:this.phone,
 				realName:this.realName,
 				state:this.state,
-				page:this.page,
-				size:this.currentPage
+				page:this.currentPage,
+				size:this.size
 				
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)
@@ -194,9 +203,7 @@ export default {
 						 this.tableData=res.data.list; 
 						 this.totalSize=res.data.total_size;
 						 this.currentPage=res.data.current_page;
-						
-						//  this.totalSize=res.data.total_size;
-						//  this.currentPage=res.data.current_page;
+						this.totalPage=res.data.total_page;
 			          }
 			       });
 		},
@@ -223,11 +230,11 @@ export default {
 		shimingstateFilters:function(val){
 			if(val==='PASS'){
 				return '已通过'
-			}else if('TO_BE_REVIEWED'){
+			}else if(val==='TO_BE_REVIEWED'){
 				return "待审核"
-			}else if('FAIL'){
+			}else if(val==='FAIL'){
 				return "不通过"
-			}else if('NOT_COMMITTED'){
+			}else if(val==='NOT_COMMITTED'){
 					return "未提交"
 			}
 		}

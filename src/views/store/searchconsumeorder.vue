@@ -5,10 +5,10 @@
 			<div class="seach-box">
 				<div class="seach-item">订单号 <div class="search-input">  
 				<el-input placeholder="请输入订单号" type="text" maxlength="20"
-				 prefix-icon="el-icon-search" v-model="orderNo"></el-input></div> </div>
+				 v-model="orderNo"></el-input></div> </div>
 				<div class="seach-item">手机号 <div class="search-input">  
 				<el-input placeholder="请输入手机号" type="tel" maxlength="11" 
-				prefix-icon="el-icon-search" v-model="phone"></el-input></div> </div>
+				 v-model="phone"></el-input></div> </div>
 				<div class="seach-item">销售订单 <div class="search-input">
 					<el-select v-model="orderType" placeholder="请选择" :popper-append-to-body="false">
 						<el-option
@@ -20,7 +20,7 @@
 					  </el-select></div>
 					  </div>
 				<div class="seach-item"><el-button type="primary"  size="small " @click="getMailingOrder">查询</el-button></div>
-				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
+				<!-- <div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div> -->
 			</div>
 			<div class="hyinfo-box">
 			<el-table
@@ -121,7 +121,7 @@ export default {
 			userLevel:'',
 			size:20,
 			totalSize:0,
-			currentPage:0,
+			currentPage:1,
 			totalPage:0,
 			orderType:'',
 			orderOp:[
@@ -152,15 +152,11 @@ export default {
 				this.currentPage=1;
 			}else if(this.currentPage>1){
 					this.currentPage--;
-					this.getMailingOrder();
 			}
 		},
 		nextFn:function(){
-			if(this.currentPage==this.totalPage){
-				this.currentPage=this.totalPage;
-			}else if(this.currentPage<this.totalPage){
+			if(this.currentPage<this.totalPage){
 					this.currentPage++;
-					this.getMailingOrder();
 			}
 		},
 		getMailingOrder:function(){

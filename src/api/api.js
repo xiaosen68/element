@@ -50,7 +50,7 @@ export default {
 	deleteSharingPoster:"/api/v1/admin/mall/deleteSharingPoster",//删除海报
 	getMailingOrder:"/api/v1/admin/mall/getMailingOrder",//寄售订单查询
 	getGeneralOrder:"/api/v1/admin/mall/getGeneralOrder",//销售订单列表查询
-	transactionInquiry:"api/v1/admin/mall/transactionInquiry",//交易查询
+	transactionInquiry:"/api/v1/admin/mall/transactionInquiry",//交易查询
 	getMailingOrderById:"/api/v1/admin/mall/getMailingOrderById",//根据寄售订单id查询订单详情
 	getGeneralOrderById:"/api/v1/admin/mall/getGeneralOrderById",//根据销售订单id查询订单详情
 	findScoreLogList:"/api/v1/admin/account/findScoreLogList",//积分查询（phone，size,page）

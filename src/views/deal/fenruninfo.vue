@@ -10,7 +10,7 @@
 				<el-input placeholder="请输入手机号" type="tel" maxlength="11" size="small" 
 				 v-model="relUserPhone"></el-input></div> </div>
 				<div class="seach-item">交易流水号 <div class="search-input">
-				<el-input placeholder="请输入交易流水号" type="text" maxlength="20" size="small"  v-model="dealNum"></el-input></div> </div>
+				<el-input placeholder="请输入交易流水号" type="text" maxlength="20" size="small"  v-model="orderNo"></el-input></div> </div>
 				<div class="seach-item">日期
 					<div class="search-input seach-date">
 						  <el-date-picker
@@ -57,14 +57,14 @@
 					  prop="revenueAmount"
 					  label="分润">
 					</el-table-column>
-					<el-table-column
+				<!-- 	<el-table-column
 					  prop="dealMoney"
 					  label="交易金额">
-					</el-table-column>
-					<el-table-column
+					</el-table-column> -->
+					<!-- <el-table-column
 					  prop="dealFeilv"
 					  label="交易费率">
-					</el-table-column>
+					</el-table-column> -->
 					<el-table-column
 					  prop="relUserRealName"
 					  label="受益人">
@@ -73,10 +73,10 @@
 						  <p>{{scope.row.relUserPhone }}</p>
 					  </template>
 					</el-table-column>
-					<el-table-column
+					<!-- <el-table-column
 					  prop="superiorFeilv"
 					  label="费率">
-					</el-table-column>
+					</el-table-column> -->
 					<el-table-column
 					  prop="revenueAmount"
 					  label="获得分润">
@@ -88,6 +88,8 @@
 					<el-table-column
 					  prop="revenueState"
 					  label="分润备注">
+					  <template slot-scope="scope">
+					  		{{scope.row.revenueState|revenueStateFilter}}	
 					</el-table-column>
 				  </el-table>
 				 <!-- 主页面分页 -->
@@ -121,7 +123,7 @@ export default {
 			currentPage:0,
 			totalPage:0,
 			totalSize:0,
-			dealNum:'',//交易流水号
+			orderNo:'',//交易流水号
 			selectDate:[],//日期范围
 			pickerOption:{//日期选择器配置
 				disabledDate:function(newDate){
@@ -166,35 +168,20 @@ export default {
 				label:'交易待结算'
 				}
 			],
-			tableData:[{
-				superior:'0',
-				superiorName:'请问',
-				superiorTel:'12312312312',
-				superiorFeilv:'0.0012',
-				superiorMoney:'122',
-				superiorStatus:'品牌自清',
-				dealDate:'1212/01/21 12:12:32',
-				dealName:'订单',
-				dealTel:'1231231212',
-				dealNum:'2132313123123123123',
-				dealMoney:'21321',
-				dealFeilv:'0.0012',
-				
-			}]
+			tableData:[]
 		 }
+	},
+	beforeMount() {
+	this.getUserRevelPage();	
 	},
 	methods:{
 		prevFn:function(){
-			if(this.currentPage==1){
-				this.currentPage=1;
-			}else{
+			if(this.currentPage>1){
 				this.currentPage--;
 			}
 		},
 		nextFn:function(){
-			if(this.currentPage==this.totalPage){
-				this.currentPage=this.totalPage
-			}else{
+			if(this.currentPage<this.totalPage){
 				this.currentPage++
 			}
 		},
@@ -211,6 +198,7 @@ export default {
 				relUserPhone:this.relUserPhone,
 				startTime:this.selectDate[0],
 				endTime:this.selectDate[1],
+				orderNo:this.orderNo
 			
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)
@@ -228,6 +216,14 @@ export default {
 		},
 		telFilter:function(value){
 			return value.substring(0,3)+'***'+value.substring(value.length-4)
+		},
+		revenueStateFilter:function(value){
+			if(value=='NO_WITHDRAWAL'){
+				return value
+			}else if(value=='UNABLE_TO_WITHDRAW_CASH'){
+				return value
+			}
+			
 		}
 	},
 	

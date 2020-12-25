@@ -5,10 +5,10 @@
 			<div class="seach-box">
 				<div class="seach-item">手机号 <div class="search-input">  
 				<el-input placeholder="请输入内容" type="tel" maxlength="11"
-				 prefix-icon="el-icon-search" v-model="phone"></el-input></div> </div>
+				  v-model="phone"></el-input></div> </div>
 				<div class="seach-item">姓名 <div class="search-input">  
 				<el-input placeholder="请输入内容" type="text" maxlength="5" 
-				prefix-icon="el-icon-search" v-model="userName"></el-input></div> </div>
+				 v-model="userName"></el-input></div> </div>
 				<div class="seach-item">实名状态 <div class="search-input">  
 					<el-select v-model="realNameState" placeholder="请选择" :popper-append-to-body="false">
 						<el-option
@@ -32,16 +32,19 @@
 					</div> 
 				</div>
 				<div class="seach-item"><el-button type="primary"  size="small " @click="searchHyFn">查询</el-button></div>
-				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
+				<!-- <div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div> -->
 			</div>
 			<div class="hyinfo-box">
 				<div class="sign-waring"> 平台注册人数: <b class="font-fei">{{registNum}}</b>,平台实名人数:<b class="font-fei">{{realNameNum}}</b></div>
 				  <el-table :data="tableData" stripe style="width: 100%" :highlight-current-row="true">
 					<el-table-column type="index"width="40"></el-table-column>
 				    <el-table-column prop="createTime" label="日期" width="100" > </el-table-column>
-				    <el-table-column prop="userName" label="姓名" width="100"></el-table-column>
-				    <el-table-column prop="phone" label="手机号" width="120"> </el-table-column>
-					<el-table-column prop="houtaiNum" label="后台登录账号" width="120"> </el-table-column>
+				    <el-table-column prop="userName" label="姓名" width="120">
+						<template slot-scope="scope">
+							<div>{{scope.row.userName}}</div>
+							<div>{{scope.row.phone}}</div>
+						</template>
+					</el-table-column>
 					<el-table-column prop="realNameState" label="实名状态" width="100">
 						<template slot-scope="scope">
 							<div class="shiming-status1" v-if="scope.row.realNameState==='PASS'">已实名</div>
@@ -69,6 +72,7 @@
 			   layout="prev, pager, next"
 			   :total="totalSize"
 			   :page-size="size"
+			    :page-count="totalPage"
 			    :current-page.sync="currentPage"
 			   @current-change="searchHyFn"
 			   @prev-click="prevFn"
@@ -286,10 +290,6 @@ export default {
 			size:20,
 			totalPage:0,
 			totalSize:0,
-			xcurrentPage:1,
-			xsize:10,
-			xtotalPage:0,
-			xtotalSize:0,
 			phone:'',
 			userName:'',
 			realNameState:'',
@@ -392,17 +392,17 @@ export default {
 				{
 				userLevel:'ORDINARY_USERS',
 				userLevelId:6,
-				userLevelName:'普通用户',
+				userLevelName:'会员',
 				},
 				{
 				userLevel:'MEMBERS',
 				userLevelId:5,
-				userLevelName:'会员',
+				userLevelName:'VIP',
 				},
 				{
 				userLevel:'VIP_MEMBERS',
 				userLevelId:4,
-				userLevelName:'VIP会员',
+				userLevelName:'PLUS',
 				},
 				{
 				userLevel:'BUSINESS_PARTER',
@@ -458,7 +458,8 @@ export default {
 				size:this.size,
 				phone:this.phone,
 				userName:this.userName,
-				realNameState:this.realNameState
+				realNameState:this.realNameState,
+				level:this.level
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)
 			          if(res.code == 0){
@@ -467,6 +468,7 @@ export default {
 						 this.realNameNum=res.data.realNameNum;
 						 this.totalSize=res.data.total_size;
 						 this.currentPage=res.data.current_page;
+						 this.totalPage=res.data.total_page;
 			          }
 			       });
 		},

@@ -88,9 +88,9 @@
 			<div><div class="input-title">数量</div>
 			<div class="sign-input"><el-input   clearable type="text"  v-model="jsGoods.amount" placeholder=""></el-input></div></div>
 			
-			<div><div class="input-title">成交价</div> 
+			<div><div class="input-title">价格</div> 
 			<div class="sign-input"><el-input   clearable type="text"  v-model="jsGoods.transactionPrice" placeholder=""></el-input></div></div>
-			<div><div class="input-title">挂牌价</div> 
+			<div><div class="input-title">团购</div> 
 			<div class="sign-input"><el-input   clearable type="text"  v-model="jsGoods.mailingPrice" placeholder=""></el-input></div></div>
 			<div><div class="input-title">上传照片</div> 
 				<div class="sign-input">
@@ -137,8 +137,8 @@ export default {
 				productName:'',
 				productType:'MAILING',//类型‘GENERAL’消费，‘MAILING’寄售
 				productUrl:'',//图片
-				transactionPrice:'',//成交价
-				mailingPrice:'',//寄售价
+				transactionPrice:'',//价格
+				mailingPrice:'',//团购
 				amount:'',//数量
 				state:'ON_THE_SHELF',//上架‘ON_THE_SHELF’上架，‘OFF_THE_SHELF’下架
 				reason:'',//说明

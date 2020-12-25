@@ -10,11 +10,11 @@
 			<div class="seach-box">
 				<div class="seach-item">手机号 <div class="search-input">  
 				<el-input placeholder="请输入内容" type="tel" maxlength="11" 
-				prefix-icon="el-icon-search" v-model="phone"></el-input></div> </div>
+				 v-model="phone"></el-input></div> </div>
 				
 				<div class="seach-item">商户号 <div class="search-input">
 				<el-input placeholder="请输入内容" type="number" maxlength="11"
-				 prefix-icon="el-icon-search" v-model="merchId"></el-input></div> </div>
+				  v-model="merchId"></el-input></div> </div>
 				 <div class="seach-item">类型 <div class="search-input">
 				 	<el-select v-model="merchType" placeholder="请选择" :popper-append-to-body="false">
 				 		<el-option
@@ -26,17 +26,21 @@
 				 	  </el-select></div>
 				 	  </div>
 				<div class="seach-item"><el-button type="primary"  size="small " @click="getMerchInfo">查询</el-button></div>
-				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
+				<!-- <div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div> -->
 			</div>
 			<div class="hyinfo-box">
 				<div class="sign-waring"> 实名商户: <b class="font-fei">{{totalPeople}}</b></div>
 				  <el-table :data="tableData" stripe style="width: 100%" :highlight-current-row="true">
-					<el-table-column type="index"width="40"></el-table-column>
-					<el-table-column prop="uId" label="id"></el-table-column>
-				    <el-table-column prop="uUserName" label="姓名"></el-table-column>
-				    <el-table-column prop="uPhone" label="手机号"> </el-table-column>
+					<!-- <el-table-column type="index"width="40"></el-table-column> -->
+					<el-table-column prop="uId" label="id" width="40"></el-table-column>
+				    <el-table-column prop="uUserName" label="姓名" width="140">
+						 <template slot-scope="scope">
+							 <div>{{scope.row.uUserName}} </div>
+							 <div>{{scope.row.uPhone}} </div>
+						 </template>
+					</el-table-column>
 					<el-table-column prop="infoMerchId" label="商户号"> </el-table-column>
-					<el-table-column prop="infoMerchType" label="类型">
+					<el-table-column prop="infoMerchType" label="类型" width="60">
 						 <template slot-scope="scope">{{scope.row.infoMerchType|merchTypefilter}} </template>
 					</el-table-column>
 					
@@ -59,24 +63,32 @@
 					<el-table-column prop="dengji" label="未完成订单数"> </el-table-column>
 					<el-table-column prop="dengji" label="交易金额"> </el-table-column> -->
 					
-					<el-table-column prop="dengji" label="操作">
+					<!-- <el-table-column prop="dengji" label="操作">
 						<template slot-scope="scope">
 							<el-button size="small">操作</el-button>
 						</template>
-					</el-table-column>
-					<el-table-column prop="beizhu" label="信息推送" > 
+					</el-table-column> -->
+					<el-table-column prop="beizhu" label="信息推送" width="80"> 
 						<template slot-scope="scope">
 							<el-button size="small" @click="beizhuFn(scope.row)">信息</el-button>
 						</template>
 					</el-table-column>
 				  </el-table>
 			</div>
-			<el-pagination
-			   layout="prev, pager, next"
-			   :total="tableData.length">
-			 </el-pagination>
+			<!--  -->
+		<el-pagination
+		   layout="prev, pager, next"
+		   :total="totalSize"
+		   :page-size="size"
+		   :page-count="totalPage"
+		   :current-page.sync="currentPage"
+		    @current-change="getMerchInfo"
+			@prev-click="prevFn"
+			@next-click="nextFn"
+		   >
+		 </el-pagination>
 			 <!-- 商品信息信息 -->
-			 <el-dialog
+			 <!-- <el-dialog
 			   title="详情信息"
 			   :visible.sync="dialogVisible"
 			   width="80%"
@@ -121,7 +133,7 @@
 				   </el-table-column>
 			     </el-table>
 				
-			 </el-dialog>
+			 </el-dialog> -->
 			
 		</div>
 		<!-- 注册失败列表 -->
@@ -164,7 +176,13 @@
 			</div>
 			<el-pagination
 			   layout="prev, pager, next"
-			   :total="tableData.length">
+			   :total="wTotalPeople"
+			   :page-size="size"
+			   :current-page.sync="wCurrentPage"
+			    @current-change="registerMerchFailedLogPage"
+				@prev-click="prevFn"
+				@next-click="nextFn"
+			   >
 			 </el-pagination>
 			
 		</div>
@@ -180,6 +198,7 @@ export default {
 			name:'',
 			totalPeople:'',//商户个数
 			wTotalPeople:'',//注册失败个数
+			wCurrentPage:'',
 			dialogVisible:false,//详情信息弹框
 			dialogValue:{},
 			tableData: [],
@@ -224,9 +243,19 @@ export default {
 		// this.registerMerchFailedLogPage();
 	},
 	methods:{
+		prevFn:function(){
+				if(this.currentPage>1){
+					this.currentPage--;
+				}
+		},
+		nextFn:function(){
+			if(this.totalPage>this.currentPage){
+				this.currentPage++;
+			}
+		},
 		// 重新注册
 		setMerchFn:function(user){
-			console.log(user)
+			// console.log(user)
 			this.http.post(this.api.savingsCardByUserList,
 			{
 				userId:user.uId,
@@ -241,7 +270,7 @@ export default {
 								merchType:user.logMerchType,
 								cardId:this.cardId,
 							},sessionStorage.getItem('token')).then(res => {
-								console.log(res)
+								// console.log(res)
 									  if(res.code == 0){
 										this.$message.success(res.data)
 									  }
@@ -267,7 +296,7 @@ export default {
 			{
 				id:id,
 			},sessionStorage.getItem('token')).then(res => {
-				console.log(res)
+				// console.log(res)
 			        return res
 			       });
 		},
@@ -283,10 +312,12 @@ export default {
 				size:this.size,
 				page:this.currentPage
 			},sessionStorage.getItem('token')).then(res => {
-				console.log(res)
+				// console.log(res)
 			          if(res.code == 0){
 						  this.registerList=res.data.list;
 						  this.wTotalPeople=res.data.total_size;
+						  this.wCurrentPage=res.data.current_page;
+						  
 						  this.registerList.forEach((item)=>{
 							  _this.registerMerchFailedLogByLogId(item.logId)
 							  // console.log(_this.registerMerchFailedLogByLogId(item.logId))
@@ -298,7 +329,7 @@ export default {
 		},
 		// 获取商户信息
 		getMerchInfo:function(){
-			console.log(this.merchType)
+			// console.log(this.merchType)
 			this.http.post(this.api.getMerchInfo,
 			{
 				phone:this.phone,
@@ -307,15 +338,19 @@ export default {
 				size:this.size,
 				page:this.currentPage
 			},sessionStorage.getItem('token')).then(res => {
-				console.log(res)
+				// console.log(res)
 			          if(res.code == 0){
 						  this.tableData=res.data.list;
 						  this.totalPeople=res.data.total_size;
+						  this.totalSize=res.data.total_size;
+						  this.currentPage=res.data.current_page;
+						  this.totalPage=res.data.total_page;
+						  
 			          }
 			       });
 		},
 		beizhuFn:function(item){
-			console.log(item)
+			// console.log(item)
 		},
 		// 添加备注，发送信息
 		 // 发送信息
@@ -325,7 +360,7 @@ export default {
 		           cancelButtonText: '取消',
 		           inputPlaceholder: '请输入信息',
 		         }).then(({ value }) => {
-		 			console.log(value)
+		 			// console.log(value)
 		           this.http.post(this.api.addPersonalMessage,
 		           {
 		           	 userId:userStatus.uId,
@@ -333,7 +368,7 @@ export default {
 		           	content:value,
 		           
 		           },sessionStorage.getItem('token')).then(res => {
-		           	console.log(res)
+		           	// console.log(res)
 		                     if(res.code == 0){
 		           			 this.$message.success(res.data)
 		                     }
@@ -344,12 +379,12 @@ export default {
 		         });
 		       },
 		  dialogFn:function(item){
-			  console.log(item);
+			  // console.log(item);
 			  this.dialogVisible=true;
 			  this.dialogValue=item;
 		  },
 		  lowerFn:function(tel){
-			  console.log(tel);
+			  // console.log(tel);
 			  this.lowerDate=[{
 				  date:'2020-20-20',
 				  name:'hahah',
@@ -375,9 +410,9 @@ export default {
 			}
 		},
 		logState:function(val){
-			if(val==='MERCH_LOGIN_SUCCESSFUL'||val=='1'){
+			if(val=='MERCH_LOGIN_SUCCESSFUL'||val=='1'){
 				return "成功"
-			}else if(val==='MERCH_LOGIN_FAILED'||val=='2'){
+			}else if(val=='MERCH_LOGIN_FAILED'||val=='2'){
 				return "失败"
 			}
 		}

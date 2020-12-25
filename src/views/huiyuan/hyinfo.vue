@@ -4,10 +4,11 @@
 		<div class="zh-info-box">
 			<div class="seach-box">
 				<div class="seach-item">手机号 <div class="search-input">  
-				<el-input placeholder="请输入内容" type="tel" maxlength="11" prefix-icon="el-icon-search" v-model="phone"></el-input></div> </div>
+				<el-input placeholder="请输入内容" type="tel" maxlength="11" 
+				v-model="phone"></el-input></div> </div>
 				<div class="seach-item">姓名 <div class="search-input">  
 				<el-input placeholder="请输入内容" type="text" maxlength="5"
-				 prefix-icon="el-icon-search" v-model="userName"></el-input></div> </div>
+				  v-model="userName"></el-input></div> </div>
 				<div class="seach-item">实名状态 <div class="search-input">  
 					<el-select v-model="realNameState" placeholder="请选择" :popper-append-to-body="false">
 						<el-option
@@ -31,7 +32,7 @@
 					</div> 
 				</div>
 				<div class="seach-item"><el-button type="primary"  size="small " @click="searchHyFn">查询</el-button></div>
-				<div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div>
+				<!-- <div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div> -->
 			</div>
 			<div class="hyinfo-box">
 				<div class="sign-waring"> 平台注册人数: <b class="font-fei">{{registNum}}</b>,平台实名人数:<b class="font-fei">{{realNameNum}}</b></div>
@@ -55,7 +56,7 @@
 						        <el-popover trigger="click" @show="searchUp(scope.row.uId)" placement="top">
 						        <el-table :data="superiorList">
 									 <!-- <el-table-column prop="superiorLevelName" label="关系" width="80"></el-table-column> -->
-									 <el-table-column prop="superiorLevelName" label="姓名" width="80"></el-table-column>
+									 <el-table-column prop="superiorUserName" label="姓名" width="80"></el-table-column>
 									 <el-table-column prop="superiorLevelName" label="等级" width="120"> </el-table-column>
 									 <el-table-column prop="superiorUserPhone" label="手机号" width="120"> </el-table-column>
 								</el-table>
@@ -147,14 +148,17 @@
 						<div>
 							<el-image style="width: 100px; height: 100px ;margin: 10px;"
 							    :src="rnsMap.frontPhotoOfIdCard" 
+								:preview-src-list="[rnsMap.frontPhotoOfIdCard,rnsMap.reversePhotoOfIdCard,rnsMap.holdingIdCard]"
 								 >
 							  </el-image>
 							  <el-image style="width: 100px; height: 100px ;margin: 10px;"
 							      :src="rnsMap.reversePhotoOfIdCard" 
+								  :preview-src-list="[rnsMap.frontPhotoOfIdCard,rnsMap.reversePhotoOfIdCard,rnsMap.holdingIdCard]"
 							  	 >
 							    </el-image>
 								<el-image style="width: 100px; height: 100px ;margin: 10px;"
 								    :src="rnsMap.holdingIdCard" 
+									:preview-src-list="[rnsMap.frontPhotoOfIdCard,rnsMap.reversePhotoOfIdCard,rnsMap.holdingIdCard]"
 									 >
 								  </el-image>
 						</div>
@@ -167,8 +171,8 @@
 				 <el-table-column property="pinpai" label="品牌" width="100"></el-table-column>
 			     <el-table-column property="userName" label="姓名" width="80"></el-table-column>
 			     <el-table-column property="phone" label="手机号"></el-table-column>
-				 <el-table-column property="dengji" label="等级"></el-table-column>
-				 <el-table-column property="dengji" label="查看下级">
+				 <el-table-column property="userLevelName" label="等级"></el-table-column>
+				 <el-table-column property="userName" label="查看下级">
 					 <template slot-scope="scope">
 					 	<el-button size="small" @click="lowerFn('dd',scope.row.uId)">下级</el-button>
 					 </template>
@@ -183,6 +187,7 @@
 			      layout="prev, pager, next"
 			   :total="xtotalSize"
 			   :page-size="xsize"
+			     :page-count="xtotalPage"
 			    :current-page.sync="xcurrentPage"
 			   @current-change="lowerFn"
 			   @prev-click="xprevFn"
@@ -195,6 +200,7 @@
 			   layout="prev, pager, next"
 			   :total="totalSize"
 			   :page-size="size"
+			    :page-count="totalPage"
 			    :current-page.sync="currentPage"
 			   @current-change="searchHyFn"
 			   @prev-click="prevFn"
@@ -220,7 +226,7 @@ export default {
 			xId:0,//下级id
 			phone:'',
 			userName:'',
-			realNameState:'',
+			realNameState:'PASS',
 			level:'',
 			realNameNum:'',
 			registNum:'',
@@ -256,17 +262,17 @@ export default {
 				{
 				userLevel:'ORDINARY_USERS',
 				userLevelId:6,
-				userLevelName:'普通用户',
+				userLevelName:'会员',
 				},
 				{
 				userLevel:'MEMBERS',
 				userLevelId:5,
-				userLevelName:'会员',
+				userLevelName:'VIP',
 				},
 				{
 				userLevel:'VIP_MEMBERS',
 				userLevelId:4,
-				userLevelName:'VIP会员',
+				userLevelName:'PLUS',
 				},
 				{
 				userLevel:'BUSINESS_PARTER',
@@ -334,6 +340,7 @@ export default {
 						 this.realNameNum=res.data.realNameNum;
 						 this.totalSize=res.data.total_size;
 						 this.currentPage=res.data.current_page;
+						 this.totalPage=res.data.total_page;
 			          }
 			       });
 		},
@@ -416,6 +423,7 @@ export default {
 						 this.lowerDialogtitle='下级会员共有：'+res.data.total_size+'名';
 						 this.xtotalSize=res.data.total_size;
 						 this.xcurrentPage=res.data.current_page;
+						 this.xtotalPage=res.data.total_page;
 			            }
 			         });
 			  this.lowerDialogTableVisible=true;

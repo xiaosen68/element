@@ -202,11 +202,13 @@
 export default {
 	data (){
 		return {
-			xtotalSize:0,
 			size:20,
-			xcurrentPage:0,
+			xtotalSize:0,
+			xtotalPage:0,
+			xcurrentPage:1,
 			jtotalSize:0,
-			jcurrentPage:0,
+			jtotalPage:0,
+			jcurrentPage:1,
 			goodsClass:true,
 			
 			jsTableData:[
@@ -250,24 +252,17 @@ export default {
 		},
 		nextFn:function(){
 			if(this.goodsClass){
-				if(this.xcurrentPage==this.xtotalPage){
-					this.xcurrentPage=this.xtotalPage;
-				}else if(this.xcurrentPage<this.xtotalPage){
+				if(this.xcurrentPage<this.xtotalPage){
 						this.xcurrentPage++;
 				}
 			}else{
-				if(this.jcurrentPage==this.jtotalPage){
-					this.jcurrentPage=this.jtotalPage;
-				}else if(this.jcurrentPage<this.jtotalPage){
+				if(this.jcurrentPage<this.jtotalPage){
 						this.jcurrentPage++;
 				}
 			}
 			
 		},
 		getGoodsList(){
-			
-			
-			
 			
 			if(this.goodsClass){
 				this.http.post(this.api.getMailingProductAll,
@@ -280,7 +275,7 @@ export default {
 							  this.jsTableData=res.data.list;
 							  this.jtotalSize=res.data.total_size
 							  this.jcurrentPage=res.data.current_page;
-							  this.jtotalSize=res.data.total_page
+							  this.jtotalPage=res.data.total_page
 				          }
 				       });
 			}else{
@@ -294,7 +289,7 @@ export default {
 							  this.xsTableDate=res.data.list
 							  this.xtotalSize=res.data.total_size
 							  this.xcurrentPage=res.data.current_page;
-							  this.xtotalSize=res.data.total_page
+							  this.xtotalPage=res.data.total_page
 				          }
 				       });
 			}

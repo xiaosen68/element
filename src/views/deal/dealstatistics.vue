@@ -143,7 +143,7 @@ export default {
 	},
 	beforeMount() {
 			this.dealstatisticFn();
-			// this.gethuizongFn();
+			
 	},
 	methods:{
 		prevFn:function(){
@@ -161,19 +161,23 @@ export default {
 		},
 		gethuizongFn:function(){
 			this.currentPage=1;
-			this.size-this.days;
+			this.size=this.days;
 			this.dealstatisticFn();
 		},
 		gethuizongdata:function(){
 			let _this=this;
+			_this.dayList=[];
+			_this.tiaoshu=[];
+			_this.totalTransactionPrice=[];
 			_this.collectDate.forEach((item)=>{
 				_this.dayList.push(item.days);
 				_this.tiaoshu.push(item.tiaoshu);
 				_this.totalTransactionPrice.push(item.totalTransactionPrice)
 			})
+			
 			this.drowChart();
 		},
-		// 获取数据
+		// 获取数据列表
 		dealstatisticFn:function(){
 			this.http.post(this.api.transactionStatistics,
 			{
@@ -185,6 +189,7 @@ export default {
 						 this.collectDate=res.data.list; 
 						 this.totalSize=res.data.total_size;
 						 this.currentPage=res.data.current_page;
+						 this.gethuizongdata();
 			          }
 			       });
 				   
@@ -228,7 +233,7 @@ export default {
 							type:'value',
 							scale:true,
 							name:'金额',
-							max:15000,
+							max:150000,
 							min:0,
 							boundaryGap:[0.2,0.2]
 						},{

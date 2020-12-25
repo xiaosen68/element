@@ -2,7 +2,7 @@
   <div class="home">
    <el-container>
      <el-header height="60px">
-		<div class="logo">牛贝</div>
+		<div class="logo" v-if="!isCollapse">牛贝</div>
 		<i  class="is-collapse  el-icon-s-unfold" v-if="isCollapse" @click="isCollapseFn"></i>
 		<i  class="is-collapse el-icon-s-fold" v-else @click="isCollapseFn"></i>
 		<el-breadcrumb separator="/" >

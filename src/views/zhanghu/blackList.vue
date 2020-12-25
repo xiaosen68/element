@@ -4,7 +4,7 @@
 		<div class="zh-info-box">
 			<div class="seach-box">
 				<div class="seach-item">手机号 <div class="search-input">  
-				<el-input size="small" placeholder="请输入手机号" type="tel" maxlength="11" prefix-icon="el-icon-search" v-model="phone"></el-input></div> </div>
+				<el-input size="small" placeholder="请输入手机号" type="tel" maxlength="11" v-model="phone"></el-input></div> </div>
 				<div class="seach-item">黑名单类型 <div class="search-input">
 					<el-select size="small" v-model="blackType" placeholder="请选择">
 						<el-option
@@ -17,14 +17,14 @@
 				</div> </div>
 				<div class="seach-item">原因 <div class="search-input">
 				<el-input size="small" placeholder="请输入原因" type="text" 
-				maxlength="11" prefix-icon="el-icon-search" v-model="blackoutReason"></el-input></div> </div>
+				maxlength="11"  v-model="blackoutReason"></el-input></div> </div>
 				
 				<div class="seach-item"><el-button type="primary"  size="small " @click="addBlack">添加黑名单</el-button></div>
 				<div style="width: 100%;"> </div><!-- 强制换行 -->
 				<div class="seach-item" >手机号 <div class="search-input">
-				<el-input size="small" placeholder="请输入手机号" type="tel" maxlength="11" prefix-icon="el-icon-search" v-model="searchPhone"></el-input></div> </div>
+				<el-input size="small" placeholder="请输入手机号" type="tel" maxlength="11"   v-model="searchPhone"></el-input></div> </div>
 				<div class="seach-item">身份证号 <div class="search-input">
-				<el-input size="small" placeholder="身份证号" type="text" maxlength="20" prefix-icon="el-icon-search" v-model="searchIdNumber"></el-input></div> </div>
+				<el-input size="small" placeholder="身份证号" type="text" maxlength="20"   v-model="searchIdNumber"></el-input></div> </div>
 				<div class="seach-item" ><el-button type="primary"  size="small " @click="searchBlack">查询</el-button></div>
 				
 			</div>
@@ -88,6 +88,16 @@
 			  </el-table>
 			</div>
 		</div>
+		<el-pagination
+		   layout="prev, pager, next"
+		   :total="totalSize"
+		   :page-size="size"
+		    :current-page.sync="currentPage"
+		   @current-change="refreshBlackList"
+		   @prev-click="prevFn"
+		   @next-click="nextFn"
+		   >
+		 </el-pagination>
 	</div>
 </template>
 
@@ -95,7 +105,10 @@
 export default {
 	data (){
 		return {
-			
+			currentPage:1,
+			totalSize:0,
+			size:20,
+			totalPage:0,
 			searchPhone:'',
 			searchIdNumber:'',
 			phone:'',
@@ -121,16 +134,29 @@ export default {
 		this.refreshBlackList()
 	},
 	methods:{
+		prevFn:function(){
+			if(this.currentPage>1){
+					this.currentPage--;
+			}
+		},
+		nextFn:function(){
+			if(this.currentPage<this.totalPage){
+					this.currentPage++;
+			}
+		},
 		refreshBlackList(){
 			this.http.post(this.api.blackListUser,
 			{
-				"page":1,
-				"size":10
+				"page":this.currentPage,
+				"size":this.size
 			
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)
 			          if(res.code == 0){
-						  this.tableData=res.data.list
+						  this.tableData=res.data.list;
+						  this.currentPage=res.data.current_page;
+						  this.totalPage=res.data.total_page;
+						  this.totalSize=res.data.total_size;
 						  if(res.data.list.length==0){
 						  	this.$message.success('没有查询到黑名单')
 						  }

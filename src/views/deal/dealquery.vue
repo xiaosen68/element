@@ -41,7 +41,8 @@
 						  v-model="orderDate"
 						  type="date"
 						  placeholder="选择日期"
-						  size="small" >
+						  size="small" 
+						  value-format="yyyy-MM-dd">
 						</el-date-picker>
 					</div> 
 				</div>
@@ -53,11 +54,11 @@
 				<div class="sign-waring"> 交易总笔数: <b class="font-fei">{{tranNum}}</b>,交易总金额:<b class="font-fei">{{totalTransactionPrice}}</b></div>
 				  <el-table :data="tableData" stripe style="width: 100%" :highlight-current-row="true">
 					<el-table-column type="index"width="40"></el-table-column>
-				    <el-table-column prop="createTime" label="交易日期" > </el-table-column>
-				    <el-table-column prop="realName" label="姓名/手机号">
+				    <el-table-column prop="createTime" label="交易日期" width="120"> </el-table-column>
+				    <el-table-column prop="realName" label="姓名/手机号" width="180">
 						<template slot-scope="scope">
 							<div>{{scope.row.realName}}</div>
-							<div>{{scope.row.phone | telFilter}}</div>
+							<div>{{scope.row.phone}}</div>
 						</template>	
 					</el-table-column>
 				    <el-table-column prop="phone" label="用户信息">
@@ -77,13 +78,22 @@
 					<el-table-column prop="payNo" label="交易卡">
 						<template slot-scope="scope">
 							<div>{{scope.row.payBank}}</div>
-							<div>{{scope.row.payNo | cardNumFilter}}</div>
+							<!-- <div>{{scope.row.payNo | cardNumFilter}}</div> -->
+							<div>{{scope.row.payNo}}</div>
 						</template>	
 					</el-table-column>
 					<el-table-column prop="receiveNo" label="结算卡">
 						<template slot-scope="scope">
 							<div>{{scope.row.receiveBank}}</div>
-							<div>{{scope.row.receiveNo | cardNumFilter}}</div>
+							<!-- <div>{{scope.row.receiveNo | cardNumFilter}}</div> -->
+							<div>{{scope.row.receiveNo}}</div>
+						</template>	
+					</el-table-column>
+					<el-table-column prop="store" label="结算商户">
+						<template slot-scope="scope">
+							<div>{{scope.row.merchName}}</div>
+							<!-- <div>{{scope.row.store | telFilter}}</div> -->
+							<div>{{scope.row.store}}</div>
 						</template>	
 					</el-table-column>
 					<el-table-column prop="tongdao" label="通道/状态">
@@ -128,12 +138,10 @@
 					<div>交易订单号：<b>{{jiaoInfo.orderNo}}</b></div>
 					<div>支付通道：<b>{{jiaoInfo.passageWayName}}</b></div>
 					<div>支付卡：<b>{{jiaoInfo.payBank}}{{jiaoInfo.payNo}}</b></div>
-					<div>到账卡：<b>{{jiaoInfo.receiveBank}}{{jiaoInfo.payNo}}</b></div>
-					<div>商户名：<b>{{jiaoInfo.merchName}}</b></div>
+					<div>到账卡：<b>{{jiaoInfo.receiveBank}}{{jiaoInfo.receiveNo}}</b></div>
+					<div>商户名：<b>{{jiaoInfo.merchName}}{{jiaoInfo.store}}</b></div>
 					<div>商户订单编号：<b>{{jiaoInfo.merchId}}</b></div>
-					<div>描述：<b>{{jiaoInfo.name}}</b></div>
 					<div>类型：<b>{{jiaoInfo.orderType|orderTypeFile}}</b></div>
-					<div>状态：<b>{{jiaoInfo.name}}</b></div>
 				</div>
 			</el-dialog>
 			<!-- 分页 -->
@@ -254,6 +262,7 @@ export default {
 		},
 		// 查询交易信息
 		transactionInquiry:function(){
+			console.log(this.orderDate)
 			this.http.post(this.api.transactionInquiry,
 			{
 				phone:this.phone,
