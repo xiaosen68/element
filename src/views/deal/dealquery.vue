@@ -9,9 +9,9 @@
 				<el-input placeholder="请输入姓名" type="text" maxlength="5" size="small"  v-model="realName"></el-input></div> </div>
 				
 				<div class="seach-item">交易单号 <div class="search-input">
-				<el-input placeholder="请输入交易单号" type="tel" maxlength="11" size="small"  v-model="orderNo"></el-input></div> </div>
+				<el-input placeholder="请输入交易单号" type="tel" size="small"  v-model="orderNo"></el-input></div> </div>
 				<div class="seach-item">信用卡号 <div class="search-input">
-				<el-input placeholder="请输入信用卡号" type="tel" maxlength="11" size="small"  v-model="payNo"></el-input></div> </div>
+				<el-input placeholder="请输入信用卡号" type="tel" size="small"  v-model="payNo"></el-input></div> </div>
 				
 				<div class="seach-item">交易类型 <div class="search-input">  
 					<el-select v-model="tranType" placeholder="请选择" size="small"  :popper-append-to-body="false">

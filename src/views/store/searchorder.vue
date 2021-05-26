@@ -1,6 +1,6 @@
 <template>
 	<div class="main-box">
-		<div class="zh-head">购买订单 </div>
+		<div class="zh-head">寄售订单 </div>
 		<div class="zh-info-box">
 			<div class="seach-box">
 				<div class="seach-item">订单号 <div class="search-input">  
@@ -9,6 +9,9 @@
 				<div class="seach-item">手机号 <div class="search-input">  
 				<el-input placeholder="请输入手机号" type="tel" maxlength="11" 
 				 v-model="phone"></el-input></div> </div>
+				 <div class="seach-item">上级手机号<div class="search-input">
+				 <el-input placeholder="请输入上级手机号" type="tel" maxlength="11" 
+				  v-model="superOrderUserPhone"></el-input></div> </div>
 				<div class="seach-item">寄售订单 <div class="search-input">
 					<el-select v-model="orderType" placeholder="请选择" :popper-append-to-body="false">
 						<el-option
@@ -18,9 +21,21 @@
 						  :value="item.orderType">
 						</el-option>
 					  </el-select></div>
-					  </div>
+				</div>
+				<div class="seach-item">日期
+					<div class="search-input">
+						<el-date-picker style="width: 140px;"
+						  v-model="orderDate"
+						  type="date"
+						  placeholder="选择日期"
+						  size="small" 
+						  value-format="yyyy-MM-dd">
+						</el-date-picker>
+					</div> 
+				</div>	  
 				<div class="seach-item"><el-button type="primary"  size="small " @click="getMailingOrder">查询</el-button></div>
-				<!-- <div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div> -->
+				<div class="seach-item"><el-button type="warning"  
+				size="small " icon="el-icon-download" @click="excelMailingOrder">导出表格</el-button></div>
 			</div>
 			<div class="hyinfo-box">
 				<el-table
@@ -34,7 +49,7 @@
 							 <el-form-item label="交易平台编号">
 							   <span>{{ props.row.orderPtNum }}</span>
 							 </el-form-item>
-							 <el-form-item label="商品列表" v-for="item in  props.row.orderList">
+							 <el-form-item label="商品列表" v-for="(item, index) in  props.row.orderList" :key="index">
 							   <span>名称：{{ item.productName}};  成交价：{{item.transactionPrice}};  挂牌价：{{item.mailingPrice}};  数量：{{item.payamount}}</span>
 							 </el-form-item>
 						</el-form>
@@ -212,6 +227,7 @@ export default {
 			tableData:[],
 			orderNo:'',
 			phone:'',
+			superOrderUserPhone:'',
 			stateCode:'',
 			userLevel:'',
 			size:20,
@@ -219,6 +235,7 @@ export default {
 			currentPage:1,
 			totalPage:0,
 			orderType:'',
+			orderDate:'',
 			orderOp:[
 				{
 					orderType:'MEMBER_PLUS',
@@ -280,6 +297,19 @@ export default {
 						  this.totalSize=res.data.total_size;
 			          }
 			       });
+		},
+		// 导出寄售列表
+		excelMailingOrder:function(){
+			this.http.getexcel('寄售列表',this.api.excelMailinglOrderOne,{
+				phone:this.phone,
+				superOrderUserPhone:this.superOrderUserPhone,
+				store:this.store,
+				orderTime:this.orderDate,
+			},sessionStorage.getItem('token')).then(res => {
+			          if(res.code == 0){
+						 console.log(res)
+			          }
+			       })
 		},
 		dialogFn:function(item){
 			

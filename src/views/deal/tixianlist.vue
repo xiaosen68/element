@@ -59,51 +59,68 @@
 			    stripe
 			    style="width: 100%">
 			    <el-table-column
-			      prop="createTime"
+			      prop="submit_time"
 			      label="创建日期"
 			      width="100">
 			    </el-table-column>
 				<el-table-column
 				  prop="phone"
 				  label="姓名/手机号"
-				  width="140">
+				  width="120">
 				  <template slot-scope="scope">
-					  <p>{{scope.row.userName}}</p>
+					  <p>{{scope.row.user_name}}</p>
 					  <p>{{scope.row.phone}}</p>
 				  </template>
 				  </el-table-column>
 				<el-table-column
-				    prop="cashOutBank"
-				    label="银行"
-				    width="120">
-				</el-table-column>	  
-				<el-table-column
-				    prop="cashOutBankNo"
-				    label="银行卡"
-				    width="180">
-				</el-table-column>	  
-				<el-table-column
+				    prop="withdraw_bank"
+				    label="开户行/卡号"
+				    width="160">
+					<template slot-scope="scope">
+					  <p>{{scope.row.withdraw_bank}}</p>
+					  <p>{{scope.row.bank_account}}</p>
+					</template>
+				</el-table-column>  
+				<!-- <el-table-column
 				  prop="updateTime"
 				  label="更新日期"
 				  width="100">
-				</el-table-column>
+				</el-table-column> -->
 			    <el-table-column
-			      prop="frozenAmount"
+			      prop="apply_amount"
 			      label="提现金额"
-			      width="100">
-			    </el-table-column>
-			    <el-table-column
-			      prop="amount"
-			      label="剩余金额"
-				  width="100">
+			      width="70">
 			    </el-table-column>
 				<el-table-column
+				  prop="fee"
+				  label="手续费"
+				  width="70">
+				</el-table-column>
+				<el-table-column
+				  prop="tax_amount"
+				  label="税费"
+				  width="70">
+				</el-table-column>
+			    <el-table-column
+			      prop="amount"
+			      label="余额"
+				  width="70">
+			    </el-table-column>
+				<!-- <el-table-column
 				  prop="state"
 				  label="状态"
-				  width="120">
+				  width="100">
+				  <template slot-scope="scope">
+				  	<p>{{scope.row.state|stateFilter}}</p>
+				  </template>
+				</el-table-column> -->
+				<el-table-column
+				  prop="state"
+				  label="操作"
+				  width="100">
 				   <template slot-scope="scope">
 						   	<el-select v-model="scope.row.state" placeholder="请选择" 
-							:popper-append-to-body="true" size="mini" @change="cashWithdrawalByAudit( scope.row.state,scope.row.wId)">
+							:popper-append-to-body="true" size="mini" @change="cashWithdrawalByAudit( scope.row.state,scope.row.withdraw_id)">
 							<el-option
 							  v-for="item in txOptions"
 							  :key="item.type"
@@ -113,13 +130,6 @@
 						  </el-select>
 					
 				   </template>
-				</el-table-column>
-				<el-table-column
-				  prop="state"
-				  label="详情">
-				  <template slot-scope="scope">
-				  	<el-button size="mini" type="primary">恩恩</el-button>
-				  </template>
 				</el-table-column>
 			  </el-table>
 			  <el-pagination
@@ -149,36 +159,42 @@ export default {
 			size:20,
 			totalPage:0,
 			totalSize:0,
-			txOptions:[{
-				type:'ACCEPTED',
-				code:'1',
-				label:'受理中',
-			},{
-				type:'PAYMENT_IN_PROGRESS',
-				code:'2',
-				label:'打款中',
-			},{
+			txOptions:[
+			// 	{
+			// 	type:'ACCEPTED',
+			// 	code:'1',
+			// 	label:'受理中',
+			// },
+			// {
+			// 	type:'PAYMENT_IN_PROGRESS',
+			// 	code:'2',
+			// 	label:'打款中',
+			// },
+			{
 				type:'SUCCESSFUL_PAY',
 				code:'3',
 				label:'打款成功',
-			},{
+			},
+			{
 				type:'PAYMENT_FAILED',
 				code:'4',
 				label:'打款失败',
-			},{
-				type:'REFUSE',
-				code:'5',
-				label:'拒绝',
-			},],
-			txClassify:[{
-				type:'21',
-				code:'1',
-				label:'收益提现',
-			},{
-				type:'12',
-				code:'2',
-				label:'营业额提现',
-			}],
+			},
+			// {
+			// 	type:'REFUSE',
+			// 	code:'5',
+			// 	label:'拒绝',
+			// },
+			],
+			// txClassify:[{
+			// 	type:'21',
+			// 	code:'1',
+			// 	label:'收益提现',
+			// },{
+			// 	type:'12',
+			// 	code:'2',
+			// 	label:'营业额提现',
+			// }],
 			tableData:[
 			
 			],
@@ -228,53 +244,97 @@ export default {
 		},
 		// 提现信息查询
 		getTixianList:function(){
-			this.http.post(this.api.getWithdrawalAmountAll,
-			{
-				page:this.currentPage,
-				size:this.size,
-				phone:this.phone,
-				state:this.tixianStatus,
-			},sessionStorage.getItem('token')).then(res => {
+			let searchdata={};
+			if(this.tel1){
+				searchdata={
+					page:this.currentPage,
+					phone:this.tel1,
+					}
+			}else{
+				searchdata={
+					page:this.currentPage
+				}
+			}
+			this.http.get(this.api.applicationList,
+			searchdata,sessionStorage.getItem('token')).then(res => {
 				console.log(res)
-			          if(res.code == 0){
-						  this.tixianList=res.data.list;
-						  this.totalSize=res.data.total_size;
-						  this.currentPage=res.data.current_page;
-						  // this.refreshLable();
-			          }
+				if(res.list.length==0){
+					this.$message.warning('未查询到数据')
+				}else{
+					this.tixianList=res.list;
+					this.currentPage=res.page;
+					this.totalSize=res.total;
+				}
+				
+				// this.refreshLable();
+			    //       if(res.code == 0){
+						 //  this.tixianList=res.data.list;
+						 //  this.totalSize=res.data.total_size;
+						 //  this.currentPage=res.data.current_page;
+						 //  // this.refreshLable();
+			    //       }else if(res.code==200){
+						 //  this.$message.success(res.error_code)
+					  // }
 			       });
+			// this.http.post(this.api.getWithdrawalAmountAll,
+			// {
+			// 	page:this.currentPage,
+			// 	size:this.size,
+			// 	phone:this.phone,
+			// 	state:this.tixianStatus,
+			// },sessionStorage.getItem('token')).then(res => {
+			// 	console.log(res)
+			//           if(res.code == 0){
+			// 			  this.tixianList=res.data.list;
+			// 			  this.totalSize=res.data.total_size;
+			// 			  this.currentPage=res.data.current_page;
+			// 			  // this.refreshLable();
+			//           }else if(res.code==200){
+			// 			  this.$message.success(res.error_code)
+			// 		  }
+			//        });
+			
 		},
 		// 提现信息审核
+		// cashWithdrawalByAudit:function(tixianState,tixianId){
+		// 	this.http.post(this.api.cashWithdrawalByAudit,
+		// 	{
+		// 		id:tixianId,
+		// 		state:tixianState
+			
+		// 	},sessionStorage.getItem('token')).then(res => {
+		// 		console.log(res)
+		// 	          if(res.code == 0){
+		// 				  this.$message.success(res.data)
+		// 	          }
+		// 	       });
+		// },
 		cashWithdrawalByAudit:function(tixianState,tixianId){
-			this.http.post(this.api.cashWithdrawalByAudit,
+	
+			this.http.post(this.api.changeStatus,
 			{
 				id:tixianId,
 				state:tixianState
 			
 			},sessionStorage.getItem('token')).then(res => {
+				
+				
 				console.log(res)
-			          if(res.code == 0){
-						  this.$message.success(res.data)
-			          }
+			          if(res.error_code ==200){
+						  this.$message.success(res.status)
+			          }else if(res.error_code==500){
+						  this.$message.warning(res.error_msg)
+					  }
 			       });
 		},
+		
+		
 		// 导出提现列表
 		excelWithdrawalAmountAll:function(){
-			this.http.post(this.api.excelWithdrawalAmountAll,
-			{
-				phone:this.phone,
-				state:this.tixianStatus
-
-			},sessionStorage.getItem('token')).then(res => {
+			this.http.getexcel('提现列表',this.api.daochuexcel,{phone:this.phone,state:this.tixianStatus},sessionStorage.getItem('token')).then((res)=>{
 				console.log(res)
-			          if(res.code == 0){
-						  this.tixianList=res.data.list;
-						  this.totalSize=res.data.total_size;
-						  this.currentPage=res.data.current_page;
-						  // this.refreshLable();
-			          }
-			       });
-		},
+			})
+		},	
 		// 导入提现列表
 		importExcelUpdateWithdrawal:function(){
 			this.http.post(this.api.importExcelUpdateWithdrawal,
@@ -288,6 +348,21 @@ export default {
 						  // this.refreshLable();
 			          }
 			       });
+		}
+	},
+	filters:{
+		stateFilter:function(value){
+			if(value==='ACCEPTED'){
+				return "受理中"
+			}else if(value==='PAYMENT_IN_PROGRESS'){
+				return "打款中"
+			}else if(value==='SUCCESSFUL_PAY'){
+				return "打款成功"
+			}else if(value==='PAYMENT_FAILED'){
+				return "打款失败"
+			}else if(value==='REFUSE'){
+				return "拒绝"
+			}
 		}
 	}
 }

@@ -5,6 +5,8 @@
 			size="small" @click="selectCaidan(1)">修改菜单</el-button></div>
 			<div class="zh-head-item"><el-button autofocus plain :type="buttonTypeFn()"
 			size="small" @click="selectCaidan(2)">新增菜单</el-button></div>
+			<div class="zh-head-item"><el-button autofocus plain :type="buttonTypeFn()"
+			size="small" @click="selectCaidan(3)">上传ios下载链接</el-button></div>
 			<!-- <div class="zh-head-item"><el-button plain :type="buttonTypeFn()"size="small">个人费率</el-button></div> -->
 			<!-- <div class="zh-head-item"><el-button plain :type="buttonTypeFn()"size="small">个人分润</el-button></div> -->
 			<!-- <div class="zh-head-item"><el-button plain :type="buttonTypeFn()"size="small">个人积分</el-button></div> -->
@@ -94,7 +96,13 @@
 						</el-dialog>
 						
 				</div>
-			
+				<div class="zh-info-item" v-if="showCaidan[2]==1">
+				
+					<el-input class="input-item"  placeholder="请输入下载链接" v-model="iosLink"></el-input> 
+					<el-button autofocus plain :type="buttonTypeFn()"
+					size="small" @click="pushIos()">上传</el-button>
+				
+				</div>
 		
 		</div>
 	</div>
@@ -104,6 +112,7 @@
 export default {
 	data (){
 		return {
+			iosLink:'',
 			addCaidan:{
 				nameZh:'',
 				name:'',
@@ -151,6 +160,8 @@ export default {
 				this.showCaidan=[1,0,0,0]
 			}else if(n==2){
 				this.showCaidan=[0,1,0,0]
+			}else if(n==3){
+				this.showCaidan=[0,0,1,0]
 			}
 		},
 		// 添加菜单
@@ -188,6 +199,21 @@ export default {
 			this.changeCaidan.pid=data.pid,
 			this.caidanVisible=true;
 			console.log(this.caidanVisible)
+		},
+		// 上传ios链接
+		pushIos:function(){
+			this.http.post(this.api.pushLink,
+			{
+				"url":this.iosLink,
+				"comments":this.iosLink
+			},sessionStorage.getItem('token')).then(res => {
+				// console.log(res)
+						if(res.error_code==200){
+							this.$message.success('上传成功')
+						}else{
+							this.$message.warning('上传失败')
+						}
+			       });
 		}
 	},
 	filters:{

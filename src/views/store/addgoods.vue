@@ -12,9 +12,9 @@
 		<div class="zh-info-box" v-if="goodsClass">
 			<div> <div class="input-title">商品名称</div> <div class="sign-input">
 			<el-input maxlength="11"  clearable type="text"  v-model="xfGoods.productName" placeholder=""></el-input></div></div>
-			<div><div class="input-title">成交价</div> <div class="sign-input">
+			<div><div class="input-title">价格</div> <div class="sign-input">
 			<el-input   clearable type="text"  v-model="xfGoods.transactionPrice" placeholder=""></el-input></div></div>
-			<div><div class="input-title">产品折扣</div> <div class="sign-input">
+			<div><div class="input-title">团购折扣</div> <div class="sign-input">
 			<el-input   clearable type="text"  v-model="xfGoods.discount" placeholder=""></el-input></div></div>
 			<div><div class="input-title">产品数量</div> <div class="sign-input">
 			<el-input   clearable type="text"  v-model="xfGoods.amount" placeholder=""></el-input></div></div>
@@ -28,7 +28,6 @@
 						 @change="changemainImg($event)"> 
 						<i class="el-icon-plus"></i>
 					</div> -->
-					
 					<el-upload
 					  action="/dev/api/v1/admin/upload/image"
 					  :headers="{'Content-Type':'application/json',
@@ -55,7 +54,7 @@
 					</div></div>
 			<div><div class="input-title">类别标签</div> <div class="sign-input">
 				<el-checkbox-group v-model="selectClassify" >
-				  <el-checkbox :label="item.lable" border v-for="item in goodsClassify"></el-checkbox>
+				  <el-checkbox :label="item.lable" border v-for="(item, index) in goodsClassify" :key="index"></el-checkbox>
 				</el-checkbox-group>	
 			</div></div>
 			<div><div class="input-title">产品所属</div> <div class="sign-input">
@@ -105,6 +104,24 @@
 				  <i class="el-icon-plus"></i>
 				</el-upload>
 				</div></div>
+			<div><div class="input-title">上传详情照片</div>
+				<div class="sign-input">
+				<el-upload
+				  action="/dev/api/v1/admin/upload/image"
+				  :headers="{'Content-Type':'application/json',
+				'token':token}"
+				list-type="picture-card"
+					:auto-upload="false"
+				  :on-change="uploadJsStatusBefore"
+				  >
+				  <i class="el-icon-plus"></i>
+				</el-upload>
+				</div></div>
+			<div><div class="input-title">类别标签</div> <div class="sign-input">
+				<el-checkbox-group v-model="selectJsClassify" >
+				  <el-checkbox :label="item.lable" border v-for="(item, index) in goodsClassify" :key="index"></el-checkbox>
+				</el-checkbox-group>	
+			</div></div>
 			<div><div class="input-title">是否上架</div>
 				<div class="switch-item">
 					<el-switch
@@ -139,7 +156,7 @@ export default {
 				productUrl:'',//图片
 				transactionPrice:'',//价格
 				mailingPrice:'',//团购
-				amount:'',//数量
+				amount:100,//数量
 				state:'ON_THE_SHELF',//上架‘ON_THE_SHELF’上架，‘OFF_THE_SHELF’下架
 				reason:'',//说明
 			},
@@ -157,6 +174,7 @@ export default {
 				reason:'',//说明
 			},goodsClassify:[],
 			selectClassify:[],
+			selectJsClassify:[],
 			
 		}
 	},
@@ -196,6 +214,17 @@ export default {
 			          }
 			       });
 		},
+		uploadJsStatusBefore(file){
+			let formData = new FormData();
+			formData.append('uploadType','MAILING_PRODUCT_URL');
+			formData.append('file',file.raw)
+			this.http.post(this.api.uploadImage,
+			formData,sessionStorage.getItem('token')).then(res => {
+			          if(res.code == 0){
+						  this.jsGoods.productDetaiJsUrl=res.data.url
+			          }
+			       });
+		},
 		// 上传消费详情图
 		uploadXfStatusBefore(file){
 			let formData = new FormData();
@@ -216,11 +245,13 @@ export default {
 				 "productName":this.jsGoods.productName,
 				"productType":this.jsGoods.productType,
 				"productUrl":this.jsGoods.productUrl,
+				"productDetailsUrl":this.jsGoods.productDetaiJsUrl,
 				"transactionPrice":this.jsGoods.transactionPrice,
 				"mailingPrice":this.jsGoods.mailingPrice,
 				"amount":this.jsGoods.amount,
 				"state":this.jsGoods.state,
 				"reason":this.jsGoods.reason,
+				"lable":this.selectJsClassify.toString(),
 			
 			},sessionStorage.getItem('token')).then(res => {
 				console.log(res)

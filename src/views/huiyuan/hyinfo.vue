@@ -41,7 +41,7 @@
 				    <el-table-column prop="createTime" label="注册日期" > </el-table-column>
 				    <el-table-column prop="userName" label="姓名" ></el-table-column>
 				    <el-table-column prop="phone" label="手机号" width="120"> </el-table-column>
-					<el-table-column prop="houtaiNum" label="后台登录账号"> </el-table-column>
+					<!-- <el-table-column prop="houtaiNum" label="后台登录账号"> </el-table-column> -->
 					<el-table-column prop="realNameState" label="实名状态"> 
 						<template slot-scope="scope">
 							<div class="shiming-status1" v-if="scope.row.realNameState==='PASS'">已实名</div>

@@ -20,9 +20,14 @@ axios.interceptors.response.use(response => {//数据拿到之后
 function successfun(res){//处理后台返回的非200错误
     if(res.code === 0){
         return res
-    }else{        
-         Message.warning(res.msg);
-         return res;
+    }else{   
+		if(res.msg){
+			Message.warning(res.msg);
+		}else{
+			 return res;
+			// Message.warning('后台未返回错误类型');
+		}
+        
     } 
 }
 function errorfun(res){
@@ -67,6 +72,45 @@ export default{
         },err => {
             return errorfun(err)
         })
-    }
+    },
+	getexcel(execelName,url,params,token){//下载表格
+	    return axios({
+	        method:'get',
+	        baseURL:localhosts,
+			headers:{
+				'Content-Type':'application/json;application/octet-stream',
+				'token':token,
+				'Cache-Control':'no-cache'
+			},
+	        url,
+	        // data:params,
+			responseType: 'blob',
+	    }).then(res => {
+			if(res){
+					let urls =URL.createObjectURL( new Blob([res]));
+					const link = document.createElement('a');  // 创建元素
+					link.style.display = 'none';
+					link.href = urls;   // 创建下载的链接
+					
+					//num++
+					 link.setAttribute('download', execelName+'.xls');  // 给下载后的文件命名
+					document.body.appendChild(link);
+					link.click();  // 点击下载
+					 // urls =URL.createObjectURL( new Blob([]));
+					URL.revokeObjectURL(urls);  // 释放掉blob对象
+					URL.revokeObjectURL(link);  // 释放掉blob对象
+					URL.revokeObjectURL(link.href);  // 释放掉blob对象
+					document.body.removeChild(link);  //  下载完成移除元素
+				
+			}else{
+				return 
+			}
+			
+			
+	    },err => {
+	        return errorfun(err)
+	    })
+	}
+	
     //(delete,put等请求同上)...
 }

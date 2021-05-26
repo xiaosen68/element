@@ -3,12 +3,18 @@
 		<div class="zh-head">消费订单 </div>
 		<div class="zh-info-box">
 			<div class="seach-box">
-				<div class="seach-item">订单号 <div class="search-input">  
+				<div class="seach-item">订单号<div class="search-input">  
 				<el-input placeholder="请输入订单号" type="text" maxlength="20"
 				 v-model="orderNo"></el-input></div> </div>
-				<div class="seach-item">手机号 <div class="search-input">  
+				<div class="seach-item">手机号<div class="search-input">  
 				<el-input placeholder="请输入手机号" type="tel" maxlength="11" 
 				 v-model="phone"></el-input></div> </div>
+				 <div class="seach-item">上级手机号<div class="search-input">
+				 <el-input placeholder="请输入上级手机号" type="tel" maxlength="11" 
+				  v-model="superOrderUserPhone"></el-input></div> </div>
+				  <div class="seach-item">商家手机号<div class="search-input">
+				  <el-input placeholder="请输入上级手机号" type="tel" maxlength="11" 
+				   v-model="store"></el-input></div> </div>
 				<div class="seach-item">销售订单 <div class="search-input">
 					<el-select v-model="orderType" placeholder="请选择" :popper-append-to-body="false">
 						<el-option
@@ -18,9 +24,22 @@
 						  :value="item.orderType">
 						</el-option>
 					  </el-select></div>
-					  </div>
+				</div>
+				<div class="seach-item">日期
+					<div class="search-input">
+						<el-date-picker style="width: 140px;"
+						  v-model="orderDate"
+						  type="date"
+						  placeholder="选择日期"
+						  size="small" 
+						  value-format="yyyy-MM-dd">
+						</el-date-picker>
+					</div> 
+				</div>	  
 				<div class="seach-item"><el-button type="primary"  size="small " @click="getMailingOrder">查询</el-button></div>
-				<!-- <div class="seach-item"><el-button type="warning"  size="small " icon="el-icon-download">导出表格</el-button></div> -->
+				<div class="seach-item">
+					<el-button type="warning"  size="small " 
+					icon="el-icon-download" @click="excelGeneralOrder">导出表格</el-button></div>
 			</div>
 			<div class="hyinfo-box">
 			<el-table
@@ -29,9 +48,12 @@
 			    style="width: 100%">
 				 <el-table-column type="expand">
 				   <template slot-scope="props">
-					   <el-form label-position="left" inline class="demo-table-expand" label-width="auto">
-							 <el-form-item label="商品列表" v-for="item in  props.row.orderList">
-							   <span>名称：{{ item.productName}};  成交价：{{item.transactionPrice*item.discount}};  挂牌价：{{item.transactionPrice}};  数量：{{item.payamount}}</span>
+					   <el-form label-position="left" inline class="demo-table-expand" label-width="auto" v-if="scope.row.orderType='CONSUMPTION_ZONE'" >
+							 <el-form-item v-for="(item, index) in  props.row.orderList" :key="index">
+							   <span>名称：{{ item.productName}};  团购价：{{item.transactionPrice*item.discount}};  单价：{{item.transactionPrice}};  数量：{{item.payamount}}</span>
+							 </el-form-item>
+							 <el-form-item v-if="props.row.region" >
+							   <span>收获地址：{{props.row.region}}{{props.row.addressDetails}}</span>
 							 </el-form-item>
 						</el-form>
 					</template>
@@ -73,8 +95,11 @@
 				  label="支付状态">
 				</el-table-column>
 				<el-table-column
-				  prop="passageWayName"
-				  label="交易类型">
+				  prop="orderType"
+				  label="订单类型">
+				  <template slot-scope="scope">
+				  	{{scope.row.orderType|orderFilter}}
+				  </template>
 				</el-table-column>
 			
 				<el-table-column
@@ -117,6 +142,8 @@ export default {
 			tableData:[],
 			orderNo:'',
 			phone:'',
+			superOrderUserPhone:'',//上级手机号
+			store:'',
 			stateCode:'',
 			userLevel:'',
 			size:20,
@@ -124,6 +151,7 @@ export default {
 			currentPage:1,
 			totalPage:0,
 			orderType:'',
+			orderDate:'',
 			orderOp:[
 				{
 					orderType:'CONSUMPTION_ZONE',
@@ -178,6 +206,29 @@ export default {
 						  this.totalSize=res.data.total_size;
 			          }
 			       });
+		},
+		// 导出消费列表
+		excelGeneralOrder:function(){
+			this.http.getexcel('消费列表',this.api.excelGeneralOrderOne,{
+				phone:this.phone,
+				superOrderUserPhone:this.superOrderUserPhone,
+				store:this.store,
+				orderTime:this.orderDate,
+			},sessionStorage.getItem('token')).then(res => {
+			          if(res.code == 0){
+						 console.log(res)
+			          }
+			       })
+		}
+		
+	},
+	filters:{
+		orderFilter:function(value){
+			if(value==='CONSUMPTION_ZONE'){
+				return '商城消费'
+			}else if(value==='CUSTOM_ORDER'){
+				return '扫码消费'
+			}
 		}
 	}
 }

@@ -90,6 +90,7 @@
 					  label="分润备注">
 					  <template slot-scope="scope">
 					  		{{scope.row.revenueState|revenueStateFilter}}	
+					  </template>
 					</el-table-column>
 				  </el-table>
 				 <!-- 主页面分页 -->

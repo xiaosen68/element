@@ -50,6 +50,12 @@ export default {
 	deleteSharingPoster:"/api/v1/admin/mall/deleteSharingPoster",//删除海报
 	getMailingOrder:"/api/v1/admin/mall/getMailingOrder",//寄售订单查询
 	getGeneralOrder:"/api/v1/admin/mall/getGeneralOrder",//销售订单列表查询
+	excelMailinglOrderOne:"/api/v1/admin/account/excelMailinglOrder",//导出寄售订单一
+	// excelMailinglOrderTwo:"/api/v1/admin/account/excelMailinglOrder11",//导出寄售订单二
+	excelGeneralOrderOne:"/api/v1/admin/account/excelGeneralOrder",//导出消费订单一
+	// excelGeneralOrderTwo:"/api/v1/admin/account/excelGeneralOrder11",//导出消费订单二
+	
+	
 	transactionInquiry:"/api/v1/admin/mall/transactionInquiry",//交易查询
 	getMailingOrderById:"/api/v1/admin/mall/getMailingOrderById",//根据寄售订单id查询订单详情
 	getGeneralOrderById:"/api/v1/admin/mall/getGeneralOrderById",//根据销售订单id查询订单详情
@@ -63,7 +69,6 @@ export default {
 	updatePassageWayRate:"/api/v1/admin/passageway/updatePassageWayRate",//修改费率
 	updatePassageWay:"/api/v1/admin/passageway/updatePassageWay",//修改通道信息（不包括银行卡）
 	getPassageWayBankByPassageWayId:"/api/v1/admin/passageway/getPassageWayBankByPassageWayId",//查看银行卡支持列表
-	getPassageWay:"/api/v1/admin/passageway/getPassageWay",//通道费率总览
 	addPassageWay:"/api/v1/admin/passageway/addPassageWay",//添加通道
 	findByPlatformMessageAll:"/api/v1/pri/meassage/findByPlatformMessageAll",//获取推送信息列表
 	deletePlatformMessageList:"/api/v1/pri/meassage/deletePlatformMessageList",//批量删除通知信息
@@ -73,9 +78,13 @@ export default {
 	getWithdrawalAmountAll:"/api/v1/admin/account/getWithdrawalAmountAll",//提现信息查询
 	cashWithdrawalByAudit:"/api/v1/admin/account/cashWithdrawalByAudit",//提现信息审核
 	excelWithdrawalAmountAll:"/api/v1/admin/account/excelWithdrawalAmountAll",//导出提现列表
+	daochuexcel:"/ucandy/mall/a/user/profits/withdraw/application/excel",//导出受理的提现列表 新
 	importExcelUpdateWithdrawal:"/api/v1/admin/account/importExcelUpdateWithdrawal",//导入提现列表
 	transactionStatistics:"/api/v1/admin/mall/transactionStatistics",//交易汇总
 	queryOrderSettlement:"/api/v1/admin/account/queryOrderSettlement",//结算信息查询
+	changeStatus:"/ucandy/mall/a/user/profits/withdraw/status",//修改分润提现状态
+	applicationList:"/ucandy/mall/a/user/profits/withdraw/application",//获取当前受理申请的列表
+	
 	// 账户管理
 	
 	backgroundQueryUser:"/api/v1/admin/account/backgroundQueryUser",//个人信息管理
@@ -83,6 +92,8 @@ export default {
 	blackListUser:"/api/v1/admin/account/blackListUser",//黑名单列表
 	removeBlack:"/api/v1/admin/account/removeBlack",//移除黑名单
 	addBlack:"/api/v1/admin/account/addBlack",//添加黑名单
+	// 上传ios的下载链接
+	pushLink:"/ucandy/mall/m/app/ios/link",//上传ios下载链接
 	
 }
 // 使用方法
